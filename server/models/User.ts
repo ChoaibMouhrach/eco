@@ -1,4 +1,4 @@
-import { Schema, models, model } from "mongoose"
+import { Schema, model } from "mongoose"
 import RefreshToken from "./RefreshToken"
 
 const userSchema = new Schema({

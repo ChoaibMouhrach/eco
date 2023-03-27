@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-export default function logger(request: Request, response: Response, next: NextFunction) {
+export default function logger(request: Request, _response : Response, next: NextFunction) {
 
   const method = request.method;
   const path = request.url;

@@ -1,5 +1,4 @@
 import z from "zod";
-import User from "../models/User";
 
 export const loginSchema = z.object({
   email: z.string().email(),

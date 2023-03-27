@@ -1,16 +1,17 @@
-import express from "express";
+import express, { Express } from "express";
 import { config as dotenvConfig } from "dotenv";
 import cors from "cors"
 import cookieParser from "cookie-parser";
-import logger from "../middlewares/logger";
-import config from "../config/config";
-import authRoutes from "../routes/authRoutes";
+import config from "./config/config";
+import authRoutes from "./routes/authRoutes";
+import logger from "./middlewares/logger";
 
 dotenvConfig();
 
-const port = process.env.PORT ?? 3000
-
-const run = async () => {
+/**
+* this function returns and instance of express
+* */
+export const app = async (): Promise<Express> => {
 
   /* CONFIG FILES */
   await config()
@@ -30,10 +31,6 @@ const run = async () => {
   /* routes */
   app.use("/", authRoutes)
 
-  /* start the server */
-  app.listen(port, () => console.log(`The server is running on port ${port}`))
-
+  return app
 }
-
-run()
 

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express"
+import { Request, Response } from "express"
 import { loginSchema, registerSchema } from "../validation/authValidation"
 import User from "../models/User";
 import bcrypt from "bcrypt";
@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import RefreshToken from "../models/RefreshToken";
 
 /* handles the login functionality */
-export const login = async (request: Request, response: Response, next: NextFunction) => {
+export const login = async (request: Request, response: Response,) => {
 
   if (!process.env.ACCESS_SECRET || !process.env.REFRESH_SECRET) {
     throw Error("ACCESS SECRET or REFRESH SECRET is not defined")
@@ -71,7 +71,7 @@ export const login = async (request: Request, response: Response, next: NextFunc
 
 }
 
-export const register = async (request: Request, response: Response, next: NextFunction) => {
+export const register = async (request: Request, response: Response) => {
 
   if (!process.env.ACCESS_SECRET || !process.env.REFRESH_SECRET) {
     throw Error("ACCESS SECRET or REFRESH SECRET is not defined")
@@ -136,7 +136,7 @@ export const register = async (request: Request, response: Response, next: NextF
 
 }
 
-export const logout = async (request: Request, response: Response, next: NextFunction) => {
+export const logout = async (request: Request, response: Response,) => {
 
   const { user, token_id } = request.auth;
   await RefreshToken.deleteOne({ _id: token_id })
@@ -147,7 +147,7 @@ export const logout = async (request: Request, response: Response, next: NextFun
   return response.sendStatus(204)
 }
 
-export const refresh = async (request: Request, response: Response, next: NextFunction) => {
+export const refresh = async (request: Request, response: Response,) => {
 
   if (!process.env.ACCESS_SECRET || !process.env.REFRESH_SECRET) {
     throw Error("ACCESS SECRET or REFRESH SECRET is not defined")
@@ -181,7 +181,7 @@ export const refresh = async (request: Request, response: Response, next: NextFu
 
 }
 
-export const verify = (request: Request, response: Response, next: NextFunction) => {
+export const verify = (request: Request, response: Response,) => {
 
   const { user } = request.auth;
 
