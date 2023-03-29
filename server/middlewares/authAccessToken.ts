@@ -46,6 +46,7 @@ export default async function authAccessToken(request: Request, response: Respon
     }
 
     next();
+    return
 
   } catch (err: any) {
 
@@ -55,7 +56,5 @@ export default async function authAccessToken(request: Request, response: Respon
 
     return response.status(401).json({ message: "unauthenticated" })
   }
-
-  next();
 
 }
