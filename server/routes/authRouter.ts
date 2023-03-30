@@ -3,16 +3,16 @@ import { verify, login, logout, refresh, register } from "../controllers/authCon
 import authRefreshToken from "../middlewares/authRefreshToken";
 import authAccessToken from "../middlewares/authAccessToken";
 
-const authRoutes = Router()
+const authRouter = Router()
 
-authRoutes.post("/login", login);
-authRoutes.post("/register", register);
+authRouter.post("/login", login);
+authRouter.post("/register", register);
 
 /* access token protection */
-authRoutes.get("/verify", authAccessToken, verify);
+authRouter.get("/verify", authAccessToken, verify);
 
 /* refresh token protection */
-authRoutes.post("/logout", authRefreshToken, logout);
-authRoutes.post("/refresh", authRefreshToken, refresh);
+authRouter.post("/logout", authRefreshToken, logout);
+authRouter.post("/refresh", authRefreshToken, refresh);
 
-export default authRoutes
+export default authRouter
