@@ -1,6 +1,6 @@
-# Eco-eco
+# Eco
 
-Eco-eco is an online store that offers a wide range of eco-friendly products, The store is built using modern web technologies such as Next.js, TypeScript, Tailwind CSS, Express.js, and MongoDB, ensuring a seamless user experience and high performance.
+Eco is an online store that offers a wide range of products, The store is built using modern web technologies such as Next.js, TypeScript, Tailwind CSS, Express.js, and MongoDB, ensuring a seamless user experience and high performance.
 
 ## Installation
 
