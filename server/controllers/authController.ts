@@ -52,22 +52,9 @@ export const login = async (request: Request, response: Response,) => {
   await user.save()
   await refreshToken.save();
 
-  let userObject: { [key: string]: any } = {}
-
-  for (let keyValue of Object.entries(user.toObject())) {
-
-    const key = keyValue[0];
-    const value = keyValue[1];
-
-    if (!(key === "password" || !(key !== "refreshTokens"))) {
-      userObject[key] = value
-    }
-
-  }
-
   response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`])
 
-  return response.json(userObject)
+  return response.json(user.prepare())
 
 }
 
@@ -116,22 +103,9 @@ export const register = async (request: Request, response: Response) => {
   await refreshToken.save();
   await user.save();
 
-  let userObject: { [key: string]: any } = {}
-
-  for (let keyValue of Object.entries(user.toObject())) {
-
-    const key = keyValue[0];
-    const value = keyValue[1];
-
-    if (!(key === "password" || !(key !== "refreshTokens"))) {
-      userObject[key] = value
-    }
-
-  }
-
   response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`])
 
-  return response.json(userObject)
+  return response.json(user.prepare())
 
 
 }
@@ -184,7 +158,6 @@ export const refresh = async (request: Request, response: Response,) => {
 export const verify = (request: Request, response: Response,) => {
 
   const { user } = request.auth;
-
   return response.json(user)
 
 }

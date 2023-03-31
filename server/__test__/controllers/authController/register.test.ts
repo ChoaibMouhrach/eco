@@ -1,7 +1,7 @@
 import { register } from "./endpoints";
+import { register } from "./endpoints";
 
 describe("/register", () => {
-
   //describe("with correct data", () => {
 
   //  it("should return 200 with tokens in a cookie + user info", async () => {

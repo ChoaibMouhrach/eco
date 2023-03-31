@@ -4,7 +4,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser";
 import config from "./config/config";
 import authRouter from "./routes/authRouter";
-// import logger from "./middlewares/logger";
+import logger from "./middlewares/logger";
 import categoryRouter from "./routes/categoryRouter";
 
 dotenvConfig();
@@ -27,7 +27,7 @@ export const app = async (): Promise<Express> => {
     origin: "http://localhost:3000"
   }));
   app.use(cookieParser())
-  // app.use(logger)
+  if (process.env.ENV !== "testing") app.use(logger)
 
   /* routes */
   app.use("/", authRouter)
