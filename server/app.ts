@@ -3,8 +3,9 @@ import { config as dotenvConfig } from "dotenv";
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import config from "./config/config";
-import authRoutes from "./routes/authRoutes";
-import logger from "./middlewares/logger";
+import authRouter from "./routes/authRouter";
+// import logger from "./middlewares/logger";
+import categoryRouter from "./routes/categoryRouter";
 
 dotenvConfig();
 
@@ -26,10 +27,11 @@ export const app = async (): Promise<Express> => {
     origin: "http://localhost:3000"
   }));
   app.use(cookieParser())
-  app.use(logger)
+  // app.use(logger)
 
   /* routes */
-  app.use("/", authRoutes)
+  app.use("/", authRouter)
+  app.use("/categories", categoryRouter)
 
   return app
 }
