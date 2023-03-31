@@ -1,4 +1,6 @@
 import { connect } from "mongoose"
+import User from "../models/User"
+import bcrypt from "bcrypt"
 
 export default async function connectDB() {
 
@@ -8,6 +10,20 @@ export default async function connectDB() {
 
   await connect(`${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}`, { dbName: process.env.DATABASE_NAME })
 
-  console.log(`The Database is connected on port ${process.env.DATABASE_PORT}`)
+  if (process.env.ENV === "testing" && !await User.findOne({ email: "jhon@gmail.com" })) {
+    const user = new User({
+      firstName: "jhon",
+      lastName: "doe",
+      email: "jhon@gmail.com",
+      password: bcrypt.hashSync("password", Number(process.env.SALT) ?? 10)
+    })
 
+    await user.save()
+  }
+
+  if (process.env.ENV !== "testing") {
+
+    console.log(`The Database is connected on port ${process.env.DATABASE_PORT}`)
+
+  }
 }
