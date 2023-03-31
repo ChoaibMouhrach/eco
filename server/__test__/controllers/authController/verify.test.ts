@@ -1,4 +1,8 @@
 import { login, verify } from "./endpoints";
+import { config } from "dotenv"
+import jwt from "jsonwebtoken";
+
+config()
 
 describe("/verify", () => {
 
@@ -44,7 +48,15 @@ describe("/verify", () => {
 
     it("should return 401 with user info", async () => {
 
-      const response = await verify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDIxN2YyMDE4YjZjMmI1MTU1ZGJlNjAiLCJpYXQiOjE2ODAxNzcyMTQsImV4cCI6MTY4MDE3NzIyOX0.KZXu5Z5o0hU3ac37u0f_7OJFUR13zIP-kwNaPyWhYjY");
+      if (!process.env.ACCESS_SECRET) {
+        throw Error("Access Secret Required")
+      }
+
+      const token = jwt.sign({ _id: 1 }, process.env.ACCESS_SECRET, { expiresIn: "100ms" });
+
+      await new Promise((res) => setTimeout(() => { res("") }, 105))
+
+      const response = await verify(token);
 
       expect(response.status).toBe(401)
       expect(response.body).toMatchObject({
