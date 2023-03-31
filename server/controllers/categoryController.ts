@@ -25,8 +25,8 @@ export const index = async (request: Request<{}, {}, {}, Record<string, string |
     data: categories,
     limit: pagination.limit,
     skip: pagination.skip,
-    count : await Category.count(),
-    page : Number(page) ? Number(page) : 1
+    count: await Category.count(),
+    page: Number(page) ? Number(page) : 1
   })
 }
 
@@ -54,7 +54,7 @@ export const store = async (request: Request<{}, {}, Record<string, string | und
 
   await category.save()
 
-  return response.json(category)
+  return response.status(201).json(category)
 }
 
 /* For updating category documents */
@@ -63,7 +63,7 @@ export const update = async (request: Request<Record<string, string>, {}, Record
   const { id } = request.params
 
   if (!Types.ObjectId.isValid(id)) {
-    return response.status(400).json({ message: "The provided is is invalid" })
+    return response.status(400).json({ message: "The provided id is invalid" })
   }
 
   const category = await Category.findOne({ _id: id })
@@ -82,11 +82,10 @@ export const update = async (request: Request<Record<string, string>, {}, Record
 
     if (category.image) {
 
-      console.log(join(CONSTANTS.ROOT_DIR, category.image))
-
       try {
         unlinkSync(join(CONSTANTS.ROOT_DIR, category.image))
       } catch (err) { }
+
     }
 
     updatingData.image = join(UPLOADS_DIRECTORY, `${randomId()} - ${request.file.originalname}`)
@@ -99,7 +98,11 @@ export const update = async (request: Request<Record<string, string>, {}, Record
     return response.status(400).json({ message: "Nothing to update" })
   }
 
-  await Category.updateOne({ id: id }, updatingData);
+  try {
+    await Category.updateOne({ _id: id }, updatingData);
+  } catch (err) {
+    return response.status(400).json({ errors: [{ path: ["name"], "message": "Name already exists" }] })
+  }
 
   return response.sendStatus(204)
 }
@@ -110,7 +113,7 @@ export const destroy = async (request: Request<Record<string, string>>, response
   const { id } = request.params
 
   if (!Types.ObjectId.isValid(id)) {
-    return response.status(400).json({ message: "The provided is is invalid" })
+    return response.status(400).json({ message: "The provided id is invalid" })
   }
 
   const category = await Category.findOneAndDelete({ _id: id });

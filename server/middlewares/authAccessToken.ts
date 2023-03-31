@@ -5,6 +5,10 @@ import { User as UserType } from "../types/auth";
 
 export default async function authAccessToken(request: Request, response: Response, next: NextFunction) {
 
+  if (process.env.ENV === "testing" && request.url !== "/verify") {
+    return next()
+  }
+
   if (!process.env.ACCESS_SECRET || !process.env.REFRESH_SECRET) {
     throw Error("ACCESS SECRET or REFRESH SECRET is not defined")
   }
