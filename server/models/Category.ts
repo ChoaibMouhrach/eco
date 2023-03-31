@@ -7,7 +7,29 @@ const categorySchema = new Schema({
     unique: true,
     dropDups: true
   },
-  image: String
+  image: String,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  deletedAt: {
+    type: Date,
+    default: null
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  },
+}, {
+  methods: {
+    softDelete: async function() {
+      const user = this;
+      user.deletedAt = new Date()
+
+      await user.save()
+      return user
+    }
+  }
 })
 
 export default model("Category", categorySchema)
