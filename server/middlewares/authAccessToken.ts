@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
 import User from "../models/User";
-import { User as UserType } from "../types/auth";
 
 export default async function authAccessToken(request: Request, response: Response, next: NextFunction) {
 
@@ -39,13 +38,8 @@ export default async function authAccessToken(request: Request, response: Respon
       throw Error("User not found")
     }
 
-    let userObject = user.toObject() as UserType & { password?: string, refreshTokens?: string[] };
-
-    delete userObject.refreshTokens;
-    delete userObject.password
-
     request.auth = {
-      user: userObject,
+      user: user.prepare(),
       token,
     }
 
