@@ -1,7 +1,7 @@
 import { paginationBuilder, projectionBuilder, queryBuilder, randomId, sortingBuilder } from "../helpers/controllersHelper";
 import { Request, Response } from "express";
 import Category from "../models/Category";
-import { unlinkSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "fs";
 import { CONSTANTS } from "../config/config";
 import { join } from "path";
 import { Types } from "mongoose";
@@ -12,12 +12,18 @@ const UPLOADS_DIRECTORY: string = `uploads/categories/categories_images/`
 /* For getting categories documents */
 export const index = async (request: Request<{}, {}, {}, Record<string, string | undefined>>, response: Response) => {
 
-  const { sort, fields, search, order, page } = request.query
+  const { sort, fields, search, order, page, trash } = request.query
 
-  const query = queryBuilder(search, ["name"]);
+  let query = queryBuilder(search, ["name"]);
   const projection = projectionBuilder(fields, ["name", "image", "_id"]);
   const sortingCriteria = sortingBuilder(sort, order === "desc" ? "desc" : "asc", ["name", "_id"])
   const pagination = paginationBuilder(page)
+
+  query.deletedAt = null
+
+  if (trash) {
+    query.deletedAt = { $ne: null }
+  }
 
   const categories = await Category.find(query, projection).sort(sortingCriteria).skip(pagination.skip).limit(pagination.limit);
 
@@ -46,6 +52,11 @@ export const store = async (request: Request<{}, {}, Record<string, string | und
   const storingData: Record<string, string> = { name };
 
   if (request.file) {
+
+    if (!existsSync(join(CONSTANTS.ROOT_DIR, UPLOADS_DIRECTORY))) {
+      mkdirSync(join(CONSTANTS.ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true })
+    }
+
     storingData.image = join(UPLOADS_DIRECTORY, `${randomId()} - ${request.file.originalname}`)
     writeFileSync(join(CONSTANTS.ROOT_DIR, storingData.image), request.file.buffer)
   }
@@ -68,7 +79,7 @@ export const update = async (request: Request<Record<string, string>, {}, Record
 
   const category = await Category.findOne({ _id: id })
 
-  if (!category) {
+  if (!category || category.deletedAt) {
     return response.status(404).json({ message: "Category not found" })
   }
 
@@ -81,6 +92,10 @@ export const update = async (request: Request<Record<string, string>, {}, Record
   if (request.file) {
 
     if (category.image) {
+
+      if (!existsSync(join(CONSTANTS.ROOT_DIR, UPLOADS_DIRECTORY))) {
+        mkdirSync(join(CONSTANTS.ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true })
+      }
 
       try {
         unlinkSync(join(CONSTANTS.ROOT_DIR, category.image))
@@ -109,22 +124,16 @@ export const update = async (request: Request<Record<string, string>, {}, Record
 
 /* For deleting category documents */
 export const destroy = async (request: Request<Record<string, string>>, response: Response) => {
-
   const { id } = request.params
 
   if (!Types.ObjectId.isValid(id)) {
     return response.status(400).json({ message: "The provided id is invalid" })
   }
 
-  const category = await Category.findOneAndDelete({ _id: id });
+  const category = await Category.findOne({ _id: id });
 
-  if (category) {
-
-    if (category.image) {
-      try {
-        unlinkSync(join(CONSTANTS.ROOT_DIR, category.image))
-      } catch (err) { }
-    }
+  if (category && !category.deletedAt) {
+    await category.softDelete();
 
     return response.sendStatus(204)
   }

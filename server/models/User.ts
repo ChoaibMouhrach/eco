@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose"
 import RefreshToken from "./RefreshToken"
+import { User as UserType } from "../types/auth"
 
 const userSchema = new Schema({
   firstName: {
@@ -13,17 +14,46 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique : true,
-    dropDups : true
+    unique: true,
+    dropDups: true
   },
   password: {
     type: String,
     required: true
   },
+  deletedAt: {
+    type: Date,
+    default: null
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
   refreshTokens: [{
     type: Schema.Types.ObjectId,
     ref: RefreshToken.modelName
-  }]
+  }],
+}, {
+  methods: {
+    softDelete: async function() {
+      const user = this;
+      user.deletedAt = new Date()
+      await user.save();
+      return user
+    },
+    prepare: function() {
+      let user = this.toObject() as UserType & { password?: string, refreshTokens?: string[] };
+
+      delete user.password;
+      delete user.refreshTokens;
+
+      return user
+    }
+  }
 })
 
 export default model("User", userSchema)
