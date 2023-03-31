@@ -44,7 +44,7 @@ describe("/verify", () => {
 
     it("should return 401 with user info", async () => {
 
-      const response = await verify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDFkMmJlMmNmYjcxNGNmNzhhMDJmNGUiLCJpYXQiOjE2Nzk4MjUwNzUsImV4cCI6MTY3OTgyNTA5MH0.EpbxMVOtNUnCS63IPEmbujOMnp52qmq4DT9NZuv_xWs");
+      const response = await verify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDIxN2YyMDE4YjZjMmI1MTU1ZGJlNjAiLCJpYXQiOjE2ODAxNzcyMTQsImV4cCI6MTY4MDE3NzIyOX0.KZXu5Z5o0hU3ac37u0f_7OJFUR13zIP-kwNaPyWhYjY");
 
       expect(response.status).toBe(401)
       expect(response.body).toMatchObject({

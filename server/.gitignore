@@ -1,4 +1,5 @@
 node_modules
 .env
 .coverage
-yarn-error.log
+./yarn-error.log
+uploads
