@@ -15,13 +15,13 @@ export const index = async (request: Request<{}, {}, {}, Record<string, string |
   const { sort, fields, search, order, page, trash } = request.query
 
   let query = queryBuilder(search, ["name"]);
-  const projection = projectionBuilder(fields, ["name", "image", "_id"]);
-  const sortingCriteria = sortingBuilder(sort, order === "desc" ? "desc" : "asc", ["name", "_id"])
+  const projection = projectionBuilder(fields, ["name", "image", "_id", "createdAt", "updatedAt", "deletedAt"]);
+  const sortingCriteria = sortingBuilder(sort, order === "desc" ? "desc" : "asc", ["name", "_id", "createdAt", "updatedAt", "deletedAt"])
   const pagination = paginationBuilder(page)
 
   query.deletedAt = null
 
-  if (trash) {
+  if (trash === "true") {
     query.deletedAt = { $ne: null }
   }
 

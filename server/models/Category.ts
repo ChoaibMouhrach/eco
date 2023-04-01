@@ -7,20 +7,16 @@ const categorySchema = new Schema({
     unique: true,
     dropDups: true
   },
-  image: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
+  image: {
+    type: String,
+    default: null
   },
   deletedAt: {
     type: Date,
     default: null
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  },
 }, {
+  timestamps: true,
   methods: {
     softDelete: async function() {
       const user = this;

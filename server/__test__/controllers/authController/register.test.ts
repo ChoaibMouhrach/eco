@@ -1,5 +1,4 @@
 import { register } from "./endpoints";
-import { register } from "./endpoints";
 
 describe("/register", () => {
   //describe("with correct data", () => {

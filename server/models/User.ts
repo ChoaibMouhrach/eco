@@ -25,19 +25,12 @@ const userSchema = new Schema({
     type: Date,
     default: null
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
   refreshTokens: [{
     type: Schema.Types.ObjectId,
     ref: RefreshToken.modelName
   }],
 }, {
+  timestamps: true,
   methods: {
     softDelete: async function() {
       const user = this;
