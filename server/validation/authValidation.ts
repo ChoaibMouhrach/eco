@@ -6,8 +6,8 @@ export const loginSchema = z.object({
 })
 
 export const registerSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
+  firstName: z.string().min(3).max(60),
+  lastName: z.string().min(3).max(60),
   email: z.string().email(),
   password: z.string().min(8),
   password_confirmation: z.string().min(8)
