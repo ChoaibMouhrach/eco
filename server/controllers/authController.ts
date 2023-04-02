@@ -105,7 +105,7 @@ export const register = async (request: Request, response: Response) => {
 
   response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`])
 
-  return response.json(user.prepare())
+  return response.status(201).json(user.prepare())
 
 
 }
