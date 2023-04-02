@@ -31,7 +31,7 @@ describe("/logout", () => {
 
       expect(response.status).toBe(401);
       expect(response.body).toMatchObject({
-        message: "unauthenticated"
+        message: "unauthorized"
       })
 
     })

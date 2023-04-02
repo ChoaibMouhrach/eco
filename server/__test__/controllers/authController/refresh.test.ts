@@ -25,13 +25,13 @@ describe("/refresh", () => {
 
   describe("without propper token", () => {
 
-    it("return 401 with message unauthenticated", async () => {
+    it("return 401 with message unauthorized", async () => {
 
       const response = await refresh("elfkzflkzlmfjkzelfjkze");
 
       expect(response.status).toBe(401);
       expect(response.body).toMatchObject({
-        message: "unauthenticated"
+        message: "unauthorized"
       })
 
     })

@@ -30,13 +30,13 @@ export default async function authRefreshToken(request: Request, response: Respo
 
 
   if (!authorization) {
-    return response.status(401).json({ message: "unauthenticated" })
+    return response.status(401).json({ message: "unauthorized" })
   }
 
   const token = authorization.split(" ")[1]
 
   if (!token) {
-    return response.status(401).json({ message: "unauthenticated" })
+    return response.status(401).json({ message: "unauthorized" })
   }
 
   try {
@@ -81,7 +81,7 @@ export default async function authRefreshToken(request: Request, response: Respo
 
   } catch (err) {
 
-    return response.status(401).json({ message: "unauthenticated" })
+    return response.status(401).json({ message: "unauthorized" })
 
   }
 
