@@ -19,13 +19,13 @@ export default async function authAccessToken(request: Request, response: Respon
   const authorization = request.headers.authorization
 
   if (!authorization) {
-    return response.status(401).json({ message: "unauthenticated" })
+    return response.status(401).json({ message: "unauthorized" })
   }
 
   const token = authorization.split(" ")[1];
 
   if (!token) {
-    return response.status(401).json({ message: "unauthenticated" })
+    return response.status(401).json({ message: "unauthorized" })
   }
 
   try {
@@ -52,7 +52,7 @@ export default async function authAccessToken(request: Request, response: Respon
       return response.status(401).json({ message: "token expired" })
     }
 
-    return response.status(401).json({ message: "unauthenticated" })
+    return response.status(401).json({ message: "unauthorized" })
   }
 
 }
