@@ -2,9 +2,9 @@ import { paginationBuilder, projectionBuilder, queryBuilder, randomId, sortingBu
 import { Request, Response } from "express";
 import Category from "../models/Category";
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "fs";
-import { CONSTANTS } from "../config/config";
 import { join } from "path";
 import { Types } from "mongoose";
+import { ROOT_DIR } from "../config/config";
 
 /* The root directory for categories images */
 const UPLOADS_DIRECTORY: string = `uploads/categories/categories_images/`
@@ -53,12 +53,12 @@ export const store = async (request: Request<{}, {}, Record<string, string | und
 
   if (request.file) {
 
-    if (!existsSync(join(CONSTANTS.ROOT_DIR, UPLOADS_DIRECTORY))) {
-      mkdirSync(join(CONSTANTS.ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true })
+    if (!existsSync(join(ROOT_DIR, UPLOADS_DIRECTORY))) {
+      mkdirSync(join(ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true })
     }
 
     storingData.image = join(UPLOADS_DIRECTORY, `${randomId()} - ${request.file.originalname}`)
-    writeFileSync(join(CONSTANTS.ROOT_DIR, storingData.image), request.file.buffer)
+    writeFileSync(join(ROOT_DIR, storingData.image), request.file.buffer)
   }
 
   const category = new Category(storingData);
@@ -93,12 +93,12 @@ export const update = async (request: Request<Record<string, string>, {}, Record
 
     if (category.image) {
 
-      if (!existsSync(join(CONSTANTS.ROOT_DIR, UPLOADS_DIRECTORY))) {
-        mkdirSync(join(CONSTANTS.ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true })
+      if (!existsSync(join(ROOT_DIR, UPLOADS_DIRECTORY))) {
+        mkdirSync(join(ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true })
       }
 
       try {
-        unlinkSync(join(CONSTANTS.ROOT_DIR, category.image))
+        unlinkSync(join(ROOT_DIR, category.image))
       } catch (err) { }
 
     }

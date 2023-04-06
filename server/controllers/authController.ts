@@ -1,163 +1,126 @@
-import { Request, Response } from "express"
-import { loginSchema, registerSchema } from "../validation/authValidation"
+import { Request, Response } from "express";
+import { loginSchema, registerSchema } from "../validation/authValidation";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import RefreshToken from "../models/RefreshToken";
+import { config } from "../config/config";
 
 /* handles the login functionality */
-export const login = async (request: Request, response: Response,) => {
+export const login = async (request: Request, response: Response) => {
+    /* validate the request body */
+    const validation = loginSchema.safeParse(request.body);
 
-  if (!process.env.ACCESS_SECRET || !process.env.REFRESH_SECRET) {
-    throw Error("ACCESS SECRET or REFRESH SECRET is not defined")
-  }
+    if (!validation.success) {
+        return response.status(400).json({ errors: validation.error.issues });
+    }
 
-  if (!process.env.ACCESS_TOKEN_DURATION) {
-    throw Error("ACCESS TOKEN DURATION is not defined")
-  }
+    const { email, password } = validation.data;
 
-  /* validate the request body */
-  const validation = loginSchema.safeParse(request.body);
+    /* to check if the user does exists */
+    let user = await User.findOne({ email });
 
-  if (!validation.success) {
-    return response.status(400).json({ errors: validation.error.issues })
-  }
+    if (!user) {
+        return response.status(400).json({ message: "Email Address or Password is not correct" });
+    }
 
-  const { email, password } = validation.data;
+    /* comparing the password with the hashed password to check if the password is correct or not */
+    if (!bcrypt.compareSync(password, user.password)) {
+        return response.status(400).json({ message: "Email Address or Password is not correct" });
+    }
 
-  /* to check if the user does exists */
-  let user = await User.findOne({ email });
+    /* generating 2 tokens */
+    const plainTextAccessToken = jwt.sign({ _id: user._id }, config.ACCESS_SECRET, { expiresIn: config.ACCESS_TOKEN_DURATION });
+    const plainTextRefreshToken = jwt.sign({ _id: user._id }, config.REFRESH_SECRET);
 
-  if (!user) {
-    return response.status(400).json({ message: "Email Address or Password is not correct" })
-  }
+    /* inserting new token document in the refreshtokens collection */
+    const refreshToken = new RefreshToken({
+        token: plainTextRefreshToken,
+    });
 
-  /* comparing the password with the hashed password to check if the password is correct or not */
-  if (!bcrypt.compareSync(password, user.password)) {
-    return response.status(400).json({ message: "Email Address or Password is not correct" })
-  }
+    /* adding the token id to the tokens used by the specified id */
+    user.refreshTokens.push(refreshToken._id);
 
-  /* generating 2 tokens */
-  const plainTextAccessToken = jwt.sign({ _id: user._id }, process.env.ACCESS_SECRET, { expiresIn: process.env.ACCESS_TOKEN_DURATION });
-  const plainTextRefreshToken = jwt.sign({ _id: user._id }, process.env.REFRESH_SECRET);
+    await user.save();
+    await refreshToken.save();
 
-  /* inserting new token document in the refreshtokens collection */
-  const refreshToken = new RefreshToken({
-    token: plainTextRefreshToken
-  })
+    response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`]);
 
-  /* adding the token id to the tokens used by the specified id */
-  user.refreshTokens.push(refreshToken._id)
-
-  await user.save()
-  await refreshToken.save();
-
-  response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`])
-
-  return response.json(user.prepare())
-
-}
+    return response.json(user.prepare());
+};
 
 export const register = async (request: Request, response: Response) => {
+    const validation = registerSchema.safeParse(request.body);
 
-  if (!process.env.ACCESS_SECRET || !process.env.REFRESH_SECRET) {
-    throw Error("ACCESS SECRET or REFRESH SECRET is not defined")
-  }
+    if (!validation.success) {
+        return response.status(400).json({ errors: validation.error.issues });
+    }
 
-  if (!process.env.ACCESS_TOKEN_DURATION) {
-    throw Error("ACCESS TOKEN DURATION is not defined")
-  }
+    const body = validation.data;
 
-  if (!process.env.SALT) {
-    throw Error("SALT is not defined")
-  }
+    if (await User.exists({ email: body.email })) {
+        return response.status(400).json({ message: "Email Address is already taken" });
+    }
 
-  const validation = registerSchema.safeParse(request.body);
+    let user = new User({
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        password: bcrypt.hashSync(body.password, Number(config.SALT)),
+    });
 
-  if (!validation.success) {
-    return response.status(400).json({ errors: validation.error.issues })
-  }
+    const plainTextAccessToken = jwt.sign({ _id: user._id }, config.ACCESS_SECRET, { expiresIn: config.ACCESS_TOKEN_DURATION });
+    const plainTextRefreshToken = jwt.sign({ _id: user._id }, config.REFRESH_SECRET);
 
-  const body = validation.data;
+    const refreshToken = new RefreshToken({
+        token: plainTextRefreshToken,
+    });
 
-  if (await User.exists({ email: body.email })) {
-    return response.status(400).json({ message: "Email Address is already taken" })
-  }
+    user.refreshTokens.push(refreshToken._id);
 
-  let user = new User({
-    firstName: body.firstName,
-    lastName: body.lastName,
-    email: body.email,
-    password: bcrypt.hashSync(body.password, Number(process.env.SALT))
-  })
+    await refreshToken.save();
+    await user.save();
 
-  const plainTextAccessToken = jwt.sign({ _id: user._id }, process.env.ACCESS_SECRET, { expiresIn: process.env.ACCESS_TOKEN_DURATION });
-  const plainTextRefreshToken = jwt.sign({ _id: user._id }, process.env.REFRESH_SECRET);
+    response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`]);
 
-  const refreshToken = new RefreshToken({
-    token: plainTextRefreshToken
-  });
+    return response.status(201).json(user.prepare());
+};
 
-  user.refreshTokens.push(refreshToken._id);
+export const logout = async (request: Request, response: Response) => {
+    const { user, token_id } = request.auth;
+    await RefreshToken.deleteOne({ _id: token_id });
+    await User.updateOne({ _id: user._id }, { $pull: { refreshTokens: token_id } });
 
-  await refreshToken.save();
-  await user.save();
+    response.setHeader("Set-Cookie", ["refreshToken=0; Max-Age=0", "accessToken=0; Max-Age=0"]);
 
-  response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`])
+    return response.sendStatus(204);
+};
 
-  return response.status(201).json(user.prepare())
+export const refresh = async (request: Request, response: Response) => {
+    const { user, token_id } = request.auth;
 
+    await RefreshToken.deleteOne({ _id: token_id });
 
-}
+    await User.updateOne({ _id: user._id }, { $pull: { refreshTokens: token_id } });
 
-export const logout = async (request: Request, response: Response,) => {
+    const plainTextAccessToken = jwt.sign({ _id: user._id }, config.ACCESS_SECRET, { expiresIn: config.ACCESS_TOKEN_DURATION });
+    const plainTextRefreshToken = jwt.sign({ _id: user._id }, config.REFRESH_SECRET);
 
-  const { user, token_id } = request.auth;
-  await RefreshToken.deleteOne({ _id: token_id })
-  await User.updateOne({ _id: user._id }, { $pull: { refreshTokens: token_id } })
+    const refreshToken = new RefreshToken({
+        token: plainTextRefreshToken,
+    });
 
-  response.setHeader("Set-Cookie", ["refreshToken=0; Max-Age=0", "accessToken=0; Max-Age=0"])
+    await refreshToken.save();
 
-  return response.sendStatus(204)
-}
+    await User.updateOne({ _id: user._id }, { $push: { refreshTokens: refreshToken._id } });
 
-export const refresh = async (request: Request, response: Response,) => {
+    return response.json({
+        refreshToken: plainTextRefreshToken,
+        accessToken: plainTextAccessToken,
+    });
+};
 
-  if (!process.env.ACCESS_SECRET || !process.env.REFRESH_SECRET) {
-    throw Error("ACCESS SECRET or REFRESH SECRET is not defined")
-  }
-
-  if (!process.env.ACCESS_TOKEN_DURATION) {
-    throw Error("ACCESS TOKEN DURATION is not defined")
-  }
-
-  const { user, token_id } = request.auth;
-
-  await RefreshToken.deleteOne({ _id: token_id })
-
-  await User.updateOne({ _id: user._id }, { $pull: { refreshTokens: token_id } });
-
-  const plainTextAccessToken = jwt.sign({ _id: user._id }, process.env.ACCESS_SECRET, { expiresIn: process.env.ACCESS_TOKEN_DURATION });
-  const plainTextRefreshToken = jwt.sign({ _id: user._id }, process.env.REFRESH_SECRET);
-
-  const refreshToken = new RefreshToken({
-    token: plainTextRefreshToken
-  })
-
-  await refreshToken.save();
-
-  await User.updateOne({ _id: user._id }, { $push: { refreshTokens: refreshToken._id } })
-
-  return response.json({
-    refreshToken: plainTextRefreshToken,
-    accessToken: plainTextAccessToken
-  })
-
-}
-
-export const verify = (request: Request, response: Response,) => {
-
-  const { user } = request.auth;
-  return response.json(user)
-
-}
+export const verify = (request: Request, response: Response) => {
+    const { user } = request.auth;
+    return response.json(user);
+};
