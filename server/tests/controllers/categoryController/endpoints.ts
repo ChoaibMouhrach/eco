@@ -1,6 +1,6 @@
 import request from "supertest"
-import { app } from "../../../app"
-import { generateUrl } from "../../../helpers/testingHelper"
+import { app } from "../../../src/app"
+import { generateUrl } from "../../../src/helpers/testingHelper"
 
 export const index = async ({ sort, fields, order, search }: { sort?: string, fields?: string, order?: string, search?: string }) => {
   let url: string = generateUrl({ baseUrl: "/categories", sort, fields, order, search });

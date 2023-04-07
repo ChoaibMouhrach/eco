@@ -1,4 +1,4 @@
-import { Category } from "../../../types/category";
+import { Category } from "../../../src/types/category";
 import { index } from "./endpoints"
 
 describe("GET /categories", () => {

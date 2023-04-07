@@ -4,7 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --esm server.ts",
+    "dev": "nodemon --esm src/server.ts",
+    "build": "rm -rf dist && swc src -d dist",
+    "buil:start": "rm -rf dist && swc src -d dist && node dist/server.js",
+    "start": "node dist/server.js",
     "test": "jest",
     "test-coverage": "jest --coverage"
   },
@@ -26,6 +29,7 @@
     "nodemon": "^2.0.22",
     "regenerator-runtime": "^0.13.11",
     "supertest": "^6.3.3",
+    "swc": "^1.0.11",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.2"
