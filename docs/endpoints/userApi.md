@@ -4,8 +4,6 @@
 
 These endpoints facilitate interaction with the authentication system.
 
-> By default the system will have a default user for testing under the email john@gmail.com
-
 ## Config
 |key|Value|
 |:--|:--|
@@ -48,14 +46,36 @@ These endpoints facilitate interaction with the authentication system.
  }
 ```
 ```typescript
-// RESPONSE STATUS 400 IF EMAIL ADDRESS 
-// DOES NOT EXIST OR THE PASSWORD 
-// IS NOT CORRECT OR BOTH
+// RESPONSE STATUS 400
 {
   "message": "Email Address or Password is not correct"
 }
 ```
-
+```typescript
+// RESPONSE STATUS 400
+{
+  "errors": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "received": "undefined",
+      "path": [
+        "email"
+      ],
+      "message": "Required"
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "received": "undefined",
+      "path": [
+        "password"
+      ],
+      "message": "Required"
+    }
+  ]
+}
+```
 ## Register 
 
 ### Request
@@ -187,7 +207,7 @@ These endpoints facilitate interaction with the authentication system.
 
 ### Response
 ```typescript
-// RESPONSE STATUS 204
+// RESPONSE STATUS 200
 {
   headers : {
     "set-cookie" : [
