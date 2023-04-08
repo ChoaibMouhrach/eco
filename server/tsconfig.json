@@ -7,10 +7,13 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters" : true,
-    "skipLibCheck": true
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "outDir": "dist"
   },
-  "ts-node" :  {
-    "swc" : true
-  }
+  "ts-node": {
+    "swc": true
+  },
+  "include": ["./src"],
+  "exclude": ["./node_modules", "tests"]
 }
