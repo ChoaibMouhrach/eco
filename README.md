@@ -2,6 +2,10 @@
 
 Eco is an online store that offers a wide range of products, The store is built using modern web technologies such as Next.js, TypeScript, Tailwind CSS, Express.js, and MongoDB, ensuring a seamless user experience and high performance.
 
+> Note : In Production change the ENV key in .env file to `production`
+> Note : While Testing change the ENV key in .env to `testing`
+> Note : While Developing change the ENV key in .env to `development`
+
 ## Installation
 
 To install and run the app locally, please follow these steps:
@@ -13,6 +17,26 @@ To install and run the app locally, please follow these steps:
 1. Navigate to the client directory and run `npm install` or `yarn install`
 1. Install the dependencies by running `npm install` or `yarn install`
 1. Start the development server by running `npm run dev` or `yarn dev`
+
+To Build the project, please follow these steps:
+
+* Navigate to the server directory and run `yarn run build`
+
+To Build and start the project, please follow these steps:
+
+* Navigate to the server directory and run `yarn run build:start`
+
+To start the project, please follow these steps:
+
+* Navigate to the server directory and run `yarn run start`
+
+To run tests, please follow these steps:
+
+* Navigate to the server directory and run `yarn run test`
+
+To format the project with prettier, please follow these steps:
+
+* Navigate to the server directory and run `yarn run format`
 
 ## Features
 
