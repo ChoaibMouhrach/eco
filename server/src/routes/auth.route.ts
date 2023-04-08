@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { verify, login, logout, refresh, register } from "../controllers/auth.controller";
+import {
+  verify,
+  login,
+  logout,
+  refresh,
+  register,
+} from "../controllers/auth.controller";
 import authRefreshToken from "../middlewares/authRefreshToken";
 import authAccessToken from "../middlewares/authAccessToken";
 

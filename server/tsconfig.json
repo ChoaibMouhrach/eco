@@ -1,19 +1,19 @@
 {
-    "compilerOptions": {
-        "target": "es2022",
-        "module": "nodenext",
-        "moduleResolution": "nodenext",
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "skipLibCheck": true,
-        "outDir": "dist"
-    },
-    "ts-node": {
-        "swc": true
-    },
-    "include": ["./src"],
-    "exclude": ["./node_modules", "./__test__"]
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "outDir": "dist"
+  },
+  "ts-node": {
+    "swc": true
+  },
+  "include": ["./src"],
+  "exclude": ["./node_modules", "tests"]
 }
