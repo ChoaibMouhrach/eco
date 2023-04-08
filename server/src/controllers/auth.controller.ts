@@ -21,17 +21,28 @@ export const login = async (request: Request, response: Response) => {
   let user = await User.findOne({ email });
 
   if (!user) {
-    return response.status(400).json({ message: "Email Address or Password is not correct" });
+    return response
+      .status(400)
+      .json({ message: "Email Address or Password is not correct" });
   }
 
   /* comparing the password with the hashed password to check if the password is correct or not */
   if (!bcrypt.compareSync(password, user.password)) {
-    return response.status(400).json({ message: "Email Address or Password is not correct" });
+    return response
+      .status(400)
+      .json({ message: "Email Address or Password is not correct" });
   }
 
   /* generating 2 tokens */
-  const plainTextAccessToken = jwt.sign({ _id: user._id }, config.ACCESS_SECRET, { expiresIn: config.ACCESS_TOKEN_DURATION });
-  const plainTextRefreshToken = jwt.sign({ _id: user._id }, config.REFRESH_SECRET);
+  const plainTextAccessToken = jwt.sign(
+    { _id: user._id },
+    config.ACCESS_SECRET,
+    { expiresIn: config.ACCESS_TOKEN_DURATION }
+  );
+  const plainTextRefreshToken = jwt.sign(
+    { _id: user._id },
+    config.REFRESH_SECRET
+  );
 
   /* inserting new token document in the refreshtokens collection */
   const refreshToken = new RefreshToken({
@@ -44,7 +55,10 @@ export const login = async (request: Request, response: Response) => {
   await user.save();
   await refreshToken.save();
 
-  response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`]);
+  response.setHeader("Set-Cookie", [
+    `refreshToken=${plainTextRefreshToken}`,
+    `accessToken=${plainTextAccessToken}`,
+  ]);
 
   return response.json(user.prepare());
 };
@@ -59,7 +73,9 @@ export const register = async (request: Request, response: Response) => {
   const body = validation.data;
 
   if (await User.exists({ email: body.email })) {
-    return response.status(400).json({ message: "Email Address is already taken" });
+    return response
+      .status(400)
+      .json({ message: "Email Address is already taken" });
   }
 
   let user = new User({
@@ -69,8 +85,15 @@ export const register = async (request: Request, response: Response) => {
     password: bcrypt.hashSync(body.password, Number(config.SALT)),
   });
 
-  const plainTextAccessToken = jwt.sign({ _id: user._id }, config.ACCESS_SECRET, { expiresIn: config.ACCESS_TOKEN_DURATION });
-  const plainTextRefreshToken = jwt.sign({ _id: user._id }, config.REFRESH_SECRET);
+  const plainTextAccessToken = jwt.sign(
+    { _id: user._id },
+    config.ACCESS_SECRET,
+    { expiresIn: config.ACCESS_TOKEN_DURATION }
+  );
+  const plainTextRefreshToken = jwt.sign(
+    { _id: user._id },
+    config.REFRESH_SECRET
+  );
 
   const refreshToken = new RefreshToken({
     token: plainTextRefreshToken,
@@ -81,7 +104,10 @@ export const register = async (request: Request, response: Response) => {
   await refreshToken.save();
   await user.save();
 
-  response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`]);
+  response.setHeader("Set-Cookie", [
+    `refreshToken=${plainTextRefreshToken}`,
+    `accessToken=${plainTextAccessToken}`,
+  ]);
 
   return response.status(201).json(user.prepare());
 };
@@ -89,9 +115,15 @@ export const register = async (request: Request, response: Response) => {
 export const logout = async (request: Request, response: Response) => {
   const { user, token_id } = request.auth;
   await RefreshToken.deleteOne({ _id: token_id });
-  await User.updateOne({ _id: user._id }, { $pull: { refreshTokens: token_id } });
+  await User.updateOne(
+    { _id: user._id },
+    { $pull: { refreshTokens: token_id } }
+  );
 
-  response.setHeader("Set-Cookie", ["refreshToken=0; Max-Age=0", "accessToken=0; Max-Age=0"]);
+  response.setHeader("Set-Cookie", [
+    "refreshToken=0; Max-Age=0",
+    "accessToken=0; Max-Age=0",
+  ]);
 
   return response.sendStatus(204);
 };
@@ -101,10 +133,20 @@ export const refresh = async (request: Request, response: Response) => {
 
   await RefreshToken.deleteOne({ _id: token_id });
 
-  await User.updateOne({ _id: user._id }, { $pull: { refreshTokens: token_id } });
+  await User.updateOne(
+    { _id: user._id },
+    { $pull: { refreshTokens: token_id } }
+  );
 
-  const plainTextAccessToken = jwt.sign({ _id: user._id }, config.ACCESS_SECRET, { expiresIn: config.ACCESS_TOKEN_DURATION });
-  const plainTextRefreshToken = jwt.sign({ _id: user._id }, config.REFRESH_SECRET);
+  const plainTextAccessToken = jwt.sign(
+    { _id: user._id },
+    config.ACCESS_SECRET,
+    { expiresIn: config.ACCESS_TOKEN_DURATION }
+  );
+  const plainTextRefreshToken = jwt.sign(
+    { _id: user._id },
+    config.REFRESH_SECRET
+  );
 
   const refreshToken = new RefreshToken({
     token: plainTextRefreshToken,
@@ -112,7 +154,10 @@ export const refresh = async (request: Request, response: Response) => {
 
   await refreshToken.save();
 
-  await User.updateOne({ _id: user._id }, { $push: { refreshTokens: refreshToken._id } });
+  await User.updateOne(
+    { _id: user._id },
+    { $push: { refreshTokens: refreshToken._id } }
+  );
 
   return response.json({
     refreshToken: plainTextRefreshToken,

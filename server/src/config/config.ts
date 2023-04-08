@@ -40,6 +40,9 @@ const envSchema = z.object({
 
   /* THE DURATION AN ACCESS TOKEN WILL LAST */
   ACCESS_TOKEN_DURATION: z.string().min(1),
+
+  /* TESTING DATABASE NAME */
+  TESTING_DATABASE: z.string().min(1),
 });
 
 const validation = envSchema.safeParse(process.env);

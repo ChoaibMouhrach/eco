@@ -1,14 +1,14 @@
-import type { Config } from 'jest';
+import type { Config } from "jest";
 
 const config: Config = {
-  preset: 'ts-jest',
+  preset: "ts-jest",
   verbose: true,
+  setupFilesAfterEnv: ["./setup.ts"],
   transform: {
     "^.+\\.(t|j)s?$": "@swc/jest",
   },
-  testMatch: [
-    '**/*.test.ts'
-  ],
+  testMatch: ["**/*.test.ts"],
+  testTimeout: 0,
 };
 
 export default config;

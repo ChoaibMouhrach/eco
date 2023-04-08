@@ -6,7 +6,9 @@ async function run() {
 
   const express_app = await app();
 
-  express_app.listen(port, () => console.log(`The server is running on port ${port}`));
+  express_app.listen(port, () =>
+    console.log(`The server is running on port ${port}`)
+  );
 }
 
 run();
