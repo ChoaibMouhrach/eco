@@ -2,18 +2,15 @@ import {
   paginationBuilder,
   projectionBuilder,
   queryBuilder,
-  randomId,
   sortingBuilder,
 } from "../utils/builder";
 import { Request, Response } from "express";
 import Category from "../models/Category";
-import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "fs";
-import { join } from "path";
 import { Types } from "mongoose";
-import { ROOT_DIR } from "../config/config";
+import { publicDestroy, publicStore } from "../utils/storage";
 
 /* The root directory for categories images */
-const UPLOADS_DIRECTORY: string = `uploads/categories/categories_images/`;
+const IMAGES_DIRECTORY: string = "/categories/categories_images/"
 
 /* For getting categories documents */
 export const index = async (
@@ -75,19 +72,9 @@ export const store = async (
     return response.status(400).json({ message: "Category already exist" });
   }
 
-  const storingData: Record<string, string> = { name };
+  const storingData: Record<string, string | undefined> = { name };
 
-  if (request.file) {
-    if (!existsSync(join(ROOT_DIR, UPLOADS_DIRECTORY))) {
-      mkdirSync(join(ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true });
-    }
-
-    storingData.image = join(
-      UPLOADS_DIRECTORY,
-      `${randomId()} - ${request.file.originalname}`
-    );
-    writeFileSync(join(ROOT_DIR, storingData.image), request.file.buffer);
-  }
+  storingData.image = publicStore(request.file, IMAGES_DIRECTORY)
 
   const category = new Category(storingData);
 
@@ -117,30 +104,14 @@ export const update = async (
     return response.status(404).json({ message: "Category not found" });
   }
 
-  const updatingData: Record<string, string> = {};
+  const updatingData: Record<string, string | undefined> = {};
 
   if (request.body.name) {
     updatingData["name"] = request.body.name;
   }
 
-  if (request.file) {
-    if (category.image) {
-      if (!existsSync(join(ROOT_DIR, UPLOADS_DIRECTORY))) {
-        mkdirSync(join(ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true });
-      }
-
-      try {
-        unlinkSync(join(ROOT_DIR, category.image));
-      } catch (err) {}
-    }
-
-    updatingData.image = join(
-      UPLOADS_DIRECTORY,
-      `${randomId()} - ${request.file.originalname}`
-    );
-
-    writeFileSync(updatingData.image, request.file.buffer);
-  }
+  if (request.file) publicDestroy(category.image)
+  updatingData.image = publicStore(request.file, IMAGES_DIRECTORY)
 
   if (!updatingData.image && !updatingData.name) {
     return response.status(400).json({ message: "Nothing to update" });

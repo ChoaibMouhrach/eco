@@ -1,4 +1,4 @@
-import { dirname } from "path";
+import { dirname, join } from "path";
 import z from "zod";
 import { config as dotenvConfig } from "dotenv";
 
@@ -52,5 +52,14 @@ if (!validation.success) {
   throw Error(`${firstIssue.path[0]} ${firstIssue.message}`);
 }
 
-export const config = validation.data;
-export const ROOT_DIR = dirname(__dirname);
+const ROOT_DIR = dirname(__dirname);
+const STORAGE = join(ROOT_DIR, "storage");
+
+const internalVariables = {
+  ROOT_DIR,
+  STORAGE,
+  PUBLIC_STORAGE: join(STORAGE, "public"),
+  PRIVATE_STORAGE: join(STORAGE, "private")
+}
+
+export const config = { ...validation.data, ...internalVariables };
