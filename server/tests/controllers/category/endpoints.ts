@@ -2,12 +2,7 @@ import request from "supertest";
 import { app } from "../../../src/app";
 import { generateUrl } from "../../urlGenerator";
 
-export const index = async ({
-  sort,
-  fields,
-  search,
-  order,
-}: Record<string, string | undefined>) => {
+export const index = async ({ sort, fields, search, order }: Record<string, string | undefined>) => {
   const url = generateUrl({
     baseUrl: "/categories",
     sort,
@@ -28,11 +23,7 @@ export const store = async (token: string, category: { name?: string }) => {
     .send(category);
 };
 
-export const update = async (
-  token: string,
-  id: string,
-  category: { name?: string }
-) => {
+export const update = async (token: string, id: string, category: { name?: string }) => {
   return await request(await app())
     .patch(`/categories/${id}`)
     .set("Content-Type", "application/json")

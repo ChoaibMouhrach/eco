@@ -1,10 +1,5 @@
 import { Router } from "express";
-import {
-  destroy,
-  index,
-  store,
-  update,
-} from "../controllers/category.controller";
+import { destroy, index, store, update } from "../controllers/category.controller";
 import authAccessToken from "../middlewares/authAccessToken";
 import multer from "multer";
 

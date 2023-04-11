@@ -1,41 +1,19 @@
-import {
-  paginationBuilder,
-  projectionBuilder,
-  queryBuilder,
-  randomId,
-  sortingBuilder,
-} from "../utils/builder";
+import { paginationBuilder, projectionBuilder, queryBuilder, sortingBuilder } from "../utils/builder";
 import { Request, Response } from "express";
 import Category from "../models/Category";
-import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "fs";
-import { join } from "path";
 import { Types } from "mongoose";
-import { ROOT_DIR } from "../config/config";
+import { publicDestroy, publicStore } from "../utils/storage";
 
 /* The root directory for categories images */
-const UPLOADS_DIRECTORY: string = `uploads/categories/categories_images/`;
+const IMAGES_DIRECTORY: string = "/categories/categories_images/";
 
 /* For getting categories documents */
-export const index = async (
-  request: Request<{}, {}, {}, Record<string, string | undefined>>,
-  response: Response
-) => {
+export const index = async (request: Request<{}, {}, {}, Record<string, string | undefined>>, response: Response) => {
   const { sort, fields, search, order, page, trash } = request.query;
 
   let query = queryBuilder(search, ["name"]);
-  const projection = projectionBuilder(fields, [
-    "name",
-    "image",
-    "_id",
-    "createdAt",
-    "updatedAt",
-    "deletedAt",
-  ]);
-  const sortingCriteria = sortingBuilder(
-    sort,
-    order === "desc" ? "desc" : "asc",
-    ["name", "_id", "createdAt", "updatedAt", "deletedAt"]
-  );
+  const projection = projectionBuilder(fields, ["name", "image", "_id", "createdAt", "updatedAt", "deletedAt"]);
+  const sortingCriteria = sortingBuilder(sort, order === "desc" ? "desc" : "asc", ["name", "_id", "createdAt", "updatedAt", "deletedAt"]);
   const pagination = paginationBuilder(page);
 
   query.deletedAt = null;
@@ -44,10 +22,7 @@ export const index = async (
     query.deletedAt = { $ne: null };
   }
 
-  const categories = await Category.find(query, projection)
-    .sort(sortingCriteria)
-    .skip(pagination.skip)
-    .limit(pagination.limit);
+  const categories = await Category.find(query, projection).sort(sortingCriteria).skip(pagination.skip).limit(pagination.limit);
 
   return response.json({
     data: categories,
@@ -59,35 +34,20 @@ export const index = async (
 };
 
 /* For creating a new category documents */
-export const store = async (
-  request: Request<{}, {}, Record<string, string | undefined>>,
-  response: Response
-) => {
+export const store = async (request: Request<{}, {}, Record<string, string | undefined>>, response: Response) => {
   const { name } = request.body;
 
   if (!name) {
-    return response
-      .status(400)
-      .json({ errors: [{ path: ["name"], message: "Required" }] });
+    return response.status(400).json({ errors: [{ path: ["name"], message: "Required" }] });
   }
 
   if (await Category.exists({ name })) {
     return response.status(400).json({ message: "Category already exist" });
   }
 
-  const storingData: Record<string, string> = { name };
+  const storingData: Record<string, string | undefined> = { name };
 
-  if (request.file) {
-    if (!existsSync(join(ROOT_DIR, UPLOADS_DIRECTORY))) {
-      mkdirSync(join(ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true });
-    }
-
-    storingData.image = join(
-      UPLOADS_DIRECTORY,
-      `${randomId()} - ${request.file.originalname}`
-    );
-    writeFileSync(join(ROOT_DIR, storingData.image), request.file.buffer);
-  }
+  storingData.image = publicStore(request.file, IMAGES_DIRECTORY);
 
   const category = new Category(storingData);
 
@@ -97,14 +57,7 @@ export const store = async (
 };
 
 /* For updating category documents */
-export const update = async (
-  request: Request<
-    Record<string, string>,
-    {},
-    Record<string, string | undefined>
-  >,
-  response: Response
-) => {
+export const update = async (request: Request<Record<string, string>, {}, Record<string, string | undefined>>, response: Response) => {
   const { id } = request.params;
 
   if (!Types.ObjectId.isValid(id)) {
@@ -117,30 +70,14 @@ export const update = async (
     return response.status(404).json({ message: "Category not found" });
   }
 
-  const updatingData: Record<string, string> = {};
+  const updatingData: Record<string, string | undefined> = {};
 
   if (request.body.name) {
     updatingData["name"] = request.body.name;
   }
 
-  if (request.file) {
-    if (category.image) {
-      if (!existsSync(join(ROOT_DIR, UPLOADS_DIRECTORY))) {
-        mkdirSync(join(ROOT_DIR, UPLOADS_DIRECTORY), { recursive: true });
-      }
-
-      try {
-        unlinkSync(join(ROOT_DIR, category.image));
-      } catch (err) {}
-    }
-
-    updatingData.image = join(
-      UPLOADS_DIRECTORY,
-      `${randomId()} - ${request.file.originalname}`
-    );
-
-    writeFileSync(updatingData.image, request.file.buffer);
-  }
+  if (request.file) publicDestroy(category.image);
+  updatingData.image = publicStore(request.file, IMAGES_DIRECTORY);
 
   if (!updatingData.image && !updatingData.name) {
     return response.status(400).json({ message: "Nothing to update" });
@@ -149,19 +86,14 @@ export const update = async (
   try {
     await Category.updateOne({ _id: id }, updatingData);
   } catch (err) {
-    return response
-      .status(400)
-      .json({ errors: [{ path: ["name"], message: "Name already exists" }] });
+    return response.status(400).json({ errors: [{ path: ["name"], message: "Name already exists" }] });
   }
 
   return response.sendStatus(204);
 };
 
 /* For deleting category documents */
-export const destroy = async (
-  request: Request<Record<string, string>>,
-  response: Response
-) => {
+export const destroy = async (request: Request<Record<string, string>>, response: Response) => {
   const { id } = request.params;
 
   if (!Types.ObjectId.isValid(id)) {

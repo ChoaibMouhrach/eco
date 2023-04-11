@@ -1,8 +1,7 @@
 import { Schema, model } from "mongoose";
-import RefreshToken from "./RefreshToken";
-import { User as UserType } from "../types/auth";
+import { UserDocument } from "../interfaces/User";
 
-const userSchema = new Schema(
+const userSchema = new Schema<UserDocument>(
   {
     firstName: {
       type: String,
@@ -26,10 +25,44 @@ const userSchema = new Schema(
       type: Date,
       default: null,
     },
+    verifiedAt: {
+      type: Date,
+      default: null,
+    },
+    forgotPasswordTokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          required: true,
+        },
+      },
+    ],
+    confirmEmailTokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          required: true,
+        },
+      },
+    ],
     refreshTokens: [
       {
-        type: Schema.Types.ObjectId,
-        ref: RefreshToken.modelName,
+        token: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          required: true,
+        },
       },
     ],
   },
@@ -43,13 +76,17 @@ const userSchema = new Schema(
         return user;
       },
       prepare: function () {
-        let user = this.toObject() as UserType & {
+        let user = this.toObject() as {
           password?: string;
           refreshTokens?: string[];
+          forgotPasswordTokens?: string[];
+          confirmEmailTokens?: string[];
         };
 
         delete user.password;
         delete user.refreshTokens;
+        delete user.forgotPasswordTokens;
+        delete user.confirmEmailTokens;
 
         return user;
       },
@@ -57,4 +94,4 @@ const userSchema = new Schema(
   }
 );
 
-export default model("User", userSchema);
+export default model<UserDocument>("User", userSchema);
