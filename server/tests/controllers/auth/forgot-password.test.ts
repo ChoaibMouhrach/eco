@@ -1,10 +1,13 @@
-import { Request, Response } from "supertest";
+import { Response } from "supertest";
 import { forgot_password } from "./endpoints";
 
 describe("POST /forgot-password", () => {
   it("Should return 204", async () => {
     const response = await forgot_password("john@gmail.com");
-    expect(response.status).toBe(204);
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe(
+      "If the email address exists within our database an email will be sent to it",
+    )
   });
 
   it("Should return 400 with message Required", async () => {
@@ -26,11 +29,9 @@ describe("POST /forgot-password", () => {
     for (let i = 0; i < 6; i++) {
       requests.push(forgot_password("john@gmail.com"));
     }
-
     await Promise.all(requests);
 
     const response = await forgot_password("john@gmail.com");
-
     expect(response.status).toBe(429);
   });
 });
