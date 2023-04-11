@@ -20,7 +20,7 @@ export const app = async (): Promise<Express> => {
   /* express instance */
   const app = express();
 
-  if (config.ENV !== "testing") app.use(express.static(config.PUBLIC_STORAGE))
+  if (config.ENV !== "testing") app.use(express.static(config.PUBLIC_STORAGE));
 
   /* middlewares */
   app.use(express.json());

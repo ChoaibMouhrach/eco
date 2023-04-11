@@ -1,9 +1,6 @@
 import { FilterQuery, Types } from "mongoose";
 
-export const queryBuilder = (
-  search: string | undefined,
-  fillables: string[]
-) => {
+export const queryBuilder = (search: string | undefined, fillables: string[]) => {
   const query: FilterQuery<any> = {};
 
   if (search) {
@@ -21,10 +18,7 @@ export const queryBuilder = (
   return query;
 };
 
-export const projectionBuilder = (
-  fields: string | undefined,
-  fillables: string[]
-) => {
+export const projectionBuilder = (fields: string | undefined, fillables: string[]) => {
   const projection: Record<string, boolean> = {};
 
   if (fields) {
@@ -44,11 +38,7 @@ export const projectionBuilder = (
   return projection;
 };
 
-export const sortingBuilder = (
-  sorting: string | undefined,
-  order: "desc" | "asc" | undefined,
-  fillables: string[]
-) => {
+export const sortingBuilder = (sorting: string | undefined, order: "desc" | "asc" | undefined, fillables: string[]) => {
   let sortingCriteria: Record<string, -1 | 1> = {};
 
   if (sorting) {
@@ -67,10 +57,7 @@ export const sortingBuilder = (
  * @param page : number = 0 is the displayed page
  * @returns { skib : number, limit : number }
  * */
-export const paginationBuilder = (
-  page: string | undefined,
-  paginationValue: number = 8
-): { skip: number; limit: number } => {
+export const paginationBuilder = (page: string | undefined, paginationValue: number = 8): { skip: number; limit: number } => {
   return {
     skip: Number(page) ? Number(page) * paginationValue - paginationValue : 0,
     limit: paginationValue,
