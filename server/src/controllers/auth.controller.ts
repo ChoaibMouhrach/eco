@@ -202,7 +202,9 @@ export const forgotPassword = async (request: Request, response: Response) => {
     await sendMail(mail);
   }
 
-  return response.sendStatus(204);
+  return response.json({
+    message: "If the email address exists within our database an email will be sent to it",
+  });
 };
 
 export const resetPassword = async (request: Request, response: Response) => {
@@ -249,9 +251,7 @@ export const resetPassword = async (request: Request, response: Response) => {
 
   await user.save();
 
-  return response.json({
-    message: "Password Updated successfully",
-  });
+  return response.sendStatus(204)
 };
 
 export const sendConfirmationEmail = async (request: AuthRequest, response: Response) => {
@@ -326,7 +326,5 @@ export const configEmailAddress = async (request: Request, response: Response) =
 
   await user.save();
 
-  return response.json({
-    message: "Email Address verified successfully",
-  });
+  return response.sendStatus(204)
 };

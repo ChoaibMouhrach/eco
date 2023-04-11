@@ -5,22 +5,25 @@
 These endpoints facilitate interaction with the authentication system.
 
 ## Config
-|key|Value|
-|:--|:--|
-|Default Headers|`Content-Type : application/json`|
+
+| key             | Value                             |
+| :-------------- | :-------------------------------- |
+| Default Headers | `Content-Type : application/json` |
 
 ## Login
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|POST|`/login`|
 
-#### Body 
-|Key|Type|Validation|Description|
-|:--|:--|:--|:--|
-|email|`string`|Must be a valid email|This field should contain the email address of the user|
-|password|`string`|Password length must be greater than or equal to 8|This field should contain the password for the user wishing to log in.|
+| Verb | Path     |
+| :--- | :------- |
+| POST | `/login` |
+
+#### Body
+
+| Key      | Type     | Validation                                         | Description                                                            |
+| :------- | :------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
+| email    | `string` | Must be a valid email                              | This field should contain the email address of the user                |
+| password | `string` | Password length must be greater than or equal to 8 | This field should contain the password for the user wishing to log in. |
 
 ### Response
 
@@ -45,12 +48,14 @@ These endpoints facilitate interaction with the authentication system.
   }
  }
 ```
+
 ```typescript
 // RESPONSE STATUS 400
 {
   "message": "Email Address or Password is not correct"
 }
 ```
+
 ```typescript
 // RESPONSE STATUS 400
 {
@@ -76,30 +81,36 @@ These endpoints facilitate interaction with the authentication system.
   ]
 }
 ```
-## Register 
+
+## Register
+
+> Note : An Email Will be sent to the user for email confirmation
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|POST|`/register`|
+
+| Verb | Path        |
+| :--- | :---------- |
+| POST | `/register` |
 
 #### Body
-|Key|Type|Validation|Description|
-|:--|:--|:--|:--|
-|firstName|`string`|Minimum length of 3 characters and maximum length of 60 characters|The first name of the user|
-|lastName|`string`|Minimum length of 3 characters and maximum length of 60 characters|The last name of the user|
-|email|`string`|Must be a valid email address|The Email address of the user|
-|password|`string`|Minimum length of 8 And must match Password Confirmation|The desired password of the user|
-|password_confirmation|`string`|must match Password Confirmation|Password Confirmation of the password|
+
+| Key                   | Type     | Validation                                                         | Description                           |
+| :-------------------- | :------- | :----------------------------------------------------------------- | :------------------------------------ |
+| firstName             | `string` | Minimum length of 3 characters and maximum length of 60 characters | The first name of the user            |
+| lastName              | `string` | Minimum length of 3 characters and maximum length of 60 characters | The last name of the user             |
+| email                 | `string` | Must be a valid email address                                      | The Email address of the user         |
+| password              | `string` | Minimum length of 8 And must match Password Confirmation           | The desired password of the user      |
+| password_confirmation | `string` | must match Password Confirmation                                   | Password Confirmation of the password |
 
 ### Response
+
 ```typescript
 // RESPONSE STATUS 201
 {
   body : {
-    "firstName": "camado", // string
-    "lastName": "camado", // string
-    "email": "camado@gmail.com", // string
+    "firstName": "John", // string
+    "lastName": "Doe", // string
+    "email": "john@example.com", // string
     "deletedAt": null, // null | string
     "_id": "64295b23e45fd94cd775125a", // string
     "updatedAt": "2023-04-02T10:38:27.743Z", // string
@@ -114,12 +125,14 @@ These endpoints facilitate interaction with the authentication system.
   }
 }
 ```
+
 ```typescript
 // RESPONSE STATUS 400
 {
   "message": "Email Address is already taken"
 }
 ```
+
 ```typescript
 // RESPONSE STATUS 400
 {
@@ -136,6 +149,7 @@ These endpoints facilitate interaction with the authentication system.
   ]
 }
 ```
+
 ```typescript
 // RESPONSE STATUS 400
 {
@@ -165,16 +179,19 @@ These endpoints facilitate interaction with the authentication system.
 ## Logout
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|POST|`/logout`|
+
+| Verb | Path      |
+| :--- | :-------- |
+| POST | `/logout` |
 
 #### Headers
-|Key|Value|
-|:--|:--|
-|Authorization|Bearer ${refreshToken}|
+
+| Key           | Value                  |
+| :------------ | :--------------------- |
+| Authorization | Bearer ${refreshToken} |
 
 ## Response
+
 ```typescript
 // RESPONSE STATUS 204
 {
@@ -186,7 +203,8 @@ These endpoints facilitate interaction with the authentication system.
   }
 }
 ```
-```typescript 
+
+```typescript
 // RESPONSE STATUS 401
 {
   "message": "unauthorized"
@@ -196,16 +214,19 @@ These endpoints facilitate interaction with the authentication system.
 ## Refresh
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|POST|`/refresh`|
+
+| Verb | Path       |
+| :--- | :--------- |
+| POST | `/refresh` |
 
 #### Headers
-|Key|Value|
-|:--|:--|
-|Authorization|Bearer ${refreshToken}|
+
+| Key           | Value                  |
+| :------------ | :--------------------- |
+| Authorization | Bearer ${refreshToken} |
 
 ### Response
+
 ```typescript
 // RESPONSE STATUS 200
 {
@@ -217,26 +238,30 @@ These endpoints facilitate interaction with the authentication system.
   }
 }
 ```
+
 ```typescript
 // RESPONSE STATUS 401
 {
   "message": "unauthorized"
 }
-````
+```
 
 ## Verify
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|GET|`/verify`|
+
+| Verb | Path      |
+| :--- | :-------- |
+| GET  | `/verify` |
 
 #### Headers
-|Key|Value|
-|:--|:--|
-|Authorization|Bearer ${accessToken}|
+
+| Key           | Value                 |
+| :------------ | :-------------------- |
+| Authorization | Bearer ${accessToken} |
 
 ## Response
+
 ```typescript
 // RESPONSE STATUS 200
 {
@@ -247,19 +272,219 @@ These endpoints facilitate interaction with the authentication system.
   "deletedAt": null, // string | null
   "createdAt": "2023-04-01T12:53:20.829Z", // string
   "updatedAt": "2023-04-01T17:40:58.647Z", // string
-  "__v": 19 // number 
+  "__v": 19 // number
 }
 ```
-```typescript 
+
+```typescript
 // RESPONSE STATUS 401
 {
   "message": "unauthorized"
 }
 ```
-```typescript 
+
+```typescript
 // RESPONSE STATUS 401
 {
   "message": "token expired"
 }
 ```
 
+## Forgot Password
+
+### Request
+
+> Note : Only 5 Requests per hour
+
+| Verb | Path               |
+| :--- | :----------------- |
+| POST | `/forgot-password` |
+
+#### Body
+
+| Key      | Type     | Validation                                         | Description                                                            |
+| :------- | :------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
+| email    | `string` | Must be a valid email                              | This field should contain the email address of the user                |
+
+
+## Response
+
+```typescript
+// RESPONSE STATUS 200
+{
+  message: "If the email address exists within our database an email will be sent to it",
+}
+```
+
+```typescript
+// RESPONSE STATUS 429 FOR TOO MANY REQUESTS
+{
+}
+```
+
+```typescript
+// RESPONSE STATUS 400
+{
+  "errors": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "received": "undefined",
+      "path": [
+        "email"
+      ],
+      "message": "Required"
+    }
+  ]
+}
+```
+
+## Reset Password
+
+### Request
+
+| Verb | Path                     |
+| :--- | :----------------------- |
+| POST | `/reset-password/:token` |
+
+#### Body
+
+| Key      | Type     | Validation                                         | Description                                                            |
+| :------- | :------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
+| password    | `string` | Must be at least 8 characters long                              |The reset password |
+| password_confirmation    | `string` | Must be a at least 8 characters long and Must match the passsword                              |A password confirmation |
+
+## Response
+
+```typescript
+// RESPONSE STATUS 200
+{
+  message: "Password Updated successfully";
+}
+```
+
+```typescript
+// RESPONSE STATUS 400
+{
+ "errors": [
+   {
+     "code": "invalid_type",
+     "expected": "string",
+     "received": "undefined",
+     "path": [
+       "password"
+     ],
+     "message": "Required"
+   }
+   {
+     "code": "invalid_type",
+     "expected": "string",
+     "received": "undefined",
+     "path": [
+       "password_confirmation"
+     ],
+     "message": "Required"
+   }
+ ]
+}
+```
+
+```typescript
+// RESPONSE STATUS 400 FOR TOO MANY REQUESTS
+{
+ "errors": [
+   {
+     "code": "custom",
+     "path": [
+       "password",
+       "password_confirmation"
+     ],
+     "message": "Password and Password Confirmation does not exists"
+   }
+  ]
+}
+```
+
+```typescript
+// RESPONSE STATUS 400
+{
+  "message": "Token is invalid"
+}
+```
+
+```typescript
+// RESPONSE STATUS 400
+{
+  message: "User not found",
+}
+```
+
+## Send Email Confirmation
+
+> Note : 5 requests per 60min is the limit
+
+### Request
+
+| Verb | Path                     |
+| :--- | :----------------------- |
+| POST | `/send-confirmation-email` |
+
+
+## Response
+
+```typescript
+// RESPONSE STATUS 204
+{
+}
+```
+
+```typescript
+// RESPONSE STATUS 400
+{
+  message: "Email Address is alreay verified",
+}
+```
+
+```typescript
+// RESPONSE STATUS 429
+{
+}
+```
+
+## Email Confirmation
+
+> Note : 5 requests per 60min is the limit
+
+### Request
+
+| Verb | Path                     |
+| :--- | :----------------------- |
+| POST | `/confirm-email/:token` |
+
+## Response
+
+```typescript
+// RESPONSE STATUS 200
+{
+}
+```
+
+```typescript
+// RESPONSE STATUS 400
+{
+  message: "Token is not valid",
+}
+```
+```typescript
+// RESPONSE STATUS 400
+{
+  message: "Email Address is already verified"
+}
+```
+
+```typescript
+// RESPONSE STATUS 404
+{
+  message: "User Not Found",
+}
+```
