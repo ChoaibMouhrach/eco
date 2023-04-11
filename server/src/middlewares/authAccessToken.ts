@@ -1,13 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import { config } from "../config/config";
+import { NextFunction, Response } from "express";
 import User from "../models/User";
+import { AuthRequest } from "../interfaces/User";
+import { verifyAccessToken } from "../repositories/auth.repository";
 
-export default async function authAccessToken(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export default async function authAccessToken(request: AuthRequest, response: Response, next: NextFunction) {
   const authorization = request.headers.authorization;
 
   if (!authorization) {
@@ -20,27 +16,26 @@ export default async function authAccessToken(
     return response.status(401).json({ message: "unauthorized" });
   }
 
-  try {
-    const { _id } = jwt.verify(token, config.ACCESS_SECRET) as { _id: string };
+  const decoded = verifyAccessToken(token);
 
-    const user = await User.findOne({ _id });
-
-    if (!user) {
-      throw Error("User not found");
-    }
-
-    request.auth = {
-      user: user.prepare(),
-      token,
-    };
-
-    next();
-    return;
-  } catch (err: any) {
-    if (err.message === "jwt expired") {
+  if ("err" in decoded) {
+    if (decoded.err === "jwt expired") {
       return response.status(401).json({ message: "token expired" });
     }
 
     return response.status(401).json({ message: "unauthorized" });
   }
+
+  const user = await User.findOne({ _id: decoded._id });
+
+  if (!user) {
+    throw Error("User not found");
+  }
+
+  request.auth = {
+    user,
+    token,
+  };
+
+  next();
 }

@@ -15,8 +15,6 @@ beforeAll(async () => {
     dbName: config.TESTING_DATABASE,
   });
 
-  const userExists = await User.exists({ email: "john@gmail.com" });
-
   let email = "john@gmail.com";
   let password = "password";
 

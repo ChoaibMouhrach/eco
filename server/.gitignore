@@ -2,5 +2,5 @@ node_modules
 .env
 .coverage
 yarn-error.log
-uploads
+src/storage/public/*
 dist
