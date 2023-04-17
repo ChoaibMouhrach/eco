@@ -1,28 +1,18 @@
 import { IconType } from "react-icons";
-import { MdOutlineDashboard, MdOutlinePersonOutline, MdOutlineProductionQuantityLimits } from "react-icons/md"
+import { MdOutlinePersonOutline } from "react-icons/md";
 
 type SideNavConfig = {
   title: string;
   href: string;
-  icon: IconType
-}[]
+  icon: IconType;
+}[];
 
 const sideNavItems: SideNavConfig = [
   {
-    title: "Dashboard",
-    href: "",
-    icon: MdOutlineDashboard
-  },
-  {
-    title: "Products",
-    href: "/products",
-    icon: MdOutlineProductionQuantityLimits
-  },
-  {
     title: "Profile",
     href: "/profile",
-    icon: MdOutlinePersonOutline
-  }
-]
+    icon: MdOutlinePersonOutline,
+  },
+];
 
-export default sideNavItems
+export default sideNavItems;

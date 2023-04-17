@@ -2,16 +2,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Button from "@/components/Button";
-import Input from "@/components/Input";
+import Input from "@/components/Form/Input";
+import { UserSignUp } from "@/types/Auth";
+import InputError from "@/components/Form/InputError";
+import RootError from "@/components/RootError";
+import { useSignUpMutation } from "@/features/apis/authApi";
+import { ResponseError } from "@/types/Errors";
+import { useRouter } from "next/router";
+import { setUser } from "@/features/slices/userSlice";
+import { useDispatch } from "react-redux";
+import { GetServerSideProps } from "next";
+import { guest } from "@/middlewares/guest";
+import AuthLayout from "@/components/layouts/AuthLayout";
+import { handleResponseErrors } from "@/lib/responseHandlers";
 
-type Credentials = {
-  email: string;
-  password: string;
-  password_confirmation: string;
-  firstName: string;
-  lastName: string;
-};
-
+/* Validation schema */
 const schema = z
   .object({
     email: z.string().email(),
@@ -25,104 +30,95 @@ const schema = z
   });
 
 export default function Login() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [signUp, { isLoading }] = useSignUpMutation();
+
+  /* Preparing the form */
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Credentials>({
+    setError,
+  } = useForm<UserSignUp>({
     resolver: zodResolver(schema),
     mode: "onChange",
   });
 
-  const onSubmit = (data: Credentials) => {
-    console.log(data);
+  /* Form Handler */
+  const onSubmit = async (data: UserSignUp) => {
+    const response = await signUp(data);
+
+    if ("data" in response) {
+      dispatch(setUser(response.data));
+      router.push("/dashboard/profile");
+    }
+
+    if ("error" in response)
+      handleResponseErrors<keyof UserSignUp>(
+        response.error as ResponseError<keyof UserSignUp>,
+        setError
+      );
   };
 
-  console.log(errors);
-
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-sm flex flex-col gap-2 "
-      >
-        <div className="flex flex-col space-y-4 text-center py-4 ">
-          <h1 className="font-bold text-4xl">QM</h1>
-          <h2 className="text-2xl tracking-light font-semibold">
-            Welcome Back
-          </h2>
-          <h3 className="text-sm text-slate-500">
-            Enter your email and password to sign in to your account
-          </h3>
+    <AuthLayout onSubmit={handleSubmit(onSubmit)} title={"Welcome"} description={"Please enter your information and fill the form  to sign up for an account."} >
+
+      <div className="flex gap-2 justify-center w-full">
+        <div>
+          <Input
+            {...register("firstName")}
+            type="text"
+            placeholder="First Name..."
+          />
+          <InputError error={errors.firstName} />
         </div>
 
-        <div className="flex gap-2 justify-center w-full">
-          <div>
-            <Input
-              {...register("firstName")}
-              type="text"
-              name="firstname"
-              placeholder="First Name..."
-            />
-            {errors.firstName && (
-              <p className="text-sm text-red-700">{errors.firstName.message}</p>
-            )}
-          </div>
-
-          <div>
-            <Input
-              {...register("lastName")}
-              type="text"
-              name="lastName"
-              placeholder="Last Name..."
-            />
-            {errors.lastName && (
-              <p className="text-sm text-red-700">{errors.lastName.message}</p>
-            )}
-          </div>
+        <div>
+          <Input
+            {...register("lastName")}
+            type="text"
+            placeholder="Last Name..."
+          />
+          <InputError error={errors.lastName} />
         </div>
+      </div>
 
-        <Input
-          {...register("email")}
-          type="email"
-          name="email"
-          placeholder="Email Address..."
-        />
-        {errors.email && (
-          <p className="text-sm text-red-700">{errors.email.message}</p>
-        )}
-        <Input
-          {...register("password")}
-          type="password"
-          name="password"
-          placeholder="Password..."
-        />
-        {errors.password && (
-          <p className="text-sm text-red-700">{errors.password.message}</p>
-        )}
-        <Input
-          {...register("password_confirmation")}
-          type="password"
-          name="password_confirmation"
-          placeholder="Password Confirmation..."
-        />
-        {errors.password_confirmation && (
-          <p className="text-sm text-red-700">
-            {errors.password_confirmation.message}
-          </p>
-        )}
+      <RootError error={errors.root} />
 
-        <Button>Sign up</Button>
+      <Input
+        {...register("email")}
+        type="email"
+        placeholder="Email Address..."
+      />
+      <InputError error={errors.email} />
 
-        <div className="py-4 relative flex flex-col items-center justify-center">
-          <div className="h-[1px] bg-slate-400 rounded-md w-full"></div>
-          <p className="absolute p-2 bg-white text-slate-500 text-sm">OR</p>
-        </div>
+      <Input
+        {...register("password")}
+        type="password"
+        placeholder="Password..."
+      />
+      <InputError error={errors.password} />
 
-        <Button href="/sign-in" variation="outlined">
-          Sign in
-        </Button>
-      </form>
-    </main>
+      <Input
+        {...register("password_confirmation")}
+        type="password"
+        placeholder="Password Confirmation..."
+      />
+      <InputError error={errors.password_confirmation} />
+
+      <Button state={isLoading ? "loading" : undefined}>Sign up</Button>
+
+      <div className="py-4 relative flex flex-col items-center justify-center">
+        <div className="h-[1px] bg-slate-400 rounded-md w-full"></div>
+        <p className="absolute p-2 bg-white text-slate-500 text-sm">OR</p>
+      </div>
+
+      <Button href="/sign-in" variation="outlined">
+        Sign in
+      </Button>
+    </AuthLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = guest;

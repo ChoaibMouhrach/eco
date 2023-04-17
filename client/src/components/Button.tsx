@@ -1,19 +1,48 @@
 import React from "react";
 import { cva } from "class-variance-authority";
 import Link from "next/link";
+import { ImSpinner8 } from "react-icons/im";
 
 const button = cva(
-  "px-4 py-2 text-center rounded-md font-semibold tracking-wide transition duration-100",
+  "px-4 py-2 flex items-center justify-center gap-3 text-center rounded-md font-semibold tracking-wide transition duration-200",
   {
     variants: {
       variation: {
-        default: ["bg-gray-900 text-white hover:bg-gray-700"],
-        outlined: ["border border-gray-300 hover:bg-gray-100"],
+        default: ["text-white"],
+        outlined: ["border border-gray-300 bg-transparent hover:bg-gray-100"],
         text: ["hover:bg-gray-100"],
       },
+      color: {
+        default: ["bg-gray-900 hover:bg-gray-700"],
+        danger: ["bg-red-600"],
+        success: ["bg-green-600 hover:bg-green-500"],
+      },
     },
+    compoundVariants: [
+      {
+        variation: "text",
+        color: "default",
+        className: "bg-transparent hover:!bg-gray-100",
+      },
+      {
+        variation: "text",
+        color: "danger",
+        className: "bg-transparent hover:bg-red-100 text-red-700 ",
+      },
+      {
+        variation: "text",
+        color: "success",
+        className: "text-green-700 bg-transparent hover:bg-green-100",
+      },
+      {
+        variation: "outlined",
+        color: "default",
+        className: "hover:!bg-gray-100",
+      },
+    ],
     defaultVariants: {
       variation: "default",
+      color: "default",
     },
   }
 );
@@ -21,7 +50,10 @@ const button = cva(
 interface ButtonInterface
   extends React.ButtonHTMLAttributes<HTMLButtonElement | HTMLAnchorElement> {
   variation?: "default" | "outlined" | "text";
+  color?: "default" | "danger" | "success";
   href?: string;
+  iconClassName?: string;
+  state?: "loading";
 }
 
 const Button = ({
@@ -29,18 +61,28 @@ const Button = ({
   className,
   variation,
   children,
+  color,
+  state,
+  iconClassName,
   ...props
 }: ButtonInterface) => {
   if (href) {
     return (
-      <Link href={href} className={button({ variation, className })} {...props}>
+      <Link
+        href={href}
+        className={button({ variation, color, className })}
+        {...props}
+      >
         {children}
       </Link>
     );
   }
 
   return (
-    <button className={button({ variation, className })} {...props}>
+    <button className={button({ variation, color, className })} {...props}>
+      {state === "loading" && (
+        <ImSpinner8 className={`w-4 h-4 fill-gray-100 animate-spin`} />
+      )}
       {children}
     </button>
   );
