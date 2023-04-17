@@ -1,0 +1,6 @@
+node_modules
+.env
+.coverage
+yarn-error.log
+src/storage/public/*
+dist
