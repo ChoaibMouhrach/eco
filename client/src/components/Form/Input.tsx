@@ -12,13 +12,24 @@ const input = cva(
   }
 );
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps
+  extends React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  > {
   variation?: "contained";
   className?: string;
 }
 
-const Input = forwardRef(({ variation, className, ...props }: InputProps, ref: ForwardedRef<HTMLInputElement>) => {
-  return <input ref={ref} className={input({ variation, className })} {...props} />;
-})
+const Input = forwardRef(
+  (
+    { variation, className, ...props }: InputProps,
+    ref: ForwardedRef<HTMLInputElement>
+  ) => {
+    return (
+      <input ref={ref} className={input({ variation, className })} {...props} />
+    );
+  }
+);
 
 export default Input;

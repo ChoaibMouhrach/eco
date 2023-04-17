@@ -47,7 +47,7 @@ export const verifyEmailConfirmationToken = (token: string): { _id: string } | {
 
 /* Forgot Password Tokens */
 export const generateForgotPasswordToken = (_id: mongoose.Types.ObjectId): string => {
-  return jwt.sign({ _id }, config.REFRESH_SECRET, {
+  return jwt.sign({ _id }, config.FORGOT_PASSWORD_SECRET, {
     expiresIn: config.FORGOT_PASSWORD_TOKEN_EXPIRATION_PERIODE,
   });
 };

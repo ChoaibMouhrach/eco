@@ -7,7 +7,6 @@ interface Item extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 
 const Item = ({ href, icon, children }: Item) => {
-
   const Icon = icon;
 
   href = href ? "/dashboard" + href : "/dashboard";

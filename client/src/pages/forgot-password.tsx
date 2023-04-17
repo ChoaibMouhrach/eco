@@ -1,62 +1,59 @@
-import Button from "@/components/Button"
-import Input from "@/components/Input"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import Button from "@/components/Button";
+import Input from "@/components/Form/Input";
+import InputError from "@/components/Form/InputError";
+import RootSuccess from "@/components/RootSuccess";
+import AuthLayout from "@/components/layouts/AuthLayout";
+import { useForgotPasswordMutation } from "@/features/apis/authApi";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 type Credentials = {
-  email: string
-}
+  email: string;
+};
 
 const schema = z.object({
-  email: z.string().email()
-})
+  email: z.string().email(),
+});
 
 export default function ForgotPassword() {
+  const [forgotPassword, { isLoading, data }] = useForgotPasswordMutation();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<Credentials>({
-    resolver: zodResolver(schema)
-  })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Credentials>({
+    resolver: zodResolver(schema),
+    mode: "onChange",
+  });
 
-  const onSubmit = (credentials: Credentials) => {
-    console.log(credentials)
-  }
+  const onSubmit = async (credentials: Credentials) =>
+    await forgotPassword(credentials);
 
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-sm flex flex-col gap-2 "
-      >
-        <div className="flex flex-col space-y-4 text-center py-4 ">
-          <h1 className="font-bold text-4xl">QM</h1>
-          <h2 className="text-2xl tracking-light font-semibold">
-            Get Your Account Now
-          </h2>
-          <h3 className="text-sm text-slate-500">
-            Fill the form and we will receive an email from us
-          </h3>
-        </div>
+    <AuthLayout onSubmit={handleSubmit(onSubmit)} title="Forgot Your Password?" description="Please fill out the form below and you will receive an email from us." >
 
-        <Input
-          {...register("email")}
-          type="email"
-          name="email"
-          placeholder="Email Address..."
-        />
-        {errors.email && <p className="text-red-700" >{errors.email.message}</p>}
+      <RootSuccess message={data ? data.message : ""} />
 
-        <Button>Send</Button>
+      <Input
+        {...register("email")}
+        type="email"
+        name="email"
+        placeholder="Email Address..."
+      />
+      <InputError error={errors.email} />
 
-        <div className="py-4 relative flex flex-col items-center justify-center">
-          <div className="h-[1px] bg-slate-400 rounded-md w-full"></div>
-          <p className="absolute p-2 bg-white text-slate-500 text-sm">OR</p>
-        </div>
+      <Button state={isLoading ? "loading" : undefined}>Send</Button>
 
-        <Button href="/sign-in" variation="outlined">
-          Sign in
-        </Button>
-      </form>
-    </main>
-  )
+      <div className="py-4 relative flex flex-col items-center justify-center">
+        <div className="h-[1px] bg-slate-400 rounded-md w-full"></div>
+        <p className="absolute p-2 bg-white text-slate-500 text-sm">OR</p>
+      </div>
+
+      <Button href="/sign-in" variation="outlined">
+        Sign in
+      </Button>
+    </AuthLayout>
+  );
 }
