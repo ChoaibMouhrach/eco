@@ -335,3 +335,79 @@ export const configEmailAddress = async (request: Request, response: Response) =
 
   return response.sendStatus(204)
 };
+
+export const updateUserInformation = async (request: AuthRequest, response: Response) => {
+
+  const validation = z.object({
+    firstName: z.string().min(3).max(60).optional(),
+    lastName: z.string().min(3).max(60).optional(),
+    email: z.string().email().optional(),
+    password: z.string().min(8),
+  }).refine((data) => {
+    return Object.keys(data).length >= 2
+  }, { path: ["root"], message: "There is nothing to update" }).safeParse(request.body);
+
+  if (!validation.success) {
+    return response.status(400).json({
+      errors: validation.error.issues
+    })
+  }
+
+  const body = validation.data
+
+  const { user } = request.auth as Auth;
+
+  if (!bcrypt.compareSync(body.password, user.password)) {
+    return response.status(400).json({
+      errors: [{
+        path: ["password"],
+        message: "Password is not correct"
+      }]
+    })
+  }
+
+  if (body.firstName) user.firstName = body.firstName
+  if (body.lastName) user.lastName = body.lastName
+  if (body.email) user.email = body.email
+
+  await user.save()
+
+  return response.json(user.prepare())
+}
+
+export const updateUserPassword = async (request: AuthRequest, response: Response) => {
+
+  const validation = z.object({
+    old_password: z.string().min(8),
+    password: z.string().min(8),
+    password_confirmation: z.string().min(8)
+  })
+    .refine((data) => data.password === data.password_confirmation, { path: ["password"], message: "Password and Password confirmation does not match" })
+    .safeParse(request.body)
+
+  if (!validation.success) {
+    return response.status(400).json({
+      errors: validation.error.issues
+    })
+  }
+
+  const body = validation.data;
+
+  const { user } = request.auth as Auth;
+
+  if (!bcrypt.compareSync(body.old_password, user.password)) {
+    return response.status(400).json({
+      errors: [{
+        path: ["password"],
+        message: "Old Password is not correct"
+      }
+      ]
+    })
+  }
+
+  user.password = bcrypt.hashSync(body.password, Number(config.SALT))
+
+  await user.save()
+
+  return response.json(user.prepare())
+}
