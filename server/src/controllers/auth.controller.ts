@@ -246,10 +246,15 @@ export const resetPassword = async (request: Request, response: Response) => {
     });
   }
 
+  if (!user.forgotPasswordTokens.find(forgotToken => forgotToken.token === token)) {
+    return response.status(400).json({
+      message: "Token is invalid",
+    });
+  }
+
   user.password = bcrypt.hashSync(password, Number(config.SALT));
 
   user.forgotPasswordTokens = [];
-
   await user.save();
 
   return response.sendStatus(204)
