@@ -67,3 +67,12 @@ export const changePassword = async (info: { old_password?: string; password?: s
     .set("Authorization", `Bearer ${accessToken}`)
     .send(info);
 };
+
+export const deleteAccount = async (accessToken: string) => {
+  return await request(await app())
+    .delete("/me")
+    .set("Content-Type", "application/json")
+    .set("Authorization", `Bearer ${accessToken}`)
+}
+
+

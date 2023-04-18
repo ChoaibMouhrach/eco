@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verify, login, configEmailAddress, logout, refresh, register, forgotPassword, resetPassword, sendConfirmationEmail, updateUserInformation, updateUserPassword } from "../controllers/auth.controller";
+import { verify, login, configEmailAddress, logout, refresh, register, forgotPassword, resetPassword, sendConfirmationEmail, updateUserInformation, updateUserPassword, deleteAccount } from "../controllers/auth.controller";
 import authRefreshToken from "../middlewares/authRefreshToken";
 import authAccessToken from "../middlewares/authAccessToken";
 import { rateLimit } from "express-rate-limit";
@@ -43,5 +43,8 @@ router.patch("/me", [authAccessToken], updateUserInformation);
 
 /* Update User Password */
 router.post("/change-password", [authAccessToken], updateUserPassword);
+
+/* Delete User */
+router.delete("/me", [authAccessToken], deleteAccount)
 
 export default router;
