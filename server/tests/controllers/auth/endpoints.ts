@@ -52,18 +52,18 @@ export const send_confirmation_email = async (accessToken: string) => {
     .set("Authorization", `Bearer ${accessToken}`);
 };
 
-export const updateUserInfo = async (info: { firstName?: string, lastName?: string, email?: string, password?: string }) => {
+export const updateUserInfo = async (info: { firstName?: string; lastName?: string; email?: string; password?: string }) => {
   return await request(await app())
     .patch("/me")
     .set("Content-Type", "application/json")
     .set("Authorization", `Bearer ${tokens.accessToken}`)
-    .send(info)
-}
+    .send(info);
+};
 
-export const changePassword = async (info: { old_password?: string, password?: string, password_confirmation?: string }, accessToken: string) => {
+export const changePassword = async (info: { old_password?: string; password?: string; password_confirmation?: string }, accessToken: string) => {
   return await request(await app())
     .post("/change-password")
     .set("Content-Type", "application/json")
     .set("Authorization", `Bearer ${accessToken}`)
-    .send(info)
-}
+    .send(info);
+};

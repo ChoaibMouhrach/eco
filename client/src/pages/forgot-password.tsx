@@ -1,6 +1,5 @@
 import Button from "@/components/Button";
 import Input from "@/components/Form/Input";
-import InputError from "@/components/Form/InputError";
 import RootSuccess from "@/components/RootSuccess";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useForgotPasswordMutation } from "@/features/apis/authApi";
@@ -32,8 +31,11 @@ export default function ForgotPassword() {
     await forgotPassword(credentials);
 
   return (
-    <AuthLayout onSubmit={handleSubmit(onSubmit)} title="Forgot Your Password?" description="Please fill out the form below and you will receive an email from us." >
-
+    <AuthLayout
+      onSubmit={handleSubmit(onSubmit)}
+      title="Forgot Your Password?"
+      description="Please fill out the form below and you will receive an email from us."
+    >
       <RootSuccess message={data ? data.message : ""} />
 
       <Input
@@ -41,8 +43,8 @@ export default function ForgotPassword() {
         type="email"
         name="email"
         placeholder="Email Address..."
+        error={errors.email}
       />
-      <InputError error={errors.email} />
 
       <Button state={isLoading ? "loading" : undefined}>Send</Button>
 

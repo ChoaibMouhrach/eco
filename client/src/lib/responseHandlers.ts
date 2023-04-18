@@ -4,7 +4,10 @@ import { ErrorOption } from "react-hook-form";
 /**
  *Set response Errors
  * */
-export const handleResponseErrors = <T>(errors: ResponseError<T>, setError: (name: T | "root", error: ErrorOption) => void) => {
+export const handleResponseErrors = <T>(
+  errors: ResponseError<T>,
+  setError: (name: T | "root", error: ErrorOption) => void
+) => {
   if (errors.data?.errors) {
     for (let error of errors.data.errors) {
       setError(error.path[0], {

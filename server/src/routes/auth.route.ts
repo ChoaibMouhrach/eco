@@ -42,6 +42,6 @@ router.post("/confirm-email/:token", configEmailAddress);
 router.patch("/me", [authAccessToken], updateUserInformation);
 
 /* Update User Password */
-router.post("/change-password", [authAccessToken], updateUserPassword)
+router.post("/change-password", [authAccessToken], updateUserPassword);
 
 export default router;
