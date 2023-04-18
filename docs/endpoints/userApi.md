@@ -618,3 +618,27 @@ These endpoints facilitate interaction with the authentication system.
 }
 ```
 
+## Delete Account
+
+> Note : Requires Auth
+
+### Request
+
+| Verb | Path                     |
+| :--- | :----------------------- |
+| DELETE | `/me` |
+
+## Response
+
+```typescript
+// RESPONSE STATUS 204
+{
+}
+```
+```typescript
+// RESPONSE STATUS 404
+{
+   message: "User does not exists"
+}
+```
+
