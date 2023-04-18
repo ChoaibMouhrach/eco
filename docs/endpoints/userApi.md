@@ -488,3 +488,133 @@ These endpoints facilitate interaction with the authentication system.
   message: "User Not Found",
 }
 ```
+
+## Update User Information
+
+> Note : Requires Auth
+
+### Request
+
+| Verb | Path                     |
+| :--- | :----------------------- |
+| PATCH | `/me` |
+
+### Body
+| Key      | Type     | Validation                                         | Description                                                            |
+| :------- | :------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
+| firstName?    | `string` | First Name length must be greater than or equal to 3 and Less than or equal to 60   | This field should be the first name of the user                |
+| lastName?    | `string` | Last Name length must be greater than or equal to 3 and Less than or equal to 60   | This field should be the lastnName of the user                |
+| email?    | `string` | Password length must be greater than or equal to 8   | This field should be the email of the user                |
+| password | `string` | Password length must be greater than or equal to 8 | This field should contain the current password for the user. |
+
+## Response
+
+```typescript
+// RESPONSE STATUS 200
+{
+  "_id": "643cb304bc082e9212155d9f",
+  "firstName": "king4",
+  "lastName": "King4",
+  "email": "mouhrachc@gmail.com",
+  "deletedAt": null,
+  "verifiedAt": "2023-04-17T17:39:19.748Z",
+  "createdAt": "2023-04-17T02:46:30.264Z",
+  "updatedAt": "2023-04-18T02:03:16.141Z",
+  "__v": 25
+}
+```
+```typescript
+// RESPONSE STATUS 400
+{
+  errors : [{
+   {
+     "code": "too_small",
+     "minimum": 3,
+     "type": "string",
+     "inclusive": true,
+     "exact": false,
+     "message": "String must contain at least 3 character(s)",
+     "path": [
+      "firstName"
+     ]
+   }
+  }]
+}
+```
+```typescript
+// RESPONSE STATUS 400
+{
+  errors : [{
+    path: ["password"],
+    message: "Password is not correct"
+  }]
+}
+```
+
+## Change Password
+
+> Note : Requires Auth
+
+### Request
+
+| Verb | Path                     |
+| :--- | :----------------------- |
+| POST | `/change-password` |
+
+#### Body
+
+| Key      | Type     | Validation                                         | Description                                                            |
+| :------- | :------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
+| old_password    | `string` | Password length must be greater than or equal to 8   | This field should the current password of the user                |
+| password | `string` | Password length must be greater than or equal to 8 | This field should contain the new password for the user. |
+| password_confirmation | `string` | Password length must be greater than or equal to 8 | This field should contain the confirmation for the new password.  |
+
+
+## Response
+
+```typescript
+// RESPONSE STATUS 204
+{
+}
+```
+
+```typescript
+// RESPONSE STATUS 200
+{
+  "errors": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "received": "undefined",
+      "path": [
+        "old_password"
+      ],
+      "message": "Required"
+    }
+  ]
+}
+```
+```typescript
+// RESPONSE STATUS 400
+{
+ "errors": [
+  {
+   "path": [
+     "password"
+   ],
+   "message": "Old Password is not correct"
+  }
+ ]
+}
+```
+
+```typescript
+// RESPONSE STATUS 400
+{
+  errors : [{
+    path: ["password"],
+    message: "Password is not correct"
+  }]
+}
+```
+

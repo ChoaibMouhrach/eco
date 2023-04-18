@@ -409,5 +409,5 @@ export const updateUserPassword = async (request: AuthRequest, response: Respons
 
   await user.save()
 
-  return response.json(user.prepare())
+  return response.sendStatus(204)
 }
