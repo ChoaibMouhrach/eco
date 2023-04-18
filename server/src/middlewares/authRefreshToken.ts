@@ -31,8 +31,8 @@ export default async function authRefreshToken(request: AuthRequest, response: R
   const user = await User.findOne({ _id: decoded._id });
 
   if (!user || user.deletedAt || !user.refreshTokens.find((refreshToken) => refreshToken.token == token)) {
-    return response.status(401).json({
-      message: "unauthorized",
+    return response.status(404).json({
+      message: "User does not exists",
     });
   }
 

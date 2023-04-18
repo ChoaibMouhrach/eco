@@ -419,3 +419,14 @@ export const updateUserPassword = async (request: AuthRequest, response: Respons
 
   return response.sendStatus(204);
 };
+
+export const deleteAccount = async (request: AuthRequest, response: Response) => {
+
+  const { user } = request.auth as Auth
+
+  user.deletedAt = new Date();
+
+  await user.save()
+  return response.sendStatus(204)
+}
+
