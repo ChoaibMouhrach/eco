@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
 export default function logger(request: Request, _response: Response, next: NextFunction) {
-
   const method = request.method;
   const path = request.url;
   const now = new Date().toLocaleString();

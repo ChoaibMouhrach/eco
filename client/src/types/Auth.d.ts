@@ -22,3 +22,13 @@ export type User = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type UpdateUserInfo = Partial<
+  Pick<User, "firstName" | "lastName" | "email">
+> & { password: string };
+
+export type ChangePassword = {
+  old_password: string;
+  password: string;
+  password_confirmation: string;
+};

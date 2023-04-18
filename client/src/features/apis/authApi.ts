@@ -1,4 +1,9 @@
-import { Credentials, UserSignUp } from "@/types/Auth";
+import {
+  ChangePassword,
+  Credentials,
+  UpdateUserInfo,
+  UserSignUp,
+} from "@/types/Auth";
 import api from "./api";
 import { User } from "@/types/Auth";
 import Cookies from "js-cookie";
@@ -64,6 +69,13 @@ export const authApi = api.injectEndpoints({
         method: "post",
       }),
     }),
+    changePassword: build.mutation<void, ChangePassword>({
+      query: (data) => ({
+        url: "/change-password",
+        method: "post",
+        body: data,
+      }),
+    }),
     resetPassword: build.mutation<
       void,
       { token: string; password: string; password_confirmation: string }
@@ -85,6 +97,16 @@ export const authApi = api.injectEndpoints({
         },
       }),
     }),
+    updateUserInfo: build.mutation<User, UpdateUserInfo>({
+      query: (data: UpdateUserInfo) => ({
+        url: "/me",
+        method: "PATCH",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -97,4 +119,6 @@ export const {
   useConfirmEmailMutation,
   useFetchProfileQuery,
   useSendConfirmationEmailMutation,
+  useChangePasswordMutation,
+  useUpdateUserInfoMutation,
 } = authApi;

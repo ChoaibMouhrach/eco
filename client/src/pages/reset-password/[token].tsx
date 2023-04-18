@@ -1,6 +1,5 @@
 import Button from "@/components/Button";
 import Input from "@/components/Form/Input";
-import InputError from "@/components/Form/InputError";
 import RootError from "@/components/RootError";
 import RootSuccess from "@/components/RootSuccess";
 import AuthLayout from "@/components/layouts/AuthLayout";
@@ -60,30 +59,29 @@ export default function ResetPassword() {
   };
 
   return (
-    <AuthLayout onSubmit={handleSubmit(onSubmit)} title="Reset Your Password" description="Please fill out the fields below so that we can reset your password." >
-
+    <AuthLayout
+      onSubmit={handleSubmit(onSubmit)}
+      title="Reset Your Password"
+      description="Please fill out the fields below so that we can reset your password."
+    >
       <RootError error={errors.root} />
-      <RootSuccess
-        message={isSuccess ? "Password Changed successfully" : ""}
-      />
+      <RootSuccess message={isSuccess ? "Password Changed successfully" : ""} />
 
       <Input
         {...register("password")}
         type="password"
         placeholder="Password..."
+        error={errors.password}
       />
-      <InputError error={errors.password} />
 
       <Input
         {...register("password_confirmation")}
         type="password"
         placeholder="Password Confirmation..."
+        error={errors.password_confirmation}
       />
-      <InputError error={errors.password_confirmation} />
 
-      <Button state={isLoading ? "loading" : undefined}>
-        Reset Password
-      </Button>
+      <Button state={isLoading ? "loading" : undefined}>Reset Password</Button>
 
       <div className="py-4 relative flex flex-col items-center justify-center">
         <div className="h-[1px] bg-slate-400 rounded-md w-full"></div>

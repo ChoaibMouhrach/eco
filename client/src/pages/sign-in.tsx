@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 import { ResponseError } from "@/types/Errors";
 import { useRouter } from "next/router";
 import RootError from "@/components/RootError";
-import InputError from "@/components/Form/InputError";
 import { GetServerSideProps } from "next";
 import { guest } from "@/middlewares/guest";
 import AuthLayout from "@/components/layouts/AuthLayout";
@@ -62,22 +61,28 @@ export default function Signin() {
   };
 
   return (
-    <AuthLayout title={"Welcome Back"} description={"Please enter your email and password to sign in to your account."} onSubmit={handleSubmit(onSubmit)} >
+    <AuthLayout
+      title={"Welcome Back"}
+      description={
+        "Please enter your email and password to sign in to your account."
+      }
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <RootError error={errors.root} />
 
       <Input
         {...register("email")}
+        error={errors.email}
         type="email"
         placeholder="Email Address..."
       />
-      <InputError error={errors.email} />
 
       <Input
         {...register("password")}
         type="password"
         placeholder="Password..."
+        error={errors.password}
       />
-      <InputError error={errors.password} />
 
       <Button state={isLoading ? "loading" : undefined}>Sign in</Button>
 
