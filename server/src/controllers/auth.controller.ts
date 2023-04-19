@@ -22,7 +22,7 @@ export const login = async (request: Request, response: Response) => {
   /* to check if the user does exists */
   let user = await User.findOne({ email });
 
-  if (!user) {
+  if (!user || user.deletedAt) {
     return response.status(400).json({ message: "Email Address or Password is not correct" });
   }
 
@@ -80,7 +80,7 @@ export const register = async (request: Request, response: Response) => {
   const emailConfirmationToken = generateEmailConfirmationToken(user._id);
 
   if (config.ENV !== "testing") {
-    console.log("Email Sent")
+    console.log("Email Sent");
     await sendMail({
       to: user.email,
       subject: "Email Address Confirmation",
@@ -246,7 +246,7 @@ export const resetPassword = async (request: Request, response: Response) => {
     });
   }
 
-  if (!user.forgotPasswordTokens.find(forgotToken => forgotToken.token === token)) {
+  if (!user.forgotPasswordTokens.find((forgotToken) => forgotToken.token === token)) {
     return response.status(400).json({
       message: "Token is invalid",
     });
@@ -257,7 +257,7 @@ export const resetPassword = async (request: Request, response: Response) => {
   user.forgotPasswordTokens = [];
   await user.save();
 
-  return response.sendStatus(204)
+  return response.sendStatus(204);
 };
 
 export const sendConfirmationEmail = async (request: AuthRequest, response: Response) => {
@@ -307,7 +307,7 @@ export const configEmailAddress = async (request: Request, response: Response) =
   const decoded = verifyEmailConfirmationToken(token);
 
   if ("err" in decoded) {
-    console.log(decoded.err)
+    console.log(decoded.err);
     return response.status(400).json({
       message: "Token is not valid",
     });
@@ -333,5 +333,103 @@ export const configEmailAddress = async (request: Request, response: Response) =
 
   await user.save();
 
-  return response.sendStatus(204)
+  return response.sendStatus(204);
 };
+
+export const updateUserInformation = async (request: AuthRequest, response: Response) => {
+  const validation = z
+    .object({
+      firstName: z.string().min(3).max(60).optional(),
+      lastName: z.string().min(3).max(60).optional(),
+      email: z.string().email().optional(),
+      password: z.string().min(8),
+    })
+    .refine(
+      (data) => {
+        return Object.keys(data).length >= 2;
+      },
+      { path: ["root"], message: "There is nothing to update" }
+    )
+    .safeParse(request.body);
+
+  if (!validation.success) {
+    return response.status(400).json({
+      errors: validation.error.issues,
+    });
+  }
+
+  const body = validation.data;
+
+  const { user } = request.auth as Auth;
+
+  if (!bcrypt.compareSync(body.password, user.password)) {
+    return response.status(400).json({
+      errors: [
+        {
+          path: ["password"],
+          message: "Password is not correct",
+        },
+      ],
+    });
+  }
+
+  if (body.firstName) user.firstName = body.firstName;
+  if (body.lastName) user.lastName = body.lastName;
+  if (body.email) user.email = body.email;
+
+  await user.save();
+
+  return response.json(user.prepare());
+};
+
+export const updateUserPassword = async (request: AuthRequest, response: Response) => {
+  const validation = z
+    .object({
+      old_password: z.string().min(8),
+      password: z.string().min(8),
+      password_confirmation: z.string().min(8),
+    })
+    .refine((data) => data.password === data.password_confirmation, { path: ["password"], message: "Password and Password confirmation does not match" })
+    .safeParse(request.body);
+
+  if (!validation.success) {
+    return response.status(400).json({
+      errors: validation.error.issues,
+    });
+  }
+
+  const body = validation.data;
+
+  const { user } = request.auth as Auth;
+
+  if (!bcrypt.compareSync(body.old_password, user.password)) {
+    return response.status(400).json({
+      errors: [
+        {
+          path: ["password"],
+          message: "Old Password is not correct",
+        },
+      ],
+    });
+  }
+
+  user.password = bcrypt.hashSync(body.password, Number(config.SALT));
+
+  await user.save();
+
+  return response.sendStatus(204);
+};
+
+export const deleteAccount = async (request: AuthRequest, response: Response) => {
+
+  const { user } = request.auth as Auth
+
+  user.deletedAt = new Date();
+
+  await user.save()
+
+  response.setHeader('set-cookie', ["refreshToken=;Max-Age=0", "accessToken=;Max-Age=0"])
+
+  return response.sendStatus(204)
+}
+
