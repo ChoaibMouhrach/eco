@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/api/getAuthUser";
 import { User } from "@/types/Auth";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { useDispatch } from "react-redux";
+import DeleteAccount from "@/components/Profile/DeleteAccount";
 
 export default function Profile({ user }: { user: User }) {
   /* Set The user in the store */
@@ -17,6 +18,7 @@ export default function Profile({ user }: { user: User }) {
       <div className="flex flex-col gap-4">
         <UpdateInfo user={user} />
         <UpdatePassword />
+        <DeleteAccount />
       </div>
     </DashboardLayout>
   );

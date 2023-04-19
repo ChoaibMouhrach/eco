@@ -19,54 +19,57 @@ const baseQueryWithAuth = async (
   let response = await baseQuery(args, api, extraOptions);
 
   if (response.error && response.error.status === 401) {
-    const refreshResponse = await baseQuery(
-      {
-        url: "/refresh",
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("refreshToken")}`,
+    const errorData = response.error.data as { message?: string };
+    if (errorData.message === "token expired") {
+      const refreshResponse = await baseQuery(
+        {
+          url: "/refresh",
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("refreshToken")}`,
+          },
         },
-      },
-      api,
-      extraOptions
-    );
+        api,
+        extraOptions
+      );
 
-    if (refreshResponse.error) {
+      if (refreshResponse.error) {
+        return response;
+      }
+
+      const { accessToken, refreshToken } = refreshResponse.data as {
+        accessToken: string;
+        refreshToken: string;
+      };
+
+      Cookies.set("accessToken", accessToken);
+      Cookies.set("refreshToken", refreshToken);
+
+      if (typeof args === "string") {
+        args = {
+          url: args,
+        };
+      } else {
+        args.headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        };
+      }
+
+      response = await baseQuery(
+        {
+          ...args,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+        api,
+        extraOptions
+      );
+
       return response;
     }
-
-    const { accessToken, refreshToken } = refreshResponse.data as {
-      accessToken: string;
-      refreshToken: string;
-    };
-
-    Cookies.set("accessToken", accessToken);
-    Cookies.set("refreshToken", refreshToken);
-
-    if (typeof args === "string") {
-      args = {
-        url: args,
-      };
-    } else {
-      args.headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      };
-    }
-
-    response = await baseQuery(
-      {
-        ...args,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-      api,
-      extraOptions
-    );
-
-    return response;
   }
 
   return response;

@@ -97,6 +97,15 @@ export const authApi = api.injectEndpoints({
         },
       }),
     }),
+    deleteAccout: build.mutation<void, void>({
+      query: () => ({
+        url: "/me",
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        },
+      }),
+    }),
     updateUserInfo: build.mutation<User, UpdateUserInfo>({
       query: (data: UpdateUserInfo) => ({
         url: "/me",
@@ -121,4 +130,5 @@ export const {
   useSendConfirmationEmailMutation,
   useChangePasswordMutation,
   useUpdateUserInfoMutation,
+  useDeleteAccoutMutation,
 } = authApi;
