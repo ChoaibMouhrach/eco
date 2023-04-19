@@ -15,7 +15,7 @@ const button = cva(
       },
       color: {
         default: ["bg-gray-900 hover:bg-gray-700"],
-        danger: ["bg-red-600"],
+        danger: ["bg-red-600 hover:bg-red-500"],
         success: ["bg-green-600 hover:bg-green-500"],
       },
     },
