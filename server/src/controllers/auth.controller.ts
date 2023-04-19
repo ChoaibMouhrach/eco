@@ -427,6 +427,9 @@ export const deleteAccount = async (request: AuthRequest, response: Response) =>
   user.deletedAt = new Date();
 
   await user.save()
+
+  response.setHeader('set-cookie', ["refreshToken=;Max-Age=0", "accessToken=;Max-Age=0"])
+
   return response.sendStatus(204)
 }
 
