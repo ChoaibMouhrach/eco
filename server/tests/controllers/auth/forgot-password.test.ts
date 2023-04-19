@@ -5,9 +5,7 @@ describe("POST /forgot-password", () => {
   it("Should return 204", async () => {
     const response = await forgot_password("john@gmail.com");
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe(
-      "If the email address exists within our database an email will be sent to it",
-    )
+    expect(response.body.message).toBe("If the email address exists within our database an email will be sent to it");
   });
 
   it("Should return 400 with message Required", async () => {

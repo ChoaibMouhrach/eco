@@ -28,8 +28,10 @@ export default async function authAccessToken(request: AuthRequest, response: Re
 
   const user = await User.findOne({ _id: decoded._id });
 
-  if (!user) {
-    throw Error("User not found");
+  if (!user || user.deletedAt) {
+    return response.status(404).json({
+      message: "User does not exists"
+    })
   }
 
   request.auth = {

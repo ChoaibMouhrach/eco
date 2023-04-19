@@ -4,7 +4,6 @@ import { z } from "zod";
 import Button from "@/components/Button";
 import Input from "@/components/Form/Input";
 import { UserSignUp } from "@/types/Auth";
-import InputError from "@/components/Form/InputError";
 import RootError from "@/components/RootError";
 import { useSignUpMutation } from "@/features/apis/authApi";
 import { ResponseError } from "@/types/Errors";
@@ -62,16 +61,21 @@ export default function Login() {
   };
 
   return (
-    <AuthLayout onSubmit={handleSubmit(onSubmit)} title={"Welcome"} description={"Please enter your information and fill the form  to sign up for an account."} >
-
+    <AuthLayout
+      onSubmit={handleSubmit(onSubmit)}
+      title={"Welcome"}
+      description={
+        "Please enter your information and fill the form  to sign up for an account."
+      }
+    >
       <div className="flex gap-2 justify-center w-full">
         <div>
           <Input
             {...register("firstName")}
             type="text"
             placeholder="First Name..."
+            error={errors.firstName}
           />
-          <InputError error={errors.firstName} />
         </div>
 
         <div>
@@ -79,8 +83,8 @@ export default function Login() {
             {...register("lastName")}
             type="text"
             placeholder="Last Name..."
+            error={errors.lastName}
           />
-          <InputError error={errors.lastName} />
         </div>
       </div>
 
@@ -90,22 +94,22 @@ export default function Login() {
         {...register("email")}
         type="email"
         placeholder="Email Address..."
+        error={errors.email}
       />
-      <InputError error={errors.email} />
 
       <Input
         {...register("password")}
         type="password"
         placeholder="Password..."
+        error={errors.password}
       />
-      <InputError error={errors.password} />
 
       <Input
         {...register("password_confirmation")}
         type="password"
         placeholder="Password Confirmation..."
+        error={errors.password_confirmation}
       />
-      <InputError error={errors.password_confirmation} />
 
       <Button state={isLoading ? "loading" : undefined}>Sign up</Button>
 

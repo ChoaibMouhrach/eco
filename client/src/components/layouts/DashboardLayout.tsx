@@ -6,9 +6,14 @@ import { useSendConfirmationEmailMutation } from "@/features/apis/authApi";
 import { getUser } from "@/features/slices/userSlice";
 import { useSelector } from "react-redux";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [navBarShown, setNavBarShown] = useState<boolean>(false);
-  const [sendConfirmationEmail, { isLoading }] = useSendConfirmationEmailMutation();
+  const [sendConfirmationEmail, { isLoading }] =
+    useSendConfirmationEmailMutation();
   const user = useSelector(getUser);
 
   return (
@@ -20,7 +25,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {user && !user.verifiedAt && (
             <div className="border border-gray-200 p-4 mb-4 rounded-md flex flex-col lg:flex-row lg:items-center gap-4 justify-between">
               <span>Please Verify your Email Address</span>
-              <Button state={isLoading ? "loading" : undefined} onClick={() => sendConfirmationEmail()}>
+              <Button
+                state={isLoading ? "loading" : undefined}
+                onClick={() => sendConfirmationEmail()}
+              >
                 Send confirmation email
               </Button>
             </div>

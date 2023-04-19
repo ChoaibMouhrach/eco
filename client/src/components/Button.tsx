@@ -2,6 +2,7 @@ import React from "react";
 import { cva } from "class-variance-authority";
 import Link from "next/link";
 import { ImSpinner8 } from "react-icons/im";
+import { IconType } from "react-icons";
 
 const button = cva(
   "px-4 py-2 flex items-center justify-center gap-3 text-center rounded-md font-semibold tracking-wide transition duration-200",
@@ -54,6 +55,7 @@ interface ButtonInterface
   href?: string;
   iconClassName?: string;
   state?: "loading";
+  Icon?: IconType;
 }
 
 const Button = ({
@@ -64,6 +66,7 @@ const Button = ({
   color,
   state,
   iconClassName,
+  Icon,
   ...props
 }: ButtonInterface) => {
   if (href) {
@@ -79,10 +82,15 @@ const Button = ({
   }
 
   return (
-    <button className={button({ variation, color, className })} {...props}>
+    <button
+      type="submit"
+      className={button({ variation, color, className })}
+      {...props}
+    >
       {state === "loading" && (
         <ImSpinner8 className={`w-4 h-4 fill-gray-100 animate-spin`} />
       )}
+      {Icon && <Icon />}
       {children}
     </button>
   );
