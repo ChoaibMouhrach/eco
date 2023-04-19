@@ -66,9 +66,15 @@ const request = async (
           `refreshToken=;Max-Age=0`,
           `accessToken=;Max-Age=0`,
         ]);
+
         return null;
       }
     }
+
+    ctx.res.setHeader("set-cookie", [
+      `refreshToken=;Max-Age=0`,
+      `accessToken=;Max-Age=0`,
+    ]);
 
     /* if the token is not expired */
     return null;

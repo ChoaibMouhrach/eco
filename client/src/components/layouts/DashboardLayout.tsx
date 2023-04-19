@@ -21,7 +21,7 @@ export default function DashboardLayout({
       <Nav navBarShown={navBarShown} setNavBarShown={setNavBarShown} />
       <section className="relative h-[calc(100vh_-_64px)] pt-4 overflow-scroll container mx-auto flex items-stretch">
         <SideNav navBarShown={navBarShown} />
-        <article className="w-full overflow-scroll px-4">
+        <article className="w-full overflow-scroll px-4 pb-4">
           {user && !user.verifiedAt && (
             <div className="border border-gray-200 p-4 mb-4 rounded-md flex flex-col lg:flex-row lg:items-center gap-4 justify-between">
               <span>Please Verify your Email Address</span>
