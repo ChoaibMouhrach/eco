@@ -22,7 +22,7 @@ export const login = async (request: Request, response: Response) => {
   /* to check if the user does exists */
   let user = await User.findOne({ email });
 
-  if (!user) {
+  if (!user || user.deletedAt) {
     return response.status(400).json({ message: "Email Address or Password is not correct" });
   }
 
