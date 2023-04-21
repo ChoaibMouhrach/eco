@@ -17,6 +17,10 @@ const userSchema = new Schema<UserDocument>(
       unique: true,
       dropDups: true,
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
     password: {
       type: String,
       required: true,

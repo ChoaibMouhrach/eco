@@ -30,8 +30,8 @@ export default async function authAccessToken(request: AuthRequest, response: Re
 
   if (!user || user.deletedAt) {
     return response.status(404).json({
-      message: "User does not exists"
-    })
+      message: "User does not exists",
+    });
   }
 
   request.auth = {
