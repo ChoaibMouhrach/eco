@@ -22,6 +22,8 @@ beforeAll(async () => {
     firstName: "John",
     lastName: "Doe",
     email,
+    verifiedAt: new Date(),
+    isAdmin: true,
     password: bcrypt.hashSync(password, Number(config.SALT) ?? 10),
   });
 

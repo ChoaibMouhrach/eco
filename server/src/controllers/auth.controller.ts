@@ -62,7 +62,6 @@ export const register = async (request: RegisterRequest, response: Response) => 
   const emailConfirmationToken = generateEmailConfirmationToken(user._id);
 
   if (config.ENV !== "testing") {
-    console.log("Email Sent");
     await sendMail({
       to: user.email,
       subject: "Email Address Confirmation",
@@ -260,7 +259,6 @@ export const configEmailAddress = async (request: Request, response: Response) =
   const decoded = verifyEmailConfirmationToken(token);
 
   if ("err" in decoded) {
-    console.log(decoded.err);
     return response.status(400).json({
       message: "Token is not valid",
     });
