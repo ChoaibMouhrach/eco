@@ -5,6 +5,7 @@ export interface User extends Document {
   firstName: string;
   lastName: string;
   email: string;
+  isAdmin: boolean;
   password: string;
   deletedAt: Date | null;
   verifiedAt: Date | null;

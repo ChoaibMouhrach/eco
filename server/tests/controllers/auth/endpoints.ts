@@ -72,7 +72,5 @@ export const deleteAccount = async (accessToken: string) => {
   return await request(await app())
     .delete("/me")
     .set("Content-Type", "application/json")
-    .set("Authorization", `Bearer ${accessToken}`)
-}
-
-
+    .set("Authorization", `Bearer ${accessToken}`);
+};
