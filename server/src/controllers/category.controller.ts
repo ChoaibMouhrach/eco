@@ -3,6 +3,9 @@ import { Request, Response } from "express";
 import Category from "../models/Category";
 import { Types } from "mongoose";
 import { publicDestroy, publicStore } from "../utils/storage";
+import { StoreRequest } from "../requests/category/store.request";
+import { UpdateRequest } from "../requests/category/update.request";
+import { DeleteReqeust } from "../requests/category/delete.request";
 
 /* The root directory for categories images */
 const IMAGES_DIRECTORY: string = "/categories/categories_images/";
@@ -34,12 +37,8 @@ export const index = async (request: Request<{}, {}, {}, Record<string, string |
 };
 
 /* For creating a new category documents */
-export const store = async (request: Request<{}, {}, Record<string, string | undefined>>, response: Response) => {
+export const store = async (request: StoreRequest, response: Response) => {
   const { name } = request.body;
-
-  if (!name) {
-    return response.status(400).json({ errors: [{ path: ["name"], message: "Required" }] });
-  }
 
   if (await Category.exists({ name })) {
     return response.status(400).json({ message: "Category already exist" });
@@ -57,7 +56,7 @@ export const store = async (request: Request<{}, {}, Record<string, string | und
 };
 
 /* For updating category documents */
-export const update = async (request: Request<Record<string, string>, {}, Record<string, string | undefined>>, response: Response) => {
+export const update = async (request: UpdateRequest, response: Response) => {
   const { id } = request.params;
 
   if (!Types.ObjectId.isValid(id)) {
@@ -93,7 +92,7 @@ export const update = async (request: Request<Record<string, string>, {}, Record
 };
 
 /* For deleting category documents */
-export const destroy = async (request: Request<Record<string, string>>, response: Response) => {
+export const destroy = async (request: DeleteReqeust, response: Response) => {
   const { id } = request.params;
 
   if (!Types.ObjectId.isValid(id)) {

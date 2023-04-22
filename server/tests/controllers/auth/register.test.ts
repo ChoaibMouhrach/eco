@@ -32,6 +32,6 @@ describe("POST /register", () => {
   it("Should return 400 with Email Address is already taken", async () => {
     const response = await register(user);
     expect(response.status).toBe(400);
-    expect(response.body.message).toBe("Email Address is already taken");
+    expect(response.body.errors[0].message).toBe("Email Address is already taken");
   });
 });

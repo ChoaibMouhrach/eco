@@ -26,7 +26,7 @@ export const refresh = async (refreshToken: string) => {
 
 export const verify = async (accessToken: string) => {
   return await request(await app())
-    .get("/verify")
+    .get("/me")
     .set("Content-Type", "application/json")
     .set("Authorization", `Bearer ${accessToken}`);
 };
@@ -72,7 +72,5 @@ export const deleteAccount = async (accessToken: string) => {
   return await request(await app())
     .delete("/me")
     .set("Content-Type", "application/json")
-    .set("Authorization", `Bearer ${accessToken}`)
-}
-
-
+    .set("Authorization", `Bearer ${accessToken}`);
+};

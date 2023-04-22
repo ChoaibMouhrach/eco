@@ -21,7 +21,7 @@ export const authApi = api.injectEndpoints({
     }),
     fetchProfile: build.query<User, void>({
       query: () => ({
-        url: "/verify",
+        url: "/get",
         method: "get",
         headers: {
           Authorization: `Bearer ${Cookies.get("accessToken")}`,
@@ -74,6 +74,10 @@ export const authApi = api.injectEndpoints({
         url: "/change-password",
         method: "post",
         body: data,
+        headers: {
+          "camado": "choaib",
+          "Authorization": `Bearer ${Cookies.get("accessToken")}`
+        }
       }),
     }),
     resetPassword: build.mutation<

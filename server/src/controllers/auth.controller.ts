@@ -1,30 +1,22 @@
 import { Request, Response } from "express";
-import { loginSchema, registerSchema } from "../validation/auth.schema";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import { config } from "../config/config";
-import z from "zod";
 import { sendMail } from "../utils/email";
 import { Auth, AuthRequest } from "../interfaces/User";
 import { checkTokensLimit, generateAccessToken, generateEmailConfirmationToken, generateForgotPasswordToken, generateRefreshToken, verifyEmailConfirmationToken, verifyForgotPasswordToken } from "../repositories/auth.repository";
+import { LoginRequest } from "../requests/auth/login.request";
+import { RegisterRequest } from "../requests/auth/register.request";
+import { ResetPasswordRequest } from "../requests/auth/resetPassword.request";
+import { UpdateUserInfoRequest } from "../requests/auth/updateUserInfo.request";
+import { UpdateUserPasswordRequest } from "../requests/auth/updateUserPassword.request";
 
 /* handles the login functionality */
-export const login = async (request: Request, response: Response) => {
-  /* validate the request body */
-  const validation = loginSchema.safeParse(request.body);
-
-  if (!validation.success) {
-    return response.status(400).json({ errors: validation.error.issues });
-  }
-
-  const { email, password } = validation.data;
+export const login = async (request: LoginRequest, response: Response) => {
+  const { email, password } = request.body;
 
   /* to check if the user does exists */
-  let user = await User.findOne({ email });
-
-  if (!user || user.deletedAt) {
-    return response.status(400).json({ message: "Email Address or Password is not correct" });
-  }
+  let user = (await User.findOne({ email }))!;
 
   /* comparing the password with the hashed password to check if the password is correct or not */
   if (!bcrypt.compareSync(password, user.password)) {
@@ -50,18 +42,8 @@ export const login = async (request: Request, response: Response) => {
   return response.json(user.prepare());
 };
 
-export const register = async (request: Request, response: Response) => {
-  const validation = registerSchema.safeParse(request.body);
-
-  if (!validation.success) {
-    return response.status(400).json({ errors: validation.error.issues });
-  }
-
-  const body = validation.data;
-
-  if (await User.exists({ email: body.email })) {
-    return response.status(400).json({ message: "Email Address is already taken" });
-  }
+export const register = async (request: RegisterRequest, response: Response) => {
+  const { body } = request;
 
   let user = new User({
     firstName: body.firstName,
@@ -80,7 +62,6 @@ export const register = async (request: Request, response: Response) => {
   const emailConfirmationToken = generateEmailConfirmationToken(user._id);
 
   if (config.ENV !== "testing") {
-    console.log("Email Sent");
     await sendMail({
       to: user.email,
       subject: "Email Address Confirmation",
@@ -98,6 +79,7 @@ export const register = async (request: Request, response: Response) => {
     token: emailConfirmationToken,
     createdAt: new Date(),
   });
+
   user.refreshTokens.push({
     token: plainTextRefreshToken,
     createdAt: new Date(),
@@ -143,30 +125,17 @@ export const refresh = async (request: AuthRequest, response: Response) => {
   });
 };
 
-export const verify = (request: AuthRequest, response: Response) => {
+export const getUser = (request: AuthRequest, response: Response) => {
   const { user } = request.auth as Auth;
-
   return response.json(user.prepare());
 };
 
-export const forgotPassword = async (request: Request, response: Response) => {
-  const validation = z
-    .object({
-      email: z.string().email(),
-    })
-    .safeParse(request.body);
+export const forgotPassword = async (request: RegisterRequest, response: Response) => {
+  const { email } = request.body;
 
-  if (!validation.success) {
-    return response.status(400).json({
-      errors: validation.error.issues,
-    });
-  }
+  const user = (await User.findOne({ email }))!;
 
-  const { email } = validation.data;
-
-  const user = await User.findOne({ email });
-
-  if (!user || user.deletedAt) {
+  if (user.deletedAt) {
     return response.json({
       message: "If the email address exists within our database an email will be sent to it",
     });
@@ -208,25 +177,8 @@ export const forgotPassword = async (request: Request, response: Response) => {
   });
 };
 
-export const resetPassword = async (request: Request, response: Response) => {
-  const validation = z
-    .object({
-      password: z.string().min(8),
-      password_confirmation: z.string().min(8),
-    })
-    .refine((data) => data.password === data.password_confirmation, {
-      path: ["password", "password_confirmation"],
-      message: "Password and Password Confirmation does not exists",
-    })
-    .safeParse(request.body);
-
-  if (!validation.success) {
-    return response.status(400).json({
-      errors: validation.error.issues,
-    });
-  }
-
-  const { password } = validation.data;
+export const resetPassword = async (request: ResetPasswordRequest, response: Response) => {
+  const { password } = request.body;
 
   const { token } = request.params;
 
@@ -307,7 +259,6 @@ export const configEmailAddress = async (request: Request, response: Response) =
   const decoded = verifyEmailConfirmationToken(token);
 
   if ("err" in decoded) {
-    console.log(decoded.err);
     return response.status(400).json({
       message: "Token is not valid",
     });
@@ -336,29 +287,8 @@ export const configEmailAddress = async (request: Request, response: Response) =
   return response.sendStatus(204);
 };
 
-export const updateUserInformation = async (request: AuthRequest, response: Response) => {
-  const validation = z
-    .object({
-      firstName: z.string().min(3).max(60).optional(),
-      lastName: z.string().min(3).max(60).optional(),
-      email: z.string().email().optional(),
-      password: z.string().min(8),
-    })
-    .refine(
-      (data) => {
-        return Object.keys(data).length >= 2;
-      },
-      { path: ["root"], message: "There is nothing to update" }
-    )
-    .safeParse(request.body);
-
-  if (!validation.success) {
-    return response.status(400).json({
-      errors: validation.error.issues,
-    });
-  }
-
-  const body = validation.data;
+export const updateUserInformation = async (request: UpdateUserInfoRequest, response: Response) => {
+  const body = request.body;
 
   const { user } = request.auth as Auth;
 
@@ -382,38 +312,12 @@ export const updateUserInformation = async (request: AuthRequest, response: Resp
   return response.json(user.prepare());
 };
 
-export const updateUserPassword = async (request: AuthRequest, response: Response) => {
-  const validation = z
-    .object({
-      old_password: z.string().min(8),
-      password: z.string().min(8),
-      password_confirmation: z.string().min(8),
-    })
-    .refine((data) => data.password === data.password_confirmation, { path: ["password"], message: "Password and Password confirmation does not match" })
-    .safeParse(request.body);
-
-  if (!validation.success) {
-    return response.status(400).json({
-      errors: validation.error.issues,
-    });
-  }
-
-  const body = validation.data;
+export const updateUserPassword = async (request: UpdateUserPasswordRequest, response: Response) => {
+  const { password } = request.body;
 
   const { user } = request.auth as Auth;
 
-  if (!bcrypt.compareSync(body.old_password, user.password)) {
-    return response.status(400).json({
-      errors: [
-        {
-          path: ["password"],
-          message: "Old Password is not correct",
-        },
-      ],
-    });
-  }
-
-  user.password = bcrypt.hashSync(body.password, Number(config.SALT));
+  user.password = bcrypt.hashSync(password, Number(config.SALT));
 
   await user.save();
 
@@ -421,15 +325,13 @@ export const updateUserPassword = async (request: AuthRequest, response: Respons
 };
 
 export const deleteAccount = async (request: AuthRequest, response: Response) => {
-
-  const { user } = request.auth as Auth
+  const { user } = request.auth as Auth;
 
   user.deletedAt = new Date();
 
-  await user.save()
+  await user.save();
 
-  response.setHeader('set-cookie', ["refreshToken=;Max-Age=0", "accessToken=;Max-Age=0"])
+  response.setHeader("set-cookie", ["refreshToken=;Max-Age=0", "accessToken=;Max-Age=0"]);
 
-  return response.sendStatus(204)
-}
-
+  return response.sendStatus(204);
+};

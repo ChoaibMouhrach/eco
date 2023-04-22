@@ -7,7 +7,7 @@ export const getCurrentUser = async (
 ): Promise<User | null> => {
   const response = await request(
     {
-      url: "/verify",
+      url: "/me",
     },
     ctx
   );
