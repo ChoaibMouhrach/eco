@@ -15,10 +15,10 @@ describe("POST /forgot-password", () => {
     expect(response.body.errors[0].message).toBe("Required");
   });
 
-  it("Should return 200 with message 'If the email address exists within our database an email will be sent to it' if the email does not exists within the database", async () => {
+  it("Should return 400 with message 'Email Address does not exists with in our database'", async () => {
     const response = await forgot_password(`${Math.random()}@gmail.com`);
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe("If the email address exists within our database an email will be sent to it");
+    expect(response.status).toBe(400);
+    expect(response.body.errors[0].message).toBe("Email Address does not exists with in our database");
   });
 
   it("Should return 429 if the number", async () => {

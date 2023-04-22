@@ -21,7 +21,7 @@ describe("PATCH /categories/:id", () => {
   });
 
   it("Should return 400 with The provided id is invalid", async () => {
-    const response = await update(tokens.accessToken, "56545645", { name: "" });
+    const response = await update(tokens.accessToken, "56545645", { name: "mdlm" });
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("The provided id is invalid");

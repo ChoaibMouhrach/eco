@@ -19,12 +19,24 @@ const schema = z.object({
   lastName: z.string().min(3).max(60).optional(),
   email: z.string().email().optional(),
   password: z.string().min(8),
-});
+})
+
+function diff<T extends Record<string, any>>(object: T, object2: T): Partial<T> {
+  let result: Partial<T> = {}
+
+  Object.keys(object).forEach((key: keyof T) => {
+    if (object[key] !== object2[key]) {
+      result[key] = object[key]
+    }
+  })
+
+  return result
+}
 
 export default function UpdateInfo({ user }: { user: User }) {
   const { toast } = useToast();
-  const [updateUser, { isLoading, isSuccess, isError }] =
-    useUpdateUserInfoMutation();
+  const [updateUser, { isLoading, isSuccess, isError }] = useUpdateUserInfoMutation();
+
   const {
     register,
     handleSubmit,
@@ -35,13 +47,20 @@ export default function UpdateInfo({ user }: { user: User }) {
   });
 
   const onSubmit = async (data: UpdateUserInfo) => {
-    const response = await updateUser(data);
+    let requestBody = diff<UpdateUserInfo>(data, user);
+
+    if (Object.keys(requestBody).length < 2) return setError("root", {
+      message: "Chnage something first"
+    })
+
+    const response = await updateUser({ ...requestBody, password: data.password });
 
     if ("error" in response) {
       handleResponseErrors<keyof UpdateUserInfo>(
         response.error as ResponseError<keyof UpdateUserInfo>,
         setError
       );
+
       toast([
         { title: "Updating User Information failed", variation: "danger" },
       ]);
@@ -71,7 +90,7 @@ export default function UpdateInfo({ user }: { user: User }) {
               <Input
                 error={errors.lastName}
                 {...register("lastName")}
-                defaultValue={user.firstName}
+                defaultValue={user.lastName}
                 placeholder="Last Name..."
                 id="lastName"
                 type="text"

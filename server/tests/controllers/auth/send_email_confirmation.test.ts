@@ -1,10 +1,23 @@
 import { Response } from "supertest";
 import tokens from "../../../setup";
-import { send_confirmation_email } from "./endpoints";
+import { register, send_confirmation_email } from "./endpoints";
+import { parse } from "../../helpers/cookie"
 
 describe("POST /send-confirmation-email", () => {
   it("Should return 204", async () => {
-    const response = await send_confirmation_email(tokens.accessToken);
+
+    const refreshResponse = await register({
+      firstName: String(Math.random()),
+      lastName: String(Math.random()),
+      email: String(Math.random()) + "@gmail.com",
+      password: "password",
+      password_confirmation: "password"
+    })
+
+    const cookies = parse(refreshResponse.headers["set-cookie"] as string[])
+
+    const response = await send_confirmation_email(cookies.accessToken);
+
     expect(response.status).toBe(204);
   });
 

@@ -30,7 +30,7 @@ describe("POST /login", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.message).toBe("Email Address or Password is not correct");
+    expect(response.body.errors[0].message).toBe("Email Address does not exists");
   });
 
   it("Should return 400 with Email Address or Password is not correct when password is not correct", async () => {
