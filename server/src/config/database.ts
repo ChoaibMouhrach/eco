@@ -14,6 +14,7 @@ export default async function connectDB() {
       lastName: "admin",
       email: "admin@eco.com",
       verifiedAt: new Date(),
+      isAdmin : true,
       password: bcrypt.hashSync("password", Number(config.SALT)),
     });
 
