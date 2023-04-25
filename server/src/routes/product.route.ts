@@ -1,5 +1,12 @@
 import { Router } from "express";
 import { update, index, show, store, destroy } from "../controllers/product.controller";
+import authAccessToken from "../middlewares/authAccessToken";
+import { guard } from "../middlewares/guard";
+import storeProductRequest from "../requests/product/store.request"
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const router = Router();
 
@@ -10,7 +17,7 @@ router.get("/", index)
 router.get("/:id", show)
 
 /* Store new product */
-router.get("/", store)
+router.post("/", [authAccessToken, upload.array("images"), guard(storeProductRequest)], store)
 
 /* Update certain product */
 router.get("/:id", update)
