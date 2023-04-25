@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose"
+import Category from "./Category";
 
 const productSchema = new Schema({
   name: {
@@ -28,6 +29,10 @@ const productSchema = new Schema({
     type: String,
     required: true
   },
+  categories: [{
+    type: Schema.Types.ObjectId,
+    ref: Category.modelName
+  }],
   deletedAt: {
     type: Date,
     default: null
