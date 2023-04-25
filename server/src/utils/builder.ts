@@ -19,7 +19,10 @@ export const queryBuilder = (search: string | undefined, fillables: string[]) =>
 };
 
 export const projectionBuilder = (fields: string | undefined, fillables: string[]) => {
-  const projection: Record<string, boolean> = {};
+  const projection: Record<string, boolean> = {
+  };
+
+  fillables = [...fillables, "updatedAt", "createdAt", "deletedAt"]
 
   if (fields) {
     if (fields.includes(",")) {
@@ -40,6 +43,8 @@ export const projectionBuilder = (fields: string | undefined, fillables: string[
 
 export const sortingBuilder = (sorting: string | undefined, order: "desc" | "asc" | undefined, fillables: string[]) => {
   let sortingCriteria: Record<string, -1 | 1> = {};
+
+  fillables = [...fillables, "createdAt", "deletedAt", "updatedAt", "_id"]
 
   if (sorting) {
     if (fillables.includes(sorting)) {
@@ -69,4 +74,14 @@ export const paginationBuilder = (page: string | undefined, paginationValue: num
  * */
 export const randomId = () => {
   return Date.now() + "-" + Math.round(Math.random() * 1e9);
+}
+
+export const paginate = (data: any, pagination: { limit: number, skip: number }, count: number, page: string | undefined) => {
+  return {
+    data,
+    limit: pagination.limit,
+    skip: pagination.skip,
+    count,
+    page: Number(page) ? Number(page) : 1,
+  }
 };

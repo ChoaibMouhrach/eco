@@ -4,7 +4,9 @@ import { Request } from "express";
 import { Authorize, Validate } from "../../interfaces/Request";
 
 export interface StoreRequest extends Request {
-  body: {};
+  body: {
+    name: string
+  };
 }
 
 const authorize: Authorize = (user?: User) => {

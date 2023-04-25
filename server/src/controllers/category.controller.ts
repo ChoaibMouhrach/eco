@@ -1,4 +1,4 @@
-import { paginationBuilder, projectionBuilder, queryBuilder, sortingBuilder } from "../utils/builder";
+import { paginate, paginationBuilder, projectionBuilder, queryBuilder, sortingBuilder } from "../utils/builder";
 import { Request, Response } from "express";
 import Category from "../models/Category";
 import { Types } from "mongoose";
@@ -15,8 +15,8 @@ export const index = async (request: Request<{}, {}, {}, Record<string, string |
   const { sort, fields, search, order, page, trash } = request.query;
 
   let query = queryBuilder(search, ["name"]);
-  const projection = projectionBuilder(fields, ["name", "image", "_id", "createdAt", "updatedAt", "deletedAt"]);
-  const sortingCriteria = sortingBuilder(sort, order === "desc" ? "desc" : "asc", ["name", "_id", "createdAt", "updatedAt", "deletedAt"]);
+  const projection = projectionBuilder(fields, ["name", "image", "_id"]);
+  const sortingCriteria = sortingBuilder(sort, order === "desc" ? "desc" : "asc", ["name"]);
   const pagination = paginationBuilder(page);
 
   query.deletedAt = null;
@@ -25,15 +25,12 @@ export const index = async (request: Request<{}, {}, {}, Record<string, string |
     query.deletedAt = { $ne: null };
   }
 
-  const categories = await Category.find(query, projection).sort(sortingCriteria).skip(pagination.skip).limit(pagination.limit);
+  const categories = await Category.find(query, projection)
+    .sort(sortingCriteria)
+    .skip(pagination.skip)
+    .limit(pagination.limit);
 
-  return response.json({
-    data: categories,
-    limit: pagination.limit,
-    skip: pagination.skip,
-    count: await Category.count(),
-    page: Number(page) ? Number(page) : 1,
-  });
+  return response.json(paginate(categories, pagination, await Category.count(), page));
 };
 
 /* For creating a new category documents */
