@@ -3,6 +3,7 @@ import { update, index, show, store, destroy } from "../controllers/product.cont
 import authAccessToken from "../middlewares/authAccessToken";
 import { guard } from "../middlewares/guard";
 import storeProductRequest from "../requests/product/store.request"
+import destroyProductRequest from "../requests/product/destroy.request"
 import multer from "multer";
 
 const storage = multer.memoryStorage();
@@ -20,10 +21,10 @@ router.get("/:id", show)
 router.post("/", [authAccessToken, upload.array("images"), guard(storeProductRequest)], store)
 
 /* Update certain product */
-router.get("/:id", update)
+router.patch("/:id", update)
 
 /* Delete certain product */
-router.get("/:id", destroy)
+router.delete("/:id", [authAccessToken, guard(destroyProductRequest)], destroy)
 
 export default router
 

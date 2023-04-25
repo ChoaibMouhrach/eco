@@ -110,6 +110,27 @@ export const update = (_request: Request, _response: Response) => {
 
 }
 
-export const destroy = async (_request: Request, _response: Response) => {
+export const destroy = async (request: Request, response: Response) => {
+
+  const { id } = request.params as { id: string }
+
+  if (!isValidObjectId(id)) {
+    return response.status(400).json({
+      message: "Id is invalid"
+    })
+  }
+
+  const product = await Product.findOne({ _id: id })
+
+  if (!product || (product && product.deletedAt)) {
+    return response.sendStatus(404)
+  }
+
+  product.deletedAt = new Date()
+
+  await product.save()
+
+  return response.sendStatus(204)
+
 }
 
