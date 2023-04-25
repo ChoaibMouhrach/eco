@@ -3,6 +3,7 @@ import { paginate, paginationBuilder, projectionBuilder, queryBuilder, sortingBu
 import Product from "../models/Product";
 import { StoreProductRequest } from "../requests/product/store.request";
 import { publicStore } from "../utils/storage";
+import { isValidObjectId } from "mongoose";
 
 export const index = async (request: Request<{}, {}, {}, Record<string, string | undefined>>, response: Response) => {
   const {
@@ -23,6 +24,8 @@ export const index = async (request: Request<{}, {}, {}, Record<string, string |
 
   if (trash) {
     query["deletedAt"] = { $ne: null }
+  } else {
+    query["deletedAt"] = null
   }
 
   /* Fields */
@@ -107,6 +110,6 @@ export const update = (_request: Request, _response: Response) => {
 
 }
 
-export const destroy = (_request: Request, _response: Response) => {
-
+export const destroy = async (_request: Request, _response: Response) => {
 }
+
