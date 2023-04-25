@@ -58,8 +58,33 @@ export const index = async (request: Request<{}, {}, {}, Record<string, string |
   return response.json(paginate(products, pagination, await Product.count(), page))
 }
 
-export const show = (_request: Request, _response: Response) => {
+export const show = async (request: Request, response: Response) => {
+  /* extract the id */
+  const { id } = request.params;
 
+  /* checking if the id is valid */
+  if (!isValidObjectId(id)) {
+    return response.status(400).json({
+      message: "Id is invalid"
+    })
+  }
+
+  /* extracting the fields from the query params */
+  const { fields } = request.query as Record<string, string | undefined>
+
+  /* Creating the projection */
+  const projection = projectionBuilder(fields, ["name", "discount", "price", "categories", "description", "shortDescription", "instock", "images"])
+
+  /* Retrieve product */
+  const product = await Product.findOne({ _id: id }, projection)
+
+  /* check if the product does exists and its not soft deleted */
+  if (!product || (product && product.deletedAt)) {
+    return response.sendStatus(404)
+  }
+
+  /* setting the response body */
+  return response.json(product)
 }
 
 export const store = async (request: StoreProductRequest, response: Response) => {
