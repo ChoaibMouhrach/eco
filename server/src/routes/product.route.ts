@@ -4,6 +4,7 @@ import authAccessToken from "../middlewares/authAccessToken";
 import { guard } from "../middlewares/guard";
 import storeProductRequest from "../requests/product/store.request"
 import destroyProductRequest from "../requests/product/destroy.request"
+import updateProductRequest from "../requests/product/update.request"
 import multer from "multer";
 
 const storage = multer.memoryStorage();
@@ -21,7 +22,7 @@ router.get("/:id", show)
 router.post("/", [authAccessToken, upload.array("images"), guard(storeProductRequest)], store)
 
 /* Update certain product */
-router.patch("/:id", update)
+router.patch("/:id", [authAccessToken, upload.array("images"), guard(updateProductRequest)], update)
 
 /* Delete certain product */
 router.delete("/:id", [authAccessToken, guard(destroyProductRequest)], destroy)

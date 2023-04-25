@@ -4,6 +4,8 @@ import Product from "../models/Product";
 import { StoreProductRequest } from "../requests/product/store.request";
 import { publicStore } from "../utils/storage";
 import { isValidObjectId } from "mongoose";
+import { UpdateProductRequest } from "../requests/product/update.request";
+import Category from "../models/Category";
 
 export const index = async (request: Request<{}, {}, {}, Record<string, string | undefined>>, response: Response) => {
   const {
@@ -131,8 +133,21 @@ export const store = async (request: StoreProductRequest, response: Response) =>
   return response.json(product)
 }
 
-export const update = (_request: Request, _response: Response) => {
+export const update = async (request: UpdateProductRequest, response: Response) => {
 
+  const { id } = request.params as { id: string }
+
+  const product = await Product.findOne({ _id: id })
+
+  if (!product || (product && product.deletedAt)) {
+    return response.sendStatus(404)
+  }
+
+  product.updateOne(request.body)
+
+  await product.save()
+
+  return response.json(product)
 }
 
 export const destroy = async (request: Request, response: Response) => {

@@ -26,7 +26,7 @@ const validate: Validate = (request: Request) => {
 
   const fields = {
     name: z.string().min(1).max(255),
-    price: z.number().min(2),
+    price: z.number().min(1),
     discount: z.number().min(0).max(100).default(0),
     inStock: z.boolean().default(true),
     shortDescription: z.string().min(1).max(255),
@@ -34,6 +34,7 @@ const validate: Validate = (request: Request) => {
     categories: z.array(z.string().refine(async (_id) => {
       return isValidObjectId(_id) && await Category.exists({ _id })
     }, { message: "Category does not exists" }))
+      .refine((categories) => categories.length, { message: "At least one category is required" })
   }
 
   const schema = z
