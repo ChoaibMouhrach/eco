@@ -5,7 +5,7 @@ import { Authorize, Validate } from "../../interfaces/Request";
 
 export interface StoreRequest extends Request {
   body: {
-    name: string
+    name: string;
   };
 }
 
