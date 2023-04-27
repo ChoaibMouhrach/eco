@@ -16,7 +16,7 @@ export const guard = ({ authorize, validate }: { authorize?: Authorize; validate
         return response.status(400).json({ errors: validation.error.issues });
       }
       if (validation.success) {
-        request.body = validation.data
+        request.body = validation.data;
       }
     }
 

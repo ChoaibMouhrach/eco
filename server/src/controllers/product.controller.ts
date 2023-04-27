@@ -1,63 +1,70 @@
-import { Response, Request } from "express"
-import { paginate, paginationBuilder, projectionBuilder, queryBuilder, sortingBuilder } from "../utils/builder";
+import { Response, Request } from "express";
+import { Project, Search, Sort, build, paginate, projectionBuilder } from "../utils/builder";
 import Product from "../models/Product";
 import { StoreProductRequest } from "../requests/product/store.request";
 import { publicStore } from "../utils/storage";
-import { isValidObjectId } from "mongoose";
+import { PipelineStage, isValidObjectId } from "mongoose";
 import { UpdateProductRequest } from "../requests/product/update.request";
-import Category from "../models/Category";
 
-export const index = async (request: Request<{}, {}, {}, Record<string, string | undefined>>, response: Response) => {
-  const {
-    search,
-    sort,
-    order,
-    fields,
-    page,
-    trash
-  } = request.query
+export const index = async (request: Request, response: Response) => {
 
-  /* Search */
-  let query = queryBuilder(search, [
-    "name",
-    "description",
-    "shortDescription"
-  ]);
-
-  if (trash) {
-    query["deletedAt"] = { $ne: null }
-  } else {
-    query["deletedAt"] = null
+  /* sorting stage */
+  let sort: Sort = {
+    value: typeof request.query.sort === "string" ? request.query.sort : undefined,
+    fields: ["name", "price", "discount"]
   }
 
-  /* Fields */
-  let projection = projectionBuilder(fields, [
-    "name",
-    "images",
-    "price",
-    "discount",
-    "shortDescription",
-    "description"
-  ])
+  /* projection stage */
+  let project: Project = {
+    value: typeof request.query.project === "string" ? request.query.project : undefined,
+    fields: {
+      default: {
+        name: true,
+        price: true,
+        discount: true,
+        inStock: true,
+        description: true,
+        shortDescription: true,
+      },
+      alt: {
+        categories: {
+          name: true,
+          image: true,
+          createdAt: true,
+          updatedAt: true,
+          deletedAt: true
+        }
+      }
+    }
+  }
 
-  /* Sorting */
-  const sortingCriteria = sortingBuilder(sort, order === "desc" ? "desc" : "asc", [
-    "name",
-    "discount",
-    "price"
-  ]);
+  /* searching stage */
+  let search: Search = {
+    value: typeof request.query.search === "string" ? request.query.search : undefined,
+    trash: typeof request.query.trash === "string" ? request.query.trash : undefined,
+    fields: ["name", "description", "shortDescription", "categories.name"]
+  }
 
-  /* Pagination */
-  const pagination = paginationBuilder(page);
+  /* page for pagination */
+  let page = typeof request.query.page === "string" ? request.query.page : undefined
 
-  /* Extract products  */
-  let products = await Product.find(query, projection)
-    .sort(sortingCriteria)
-    .skip(pagination.skip)
-    .limit(pagination.limit)
+  /* relationship with categories collection */
+  let defaultPipeLineStage: PipelineStage[] = [{
+    $lookup: {
+      from: "categories",
+      localField: "categories",
+      foreignField: "_id",
+      as: "categories"
+    }
+  }]
 
-  /* return paginated products */
-  return response.json(paginate(products, pagination, await Product.count(), page))
+  /* build the query */
+  const query = build({ search, project, sort, page }, defaultPipeLineStage)
+
+  /* retrieving products */
+  const products = await Product.aggregate(query)
+
+  return response.json(paginate(products, await Product.count(), page))
 }
 
 export const show = async (request: Request, response: Response) => {
@@ -67,51 +74,56 @@ export const show = async (request: Request, response: Response) => {
   /* checking if the id is valid */
   if (!isValidObjectId(id)) {
     return response.status(400).json({
-      message: "Id is invalid"
-    })
+      message: "Id is invalid",
+    });
   }
 
-  /* extracting the fields from the query params */
-  const { fields } = request.query as Record<string, string | undefined>
+  /* data */
+  let data: Project = {
+    value: typeof request.query.project === "string" ? request.query.project : undefined,
+    fields: {
+      default: {
+        name: true,
+        description: true,
+        shortDescription: true,
+        "categories.name": true
+      },
+      alt: {
+        categories: {
+          name: true,
+          image: true
+        }
+      }
+    }
+  }
 
   /* Creating the projection */
-  const projection = projectionBuilder(fields, ["name", "discount", "price", "categories", "description", "shortDescription", "instock", "images"])
+  const projection = projectionBuilder(data);
 
   /* Retrieve product */
-  const product = await Product.findOne({ _id: id }, projection)
+  const product = await Product.findOne({ _id: id }, projection);
 
   /* check if the product does exists and its not soft deleted */
   if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404)
+    return response.sendStatus(404);
   }
 
   /* setting the response body */
-  return response.json(product)
-}
+  return response.json(product);
+};
 
 export const store = async (request: StoreProductRequest, response: Response) => {
-
-  const {
-    name,
-    price,
-    discount,
-    inStock,
-    shortDescription,
-    description,
-    categories
-  } = request.body
+  const { name, price, discount, inStock, shortDescription, description, categories } = request.body;
 
   /* files */
-  let files = request.files as Express.Multer.File[]
+  let files = request.files as Express.Multer.File[];
 
   /* images */
-  let images: string[] = []
+  let images: string[] = [];
 
   /* store the files */
   for (let file of files) {
-    images.push(
-      publicStore(file, "products") as string
-    )
+    images.push(publicStore(file, "products") as string);
   }
 
   /* create the product */
@@ -123,54 +135,50 @@ export const store = async (request: StoreProductRequest, response: Response) =>
     shortDescription,
     description,
     categories,
-    images
-  })
+    images,
+  });
 
   /* save the product */
-  await product.save()
+  await product.save();
 
   /* return the product */
-  return response.json(product)
-}
+  return response.json(product);
+};
 
 export const update = async (request: UpdateProductRequest, response: Response) => {
+  const { id } = request.params as { id: string };
 
-  const { id } = request.params as { id: string }
-
-  const product = await Product.findOne({ _id: id })
+  const product = await Product.findOne({ _id: id });
 
   if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404)
+    return response.sendStatus(404);
   }
 
-  product.updateOne(request.body)
+  product.updateOne(request.body);
 
-  await product.save()
+  await product.save();
 
-  return response.json(product)
-}
+  return response.json(product);
+};
 
 export const destroy = async (request: Request, response: Response) => {
-
-  const { id } = request.params as { id: string }
+  const { id } = request.params as { id: string };
 
   if (!isValidObjectId(id)) {
     return response.status(400).json({
-      message: "Id is invalid"
-    })
+      message: "Id is invalid",
+    });
   }
 
-  const product = await Product.findOne({ _id: id })
+  const product = await Product.findOne({ _id: id });
 
   if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404)
+    return response.sendStatus(404);
   }
 
-  product.deletedAt = new Date()
+  product.deletedAt = new Date();
 
-  await product.save()
+  await product.save();
 
-  return response.sendStatus(204)
-
-}
-
+  return response.sendStatus(204);
+};

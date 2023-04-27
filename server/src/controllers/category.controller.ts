@@ -1,4 +1,4 @@
-import { paginate, paginationBuilder, projectionBuilder, queryBuilder, sortingBuilder } from "../utils/builder";
+import { Project, Search, Sort, build, paginate } from "../utils/builder";
 import { Request, Response } from "express";
 import Category from "../models/Category";
 import { Types } from "mongoose";
@@ -11,26 +11,35 @@ import { DeleteReqeust } from "../requests/category/delete.request";
 const IMAGES_DIRECTORY: string = "/categories/categories_images/";
 
 /* For getting categories documents */
-export const index = async (request: Request<{}, {}, {}, Record<string, string | undefined>>, response: Response) => {
-  const { sort, fields, search, order, page, trash } = request.query;
+export const index = async (request: Request, response: Response) => {
 
-  let query = queryBuilder(search, ["name"]);
-  const projection = projectionBuilder(fields, ["name", "image", "_id"]);
-  const sortingCriteria = sortingBuilder(sort, order === "desc" ? "desc" : "asc", ["name"]);
-  const pagination = paginationBuilder(page);
+  const page = typeof request.query.page === "string" ? request.query.page : undefined
 
-  query.deletedAt = null;
-
-  if (trash === "true") {
-    query.deletedAt = { $ne: null };
+  const search: Search = {
+    value: typeof request.query.search === "string" ? request.query.search : undefined,
+    trash: typeof request.query.trash === "string" ? request.query.trash : undefined,
+    fields: ["namee"]
   }
 
-  const categories = await Category.find(query, projection)
-    .sort(sortingCriteria)
-    .skip(pagination.skip)
-    .limit(pagination.limit);
+  const project: Project = {
+    value: typeof request.query.project === "string" ? request.query.project : undefined,
+    fields: {
+      default: {
+        name: true
+      }
+    }
+  }
 
-  return response.json(paginate(categories, pagination, await Category.count(), page));
+  const sort: Sort = {
+    value: typeof request.query.sort === "string" ? request.query.sort : undefined,
+    fields: ["name"]
+  }
+
+  const query = build({ search, sort, project, page })
+
+  const categories = await Category.aggregate(query)
+
+  return response.json(paginate(categories, await Category.count(), page))
 };
 
 /* For creating a new category documents */
@@ -106,3 +115,4 @@ export const destroy = async (request: DeleteReqeust, response: Response) => {
 
   return response.status(404).json({ message: "Category not found" });
 };
+
