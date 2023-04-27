@@ -7,6 +7,7 @@ import logger from "./middlewares/logger";
 import categoryRouter from "./routes/category.route";
 import connectDB from "./config/database";
 import { config } from "./config/config";
+import productRouter from "./routes/product.route";
 
 dotenvConfig();
 
@@ -36,6 +37,7 @@ export const app = async (): Promise<Express> => {
   /* routes */
   app.use("/", authRouter);
   app.use("/categories", categoryRouter);
+  app.use("/products", productRouter);
 
   return app;
 };
