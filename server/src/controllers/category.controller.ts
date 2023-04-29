@@ -39,7 +39,9 @@ export const index = async (request: Request, response: Response) => {
 
   const categories = await Category.aggregate(query);
 
-  return response.json(paginate(categories, await Category.count(), page));
+  const responseBody = await paginate(categories, page, Category, search.trash)
+
+  return response.json(responseBody);
 };
 
 /* For creating a new category documents */
