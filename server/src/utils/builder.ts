@@ -165,10 +165,17 @@ export const sortingBuilder = (sort: { value: string | undefined; fields: string
  * @returns { skib : number, limit : number }
  * */
 export const paginationBuilder = (page: string | undefined, paginationValue: number = 8): { skip: number; limit: number } => {
-  return {
-    skip: Number(page) ? Number(page) * paginationValue - paginationValue : 0,
-    limit: paginationValue,
-  };
+
+  let pagination: { skip: number, limit: number } = {
+    skip: 0,
+    limit: paginationValue
+  }
+
+  if (Number(page) && Number(page) > 0) {
+    pagination.skip = Number(page) * paginationValue - paginationValue
+  }
+
+  return pagination
 };
 
 /**
