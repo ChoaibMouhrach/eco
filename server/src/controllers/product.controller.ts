@@ -66,7 +66,9 @@ export const index = async (request: Request, response: Response) => {
   /* retrieving products */
   const products = await Product.aggregate(query);
 
-  return response.json(paginate(products, await Product.count(), page));
+  const responseBody = await paginate(products, page, Product, search.trash)
+
+  return response.json(responseBody);
 };
 
 export const show = async (request: Request, response: Response) => {
