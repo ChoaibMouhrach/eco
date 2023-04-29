@@ -1,3 +1,4 @@
+import "express-async-errors";
 import express, { Express } from "express";
 import { config as dotenvConfig } from "dotenv";
 import cors from "cors";
@@ -8,6 +9,7 @@ import categoryRouter from "./routes/category.route";
 import connectDB from "./config/database";
 import { config } from "./config/config";
 import productRouter from "./routes/product.route";
+import { errorHandler } from "./middlewares/error-handler.middlware";
 
 dotenvConfig();
 
@@ -38,6 +40,9 @@ export const app = async (): Promise<Express> => {
   app.use("/", authRouter);
   app.use("/categories", categoryRouter);
   app.use("/products", productRouter);
+
+  // exceptions handler
+  app.use(errorHandler);
 
   return app;
 };
