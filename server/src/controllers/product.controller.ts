@@ -5,14 +5,14 @@ import { StoreProductRequest } from "../requests/product/store.request";
 import { publicStore } from "../utils/storage";
 import { PipelineStage, isValidObjectId } from "mongoose";
 import { UpdateProductRequest } from "../requests/product/update.request";
+import { BadRequestException } from "../common";
 
 export const index = async (request: Request, response: Response) => {
-
   /* sorting stage */
   let sort: Sort = {
     value: typeof request.query.sort === "string" ? request.query.sort : undefined,
-    fields: ["name", "price", "discount"]
-  }
+    fields: ["name", "price", "discount"],
+  };
 
   /* projection stage */
   let project: Project = {
@@ -32,40 +32,42 @@ export const index = async (request: Request, response: Response) => {
           image: true,
           createdAt: true,
           updatedAt: true,
-          deletedAt: true
-        }
-      }
-    }
-  }
+          deletedAt: true,
+        },
+      },
+    },
+  };
 
   /* searching stage */
   let search: Search = {
     value: typeof request.query.search === "string" ? request.query.search : undefined,
     trash: typeof request.query.trash === "string" ? request.query.trash : undefined,
-    fields: ["name", "description", "shortDescription", "categories.name"]
-  }
+    fields: ["name", "description", "shortDescription", "categories.name"],
+  };
 
   /* page for pagination */
-  let page = typeof request.query.page === "string" ? request.query.page : undefined
+  let page = typeof request.query.page === "string" ? request.query.page : undefined;
 
   /* relationship with categories collection */
-  let defaultPipeLineStage: PipelineStage[] = [{
-    $lookup: {
-      from: "categories",
-      localField: "categories",
-      foreignField: "_id",
-      as: "categories"
-    }
-  }]
+  let defaultPipeLineStage: PipelineStage[] = [
+    {
+      $lookup: {
+        from: "categories",
+        localField: "categories",
+        foreignField: "_id",
+        as: "categories",
+      },
+    },
+  ];
 
   /* build the query */
-  const query = build({ search, project, sort, page }, defaultPipeLineStage)
+  const query = build({ search, project, sort, page }, defaultPipeLineStage);
 
   /* retrieving products */
-  const products = await Product.aggregate(query)
+  const products = await Product.aggregate(query);
 
-  return response.json(paginate(products, await Product.count(), page))
-}
+  return response.json(paginate(products, await Product.count(), page));
+};
 
 export const show = async (request: Request, response: Response) => {
   /* extract the id */
@@ -73,9 +75,7 @@ export const show = async (request: Request, response: Response) => {
 
   /* checking if the id is valid */
   if (!isValidObjectId(id)) {
-    return response.status(400).json({
-      message: "Id is invalid",
-    });
+    throw new BadRequestException("Id is invalid");
   }
 
   /* data */
@@ -86,16 +86,16 @@ export const show = async (request: Request, response: Response) => {
         name: true,
         description: true,
         shortDescription: true,
-        "categories.name": true
+        "categories.name": true,
       },
       alt: {
         categories: {
           name: true,
-          image: true
-        }
-      }
-    }
-  }
+          image: true,
+        },
+      },
+    },
+  };
 
   /* Creating the projection */
   const projection = projectionBuilder(data);
@@ -165,9 +165,7 @@ export const destroy = async (request: Request, response: Response) => {
   const { id } = request.params as { id: string };
 
   if (!isValidObjectId(id)) {
-    return response.status(400).json({
-      message: "Id is invalid",
-    });
+    throw new BadRequestException("Id is invalid");
   }
 
   const product = await Product.findOne({ _id: id });

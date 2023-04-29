@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { BadRequestException, HttpException, HttpStatus, NotFoundException } from "../common";
+
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import { config } from "../config/config";
@@ -20,7 +22,7 @@ export const login = async (request: LoginRequest, response: Response) => {
 
   /* comparing the password with the hashed password to check if the password is correct or not */
   if (!bcrypt.compareSync(password, user.password)) {
-    return response.status(400).json({ message: "Email Address or Password is not correct" });
+    throw new BadRequestException("Email Address or Password is not correct", "Invalid Credentials");
   }
 
   /* generating accessToken */
@@ -89,7 +91,7 @@ export const register = async (request: RegisterRequest, response: Response) => 
 
   response.setHeader("Set-Cookie", [`refreshToken=${plainTextRefreshToken}`, `accessToken=${plainTextAccessToken}`]);
 
-  return response.status(201).json(user.prepare());
+  throw new HttpException(user.prepare(), HttpStatus.CREATED);
 };
 
 export const logout = async (request: AuthRequest, response: Response) => {
@@ -185,23 +187,17 @@ export const resetPassword = async (request: ResetPasswordRequest, response: Res
   const decoded = verifyForgotPasswordToken(token);
 
   if ("err" in decoded) {
-    return response.status(400).json({
-      message: "Token is invalid",
-    });
+    throw new BadRequestException("Token is invalid", "Invalid Token");
   }
 
   const user = await User.findOne({ _id: decoded._id });
 
   if (!user || user.deletedAt) {
-    return response.status(400).json({
-      message: "User not found",
-    });
+    throw new NotFoundException("User not found");
   }
 
   if (!user.forgotPasswordTokens.find((forgotToken) => forgotToken.token === token)) {
-    return response.status(400).json({
-      message: "Token is invalid",
-    });
+    throw new BadRequestException("Token is invalid", "Invalid Token");
   }
 
   user.password = bcrypt.hashSync(password, Number(config.SALT));
@@ -216,9 +212,7 @@ export const sendConfirmationEmail = async (request: AuthRequest, response: Resp
   const { user } = request.auth as Auth;
 
   if (user.verifiedAt) {
-    return response.status(400).json({
-      message: "Email Address is alreay verified",
-    });
+    throw new BadRequestException("Email Address is already verified");
   }
 
   const validation = checkTokensLimit(user.confirmEmailTokens, config.EMAIL_CONFIRMATION_RATE_LIMIT);
@@ -259,23 +253,17 @@ export const configEmailAddress = async (request: Request, response: Response) =
   const decoded = verifyEmailConfirmationToken(token);
 
   if ("err" in decoded) {
-    return response.status(400).json({
-      message: "Token is not valid",
-    });
+    throw new BadRequestException("Token is invalid");
   }
 
   const user = await User.findOne({ _id: decoded._id });
 
   if (!user || user.deletedAt) {
-    return response.status(404).json({
-      message: "User Not Found",
-    });
+    throw new NotFoundException("User Not Found");
   }
 
   if (user.verifiedAt) {
-    return response.status(400).json({
-      message: "Email Address is already verified",
-    });
+    throw new BadRequestException("Email Address is already verified");
   }
 
   user.verifiedAt = new Date();
@@ -293,14 +281,7 @@ export const updateUserInformation = async (request: UpdateUserInfoRequest, resp
   const { user } = request.auth as Auth;
 
   if (!bcrypt.compareSync(body.password, user.password)) {
-    return response.status(400).json({
-      errors: [
-        {
-          path: ["password"],
-          message: "Password is not correct",
-        },
-      ],
-    });
+    throw new BadRequestException("Password is not correct");
   }
 
   if (body.firstName) user.firstName = body.firstName;
