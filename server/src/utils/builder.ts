@@ -1,4 +1,4 @@
-import { FilterQuery, PipelineStage, Types } from "mongoose";
+import { FilterQuery, Model, PipelineStage, Types } from "mongoose";
 
 export type Sort = {
   value: string | undefined,
@@ -30,7 +30,7 @@ export const build = (data: Data, defaultStaging: PipelineStage[] = []): Pipelin
 
   let pipeLineStages: PipelineStage[] = [...defaultStaging];
 
-  if (data.search.value || data.search.trash) pipeLineStages.push({ $match: queryBuilder(data.search) })
+  pipeLineStages.push({ $match: queryBuilder(data.search) })
   if (data.project.value) pipeLineStages.push({ $project: projectionBuilder(data.project) })
   if (data.sort.value) pipeLineStages.push({ $sort: sortingBuilder(data.sort) })
 
@@ -178,14 +178,14 @@ export const randomId = () => {
   return Date.now() + "-" + Math.round(Math.random() * 1e9);
 };
 
-export const paginate = (data: any, count: number, page: string | undefined) => {
+export const paginate = async (data: any, page: string | undefined, Model: Model<any>, trash: string | undefined) => {
   const pagination = paginationBuilder(page)
 
   return {
     data,
     limit: pagination.limit,
     skip: pagination.skip,
-    count,
+    count: await Model.count({ deletedAt: trash ? { $ne: null } : null }),
     page: Number(page) ? Number(page) : 1,
   };
 };
