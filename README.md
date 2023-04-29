@@ -71,6 +71,17 @@ This project uses the following technologies:
 [![Techs](https://skillicons.dev/icons?i=tailwindcss)](https://tailwindcss.com/docs)
 [![Techs](https://skillicons.dev/icons?i=mongodb)](https://www.mongodb.com/docs/)
 
+## Contributors ✨
+
+<table>
+  <tbody>
+    <tr>
+          <td align="center"><a href="https://github.com/AmineTissilguit"><img src="https://avatars.githubusercontent.com/u/107870395?v=4" width="100px;" alt="Choaib Mouhrach"/><br /><sub><b>Choaib Mouhrach</b></sub></a><br /></td>
+      <td align="center"><a href="https://jamalidaissa.vercel.app"><img src="https://avatars.githubusercontent.com/u/69154853?v=4" width="100px;" alt="Jamal Id Aissa"/><br /><sub><b>Jamal Id Aissa</b></sub></a><br /></td>
+    </tr>
+  </tbody>
+</table>
+
 ## Contributing
 
 If you'd like to contribute to this project, please follow these steps:
