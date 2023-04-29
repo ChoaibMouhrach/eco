@@ -6,40 +6,40 @@ import { publicDestroy, publicStore } from "../utils/storage";
 import { StoreRequest } from "../requests/category/store.request";
 import { UpdateRequest } from "../requests/category/update.request";
 import { DeleteReqeust } from "../requests/category/delete.request";
+import { BadRequestException, ConflictException, HttpException, HttpStatus, NotFoundException } from "../common";
 
 /* The root directory for categories images */
 const IMAGES_DIRECTORY: string = "/categories/categories_images/";
 
 /* For getting categories documents */
 export const index = async (request: Request, response: Response) => {
-
-  const page = typeof request.query.page === "string" ? request.query.page : undefined
+  const page = typeof request.query.page === "string" ? request.query.page : undefined;
 
   const search: Search = {
     value: typeof request.query.search === "string" ? request.query.search : undefined,
     trash: typeof request.query.trash === "string" ? request.query.trash : undefined,
-    fields: ["namee"]
-  }
+    fields: ["namee"],
+  };
 
   const project: Project = {
     value: typeof request.query.project === "string" ? request.query.project : undefined,
     fields: {
       default: {
-        name: true
-      }
-    }
-  }
+        name: true,
+      },
+    },
+  };
 
   const sort: Sort = {
     value: typeof request.query.sort === "string" ? request.query.sort : undefined,
-    fields: ["name"]
-  }
+    fields: ["name"],
+  };
 
-  const query = build({ search, sort, project, page })
+  const query = build({ search, sort, project, page });
 
-  const categories = await Category.aggregate(query)
+  const categories = await Category.aggregate(query);
 
-  return response.json(paginate(categories, await Category.count(), page))
+  return response.json(paginate(categories, await Category.count(), page));
 };
 
 /* For creating a new category documents */
@@ -47,7 +47,7 @@ export const store = async (request: StoreRequest, response: Response) => {
   const { name } = request.body;
 
   if (await Category.exists({ name })) {
-    return response.status(400).json({ message: "Category already exist" });
+    throw new ConflictException("Category already exist");
   }
 
   const storingData: Record<string, string | undefined> = { name };
@@ -58,7 +58,7 @@ export const store = async (request: StoreRequest, response: Response) => {
 
   await category.save();
 
-  return response.status(201).json(category);
+  throw new HttpException(category, HttpStatus.CREATED);
 };
 
 /* For updating category documents */
@@ -66,13 +66,13 @@ export const update = async (request: UpdateRequest, response: Response) => {
   const { id } = request.params;
 
   if (!Types.ObjectId.isValid(id)) {
-    return response.status(400).json({ message: "The provided id is invalid" });
+    throw new BadRequestException("The provided id is invalid");
   }
 
   const category = await Category.findOne({ _id: id });
 
   if (!category || category.deletedAt) {
-    return response.status(404).json({ message: "Category not found" });
+    throw new NotFoundException("Category Not Found");
   }
 
   const updatingData: Record<string, string | undefined> = {};
@@ -85,13 +85,13 @@ export const update = async (request: UpdateRequest, response: Response) => {
   updatingData.image = publicStore(request.file, IMAGES_DIRECTORY);
 
   if (!updatingData.image && !updatingData.name) {
-    return response.status(400).json({ message: "Nothing to update" });
+    throw new BadRequestException("Nothing to update");
   }
 
   try {
     await Category.updateOne({ _id: id }, updatingData);
   } catch (err) {
-    return response.status(400).json({ errors: [{ path: ["name"], message: "Name already exists" }] });
+    throw new ConflictException("Name already exists");
   }
 
   return response.sendStatus(204);
@@ -102,7 +102,7 @@ export const destroy = async (request: DeleteReqeust, response: Response) => {
   const { id } = request.params;
 
   if (!Types.ObjectId.isValid(id)) {
-    return response.status(400).json({ message: "The provided id is invalid" });
+    throw new BadRequestException("The provided id is invalid");
   }
 
   const category = await Category.findOne({ _id: id });
@@ -112,7 +112,5 @@ export const destroy = async (request: DeleteReqeust, response: Response) => {
 
     return response.sendStatus(204);
   }
-
-  return response.status(404).json({ message: "Category not found" });
+  throw new NotFoundException("Category Not Found");
 };
-
