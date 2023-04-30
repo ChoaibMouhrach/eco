@@ -45,7 +45,7 @@ export const index = async (request: Request, response: Response) => {
 };
 
 /* For creating a new category documents */
-export const store = async (request: StoreRequest, response: Response) => {
+export const store = async (request: StoreRequest, _response: Response) => {
   const { name } = request.body;
 
   if (await Category.exists({ name })) {
@@ -111,8 +111,8 @@ export const destroy = async (request: DeleteReqeust, response: Response) => {
 
   if (category && !category.deletedAt) {
     await category.softDelete();
-
     return response.sendStatus(204);
   }
+
   throw new NotFoundException("Category Not Found");
 };
