@@ -5,7 +5,7 @@ import { StoreProductRequest } from "../requests/product/store.request";
 import { publicStore } from "../utils/storage";
 import { PipelineStage, isValidObjectId } from "mongoose";
 import { UpdateProductRequest } from "../requests/product/update.request";
-import { BadRequestException } from "../common";
+import { BadRequestException, NotFoundException } from "../common";
 
 export const index = async (request: Request, response: Response) => {
   /* sorting stage */
@@ -107,7 +107,7 @@ export const show = async (request: Request, response: Response) => {
 
   /* check if the product does exists and its not soft deleted */
   if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404);
+    throw new NotFoundException("Product does not exists");
   }
 
   /* setting the response body */
@@ -153,7 +153,7 @@ export const update = async (request: UpdateProductRequest, response: Response) 
   const product = await Product.findOne({ _id: id });
 
   if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404);
+    throw new NotFoundException("Product does not exists")
   }
 
   product.updateOne(request.body);
@@ -173,7 +173,7 @@ export const destroy = async (request: Request, response: Response) => {
   const product = await Product.findOne({ _id: id });
 
   if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404);
+    throw new NotFoundException("Product does not exists")
   }
 
   product.deletedAt = new Date();
