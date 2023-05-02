@@ -9,8 +9,6 @@ import { DeleteReqeust } from "../requests/category/delete.request";
 import {
   BadRequestException,
   ConflictException,
-  HttpException,
-  HttpStatus,
   NotFoundException,
 } from "../common";
 
@@ -29,7 +27,7 @@ export const index = async (request: Request, response: Response) => {
         : undefined,
     trash:
       typeof request.query.trash === "string" ? request.query.trash : undefined,
-    fields: ["namee"],
+    fields: ["name"],
   };
 
   const project: Project = {
@@ -75,7 +73,7 @@ export const store = async (request: StoreRequest, response: Response) => {
 
   await category.save();
 
-  throw new HttpException(category, HttpStatus.CREATED);
+  return response.status(201).json(category)
 };
 
 /* For updating category documents */
@@ -126,8 +124,8 @@ export const destroy = async (request: DeleteReqeust, response: Response) => {
 
   if (category && !category.deletedAt) {
     await category.softDelete();
-
     return response.sendStatus(204);
   }
+
   throw new NotFoundException("Category Not Found");
 };

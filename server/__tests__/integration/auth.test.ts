@@ -21,22 +21,6 @@ jest.mock("../../src/utils/email", () => ({
   sendMail: () => Promise.resolve(),
 }));
 
-beforeAll((done) => {
-  jest.setTimeout(90 * 1000);
-  mongoose
-    .connect(`${config.DATABASE_HOST}:${config.DATABASE_PORT}`, {
-      dbName: config.TESTING_DATABASE,
-    })
-    .catch((err) => console.log("Database connection failed", err))
-    .then(() => done());
-});
-
-afterAll(() => {
-  mongoose?.connection?.db?.dropDatabase();
-  jest.clearAllMocks();
-  jest.setTimeout(5 * 1000);
-});
-
 beforeEach(async () => {
   await User.deleteMany({});
   jest.clearAllMocks();
@@ -47,12 +31,26 @@ afterEach(async () => {
 });
 
 describe("POST /login", () => {
+  it("Should return 400 with email required", async () => {
+    const response = await request(await makeApp())
+      .post("/login")
+      .send({
+        password: "password",
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body?.statusCode).toBe(400);
+    expect(response.body?.message).toMatchObject([{ message: "Required", path: ["email"] }]);
+    expect(response.body?.error).toBe("Bad Request");
+  });
+
   it("Should return 200 with user info", async () => {
     const user = new User(makeUser());
     await user.save();
 
     const response = await request(await makeApp())
       .post("/login")
+      .set("Content-Type", "application/json")
       .send({
         email: userPayload.email,
         password: "password",
@@ -69,19 +67,6 @@ describe("POST /login", () => {
     const cookies = parse(rawCookies ?? []);
     expect(cookies.accessToken).toBeDefined();
     expect(cookies.refreshToken).toBeDefined();
-  });
-
-  it("Should return 400 with email required", async () => {
-    const response = await request(await makeApp())
-      .post("/login")
-      .send({
-        password: "password",
-      });
-
-    expect(response.status).toBe(400);
-    expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toMatchObject([{ message: "Required", path: ["email"] }]);
-    expect(response.body?.error).toBe("Bad Request");
   });
 
   it("Should return 400 with password required", async () => {
