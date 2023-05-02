@@ -1,15 +1,28 @@
 import { Router } from "express";
-import { getUser, login, configEmailAddress, logout, refresh, register, forgotPassword, resetPassword, sendConfirmationEmail, updateUserInformation, updateUserPassword, deleteAccount } from "../controllers/auth.controller";
+import {
+  getUser,
+  login,
+  configEmailAddress,
+  logout,
+  refresh,
+  register,
+  forgotPassword,
+  resetPassword,
+  sendConfirmationEmail,
+  updateUserInformation,
+  updateUserPassword,
+  deleteAccount,
+} from "../controllers/auth.controller";
 import authRefreshToken from "../middlewares/authRefreshToken";
 import authAccessToken from "../middlewares/authAccessToken";
 import { rateLimit } from "express-rate-limit";
 import { guard } from "../middlewares/guard";
 import loginRequest from "../requests/auth/login.request";
-import registerRequest from "../requests/auth/register.request";
 import forgotPasswordRequest from "../requests/auth/forgotPassword.request";
 import resetPasswordRequest from "../requests/auth/resetPassword.request";
 import updateUserInfo from "../requests/auth/updateUserInfo.request";
 import updateUserPasswordRequest from "../requests/auth/updateUserPassword.request";
+import registerRequest from "../requests/auth/register.request";
 
 // rate limit of 5 attempts per hour
 const emailsRateLimit = rateLimit({

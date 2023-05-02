@@ -5,7 +5,11 @@ import { verifyAccessToken } from "../repositories/auth.repository";
 import { NotFoundException } from "../common";
 import { UnauthorizedException } from "../common";
 
-export default async function authAccessToken(request: AuthRequest, response: Response, next: NextFunction) {
+export default async function authAccessToken(
+  request: AuthRequest,
+  response: Response,
+  next: NextFunction
+) {
   const authorization = request.headers.authorization;
 
   if (!authorization) {

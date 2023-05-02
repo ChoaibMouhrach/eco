@@ -14,7 +14,13 @@ export class ConflictException extends HttpException {
    * @param objectOrError string or object describing the error condition.
    * @param description string describing the error condition.
    */
-  constructor(objectOrError?: string | Record<string, any> | any, description = "Conflict") {
-    super(HttpException.createBody(objectOrError, description, HttpStatus.CONFLICT), HttpStatus.CONFLICT);
+  constructor(
+    objectOrError?: string | Record<string, any> | any,
+    description = "Conflict"
+  ) {
+    super(
+      HttpException.createBody(objectOrError, description, HttpStatus.CONFLICT),
+      HttpStatus.CONFLICT
+    );
   }
 }

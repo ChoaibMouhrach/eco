@@ -3,11 +3,10 @@ import type { Config } from "jest";
 const config: Config = {
   preset: "ts-jest",
   verbose: true,
-  setupFilesAfterEnv: ["./setup.ts"],
   transform: {
     "^.+\\.(t|j)s?$": "@swc/jest",
   },
-  testMatch: ["**/*.test.ts"],
+  testMatch: ["<rootDir>/__tests__/**/*.test.ts"],
   testTimeout: 0,
 };
 

@@ -14,7 +14,17 @@ export class ForbiddenException extends HttpException {
    * @param objectOrError string or object describing the error condition.
    * @param description string describing the error condition.
    */
-  constructor(objectOrError?: string | Record<string, any> | any, description = "Forbidden") {
-    super(HttpException.createBody(objectOrError, description, HttpStatus.FORBIDDEN), HttpStatus.FORBIDDEN);
+  constructor(
+    objectOrError?: string | Record<string, any> | any,
+    description = "Forbidden"
+  ) {
+    super(
+      HttpException.createBody(
+        objectOrError,
+        description,
+        HttpStatus.FORBIDDEN
+      ),
+      HttpStatus.FORBIDDEN
+    );
   }
 }
