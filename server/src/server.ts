@@ -3,6 +3,7 @@ import { config } from "./config/config";
 import connectDB from "./config/database";
 
 async function run() {
+
   /* Establish database connection */
   await connectDB();
 
