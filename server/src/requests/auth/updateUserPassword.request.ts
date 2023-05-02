@@ -23,7 +23,9 @@ const validate: Validate = (request: AuthRequest) => {
     old_password: z
       .string()
       .min(8)
-      .refine((password) => validateUserPassword(password, user), { message: "Old Password is not correct" }),
+      .refine((password) => validateUserPassword(password, user), {
+        message: "Old Password is not correct",
+      }),
     password: z.string().min(8),
     password_confirmation: z.string().min(8),
   });

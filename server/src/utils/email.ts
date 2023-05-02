@@ -36,6 +36,11 @@ export const sendMail = async ({
     from: `'${config.NAME}' ${config.SMTP_FROM_ADDRESS}`,
     to,
     subject,
-    html: ejs.compile(readFileSync(join(config.ROOT_DIR, "templates/emails", template.path), "utf8"))(template.data),
+    html: ejs.compile(
+      readFileSync(
+        join(config.ROOT_DIR, "templates/emails", template.path),
+        "utf8"
+      )
+    )(template.data),
   });
 };

@@ -8,7 +8,7 @@
     "build": "rm -rf dist && swc src -d dist --copy-files",
     "build:start": "rm -rf dist && swc src -d dist && node dist/server.js",
     "start": "node dist/server.js",
-    "test": "jest --runInBand",
+    "test": "jest",
     "test-coverage": "jest --coverage",
     "format": "prettier --write ."
   },

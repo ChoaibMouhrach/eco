@@ -1,5 +1,12 @@
 import { Response, Request } from "express";
-import { Project, Search, Sort, build, paginate, projectionBuilder } from "../utils/builder";
+import {
+  Project,
+  Search,
+  Sort,
+  build,
+  paginate,
+  projectionBuilder,
+} from "../utils/builder";
 import Product from "../models/Product";
 import { StoreProductRequest } from "../requests/product/store.request";
 import { publicStore } from "../utils/storage";
@@ -10,13 +17,17 @@ import { BadRequestException } from "../common";
 export const index = async (request: Request, response: Response) => {
   /* sorting stage */
   let sort: Sort = {
-    value: typeof request.query.sort === "string" ? request.query.sort : undefined,
+    value:
+      typeof request.query.sort === "string" ? request.query.sort : undefined,
     fields: ["name", "price", "discount"],
   };
 
   /* projection stage */
   let project: Project = {
-    value: typeof request.query.project === "string" ? request.query.project : undefined,
+    value:
+      typeof request.query.project === "string"
+        ? request.query.project
+        : undefined,
     fields: {
       default: {
         name: true,
@@ -40,13 +51,18 @@ export const index = async (request: Request, response: Response) => {
 
   /* searching stage */
   let search: Search = {
-    value: typeof request.query.search === "string" ? request.query.search : undefined,
-    trash: typeof request.query.trash === "string" ? request.query.trash : undefined,
+    value:
+      typeof request.query.search === "string"
+        ? request.query.search
+        : undefined,
+    trash:
+      typeof request.query.trash === "string" ? request.query.trash : undefined,
     fields: ["name", "description", "shortDescription", "categories.name"],
   };
 
   /* page for pagination */
-  let page = typeof request.query.page === "string" ? request.query.page : undefined;
+  let page =
+    typeof request.query.page === "string" ? request.query.page : undefined;
 
   /* relationship with categories collection */
   let defaultPipeLineStage: PipelineStage[] = [
@@ -66,7 +82,7 @@ export const index = async (request: Request, response: Response) => {
   /* retrieving products */
   const products = await Product.aggregate(query);
 
-  const responseBody = await paginate(products, page, Product, search.trash)
+  const responseBody = await paginate(products, page, Product, search.trash);
 
   return response.json(responseBody);
 };
@@ -82,7 +98,10 @@ export const show = async (request: Request, response: Response) => {
 
   /* data */
   let data: Project = {
-    value: typeof request.query.project === "string" ? request.query.project : undefined,
+    value:
+      typeof request.query.project === "string"
+        ? request.query.project
+        : undefined,
     fields: {
       default: {
         name: true,
@@ -114,8 +133,19 @@ export const show = async (request: Request, response: Response) => {
   return response.json(product);
 };
 
-export const store = async (request: StoreProductRequest, response: Response) => {
-  const { name, price, discount, inStock, shortDescription, description, categories } = request.body;
+export const store = async (
+  request: StoreProductRequest,
+  response: Response
+) => {
+  const {
+    name,
+    price,
+    discount,
+    inStock,
+    shortDescription,
+    description,
+    categories,
+  } = request.body;
 
   /* files */
   let files = request.files as Express.Multer.File[];
@@ -147,7 +177,10 @@ export const store = async (request: StoreProductRequest, response: Response) =>
   return response.json(product);
 };
 
-export const update = async (request: UpdateProductRequest, response: Response) => {
+export const update = async (
+  request: UpdateProductRequest,
+  response: Response
+) => {
   const { id } = request.params as { id: string };
 
   const product = await Product.findOne({ _id: id });

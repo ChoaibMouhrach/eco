@@ -9,7 +9,9 @@ export const generateAccessToken = (_id: mongoose.Types.ObjectId): string => {
   });
 };
 
-export const verifyAccessToken = (token: string): { _id: string } | { err: string } => {
+export const verifyAccessToken = (
+  token: string
+): { _id: string } | { err: string } => {
   try {
     return jwt.verify(token, config.ACCESS_SECRET) as { _id: string };
   } catch (err: any) {
@@ -22,7 +24,9 @@ export const generateRefreshToken = (_id: mongoose.Types.ObjectId): string => {
   return jwt.sign({ _id }, config.REFRESH_SECRET);
 };
 
-export const verifyRefreshToken = (token: string): { _id: string } | { err: string } => {
+export const verifyRefreshToken = (
+  token: string
+): { _id: string } | { err: string } => {
   try {
     return jwt.verify(token, config.REFRESH_SECRET) as { _id: string };
   } catch (err: any) {
@@ -31,13 +35,17 @@ export const verifyRefreshToken = (token: string): { _id: string } | { err: stri
 };
 
 /* Email Confirmation tokens */
-export const generateEmailConfirmationToken = (_id: mongoose.Types.ObjectId): string => {
+export const generateEmailConfirmationToken = (
+  _id: mongoose.Types.ObjectId
+): string => {
   return jwt.sign({ _id }, config.CONFIRM_EMAIL_SECRET, {
     expiresIn: config.EMAIL_CONFIRMATION_TOKEN_EXPIRATION_PERIOD,
   });
 };
 
-export const verifyEmailConfirmationToken = (token: string): { _id: string } | { err: string } => {
+export const verifyEmailConfirmationToken = (
+  token: string
+): { _id: string } | { err: string } => {
   try {
     return jwt.verify(token, config.CONFIRM_EMAIL_SECRET) as { _id: string };
   } catch (err: any) {
@@ -46,13 +54,17 @@ export const verifyEmailConfirmationToken = (token: string): { _id: string } | {
 };
 
 /* Forgot Password Tokens */
-export const generateForgotPasswordToken = (_id: mongoose.Types.ObjectId): string => {
+export const generateForgotPasswordToken = (
+  _id: mongoose.Types.ObjectId
+): string => {
   return jwt.sign({ _id }, config.FORGOT_PASSWORD_SECRET, {
     expiresIn: config.FORGOT_PASSWORD_TOKEN_EXPIRATION_PERIODE,
   });
 };
 
-export const verifyForgotPasswordToken = (token: string): { _id: string } | { err: string } => {
+export const verifyForgotPasswordToken = (
+  token: string
+): { _id: string } | { err: string } => {
   try {
     return jwt.verify(token, config.FORGOT_PASSWORD_SECRET) as { _id: string };
   } catch (err: any) {
@@ -60,14 +72,19 @@ export const verifyForgotPasswordToken = (token: string): { _id: string } | { er
   }
 };
 
-export const checkTokensLimit = (tokens: { token: string; createdAt: Date }[], rateLimit: number) => {
+export const checkTokensLimit = (
+  tokens: { token: string; createdAt: Date }[],
+  rateLimit: number
+) => {
   if (tokens.length) {
     let period = rateLimit * 60 * 1000;
 
     if (tokens.length === 5) {
       const currentTimeStamp = Date.now();
 
-      const lastTokenTimeStamp = new Date(tokens[tokens.length - 1].createdAt).getTime();
+      const lastTokenTimeStamp = new Date(
+        tokens[tokens.length - 1].createdAt
+      ).getTime();
 
       const lastTokenTimeStampExpirationPeriod = lastTokenTimeStamp + period;
 

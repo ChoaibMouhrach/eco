@@ -39,7 +39,9 @@ const validate: Validate = (request: Request) => {
           { message: "Category does not exists" }
         )
       )
-      .refine((categories) => categories.length, { message: "At least one category is required" }),
+      .refine((categories) => categories.length, {
+        message: "At least one category is required",
+      }),
   };
 
   const schema = z.object(fields).refine(() => request.files?.length, {

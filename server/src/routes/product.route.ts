@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { update, index, show, store, destroy } from "../controllers/product.controller";
+import {
+  update,
+  index,
+  show,
+  store,
+  destroy,
+} from "../controllers/product.controller";
 import authAccessToken from "../middlewares/authAccessToken";
 import { guard } from "../middlewares/guard";
 import storeProductRequest from "../requests/product/store.request";
@@ -19,10 +25,18 @@ router.get("/", index);
 router.get("/:id", show);
 
 /* Store new product */
-router.post("/", [authAccessToken, upload.array("images"), guard(storeProductRequest)], store);
+router.post(
+  "/",
+  [authAccessToken, upload.array("images"), guard(storeProductRequest)],
+  store
+);
 
 /* Update certain product */
-router.patch("/:id", [authAccessToken, upload.array("images"), guard(updateProductRequest)], update);
+router.patch(
+  "/:id",
+  [authAccessToken, upload.array("images"), guard(updateProductRequest)],
+  update
+);
 
 /* Delete certain product */
 router.delete("/:id", [authAccessToken, guard(destroyProductRequest)], destroy);
