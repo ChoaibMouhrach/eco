@@ -28,7 +28,7 @@ const makeApp = async (): Promise<Express> => {
   );
   app.use(cookieParser());
 
-  app.use(express.static(config.PUBLIC_STORAGE));
+  app.use("/public", express.static(config.PUBLIC_STORAGE));
 
   /* routes */
   app.use("/", authRouter);

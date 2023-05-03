@@ -12,7 +12,7 @@ import { StoreProductRequest } from "../requests/product/store.request";
 import { publicStore } from "../utils/storage";
 import { PipelineStage, isValidObjectId } from "mongoose";
 import { UpdateProductRequest } from "../requests/product/update.request";
-import { BadRequestException } from "../common";
+import { BadRequestException, NotFoundException } from "../common";
 
 export const index = async (request: Request, response: Response) => {
   /* sorting stage */
@@ -183,17 +183,40 @@ export const update = async (
 ) => {
   const { id } = request.params as { id: string };
 
-  const product = await Product.findOne({ _id: id });
+  let body = request.body
 
-  if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404);
+  if (!isValidObjectId(id)) {
+    throw new BadRequestException("Invalid id")
   }
 
-  product.updateOne(request.body);
+  let product = await Product.findOne({ _id: id });
 
-  await product.save();
+  if (!product || (product && product.deletedAt)) {
+    throw new NotFoundException("Product not found")
+  }
 
-  return response.json(product);
+  let images: string[] = []
+
+  if (request.files) {
+
+    let files = request.files as Express.Multer.File[];
+
+    for (let file of files) {
+      images.push(publicStore(file, "products") as string);
+    }
+  }
+
+  await Product.findOneAndUpdate({ _id: product.id }, {
+    ...body,
+    images: images.length ? images : undefined
+  })
+
+  return response.json({
+    ...product.toObject(),
+    ...body,
+    images: images.length ? images : undefined
+  });
+
 };
 
 export const destroy = async (request: Request, response: Response) => {
@@ -206,7 +229,7 @@ export const destroy = async (request: Request, response: Response) => {
   const product = await Product.findOne({ _id: id });
 
   if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404);
+    throw new NotFoundException("Product not found")
   }
 
   product.deletedAt = new Date();
