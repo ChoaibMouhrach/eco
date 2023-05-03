@@ -297,8 +297,6 @@ describe("PATCH /products/:id", () => {
       .set("Authorization", `Bearer ${token}`)
       .field("name", productPayload.name + 1);
 
-    console.log(response.body);
-
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
     expect(response.body?.message).toBe("Invalid id");
