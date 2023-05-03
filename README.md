@@ -2,12 +2,6 @@
 
 Eco is an online store that offers a wide range of products, The store is built using modern web technologies such as Next.js, TypeScript, Tailwind CSS, Express.js, and MongoDB, ensuring a seamless user experience and high performance.
 
-> Note : In Production change the ENV key in .env file to `production`
-
-> Note : While Testing change the ENV key in .env to `testing`
-
-> Note : While Developing change the ENV key in .env to `development`
-
 ## Installation
 
 To install and run the app locally, please follow these steps:
