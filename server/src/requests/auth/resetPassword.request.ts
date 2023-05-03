@@ -15,7 +15,10 @@ const validate: Validate = (request: Request) => {
       password: z.string().min(8),
       password_confirmation: z.string().min(8),
     })
-    .refine((data) => data.password === data.password_confirmation, { path: ["password_confirmation"], message: "Password and Password confirmation does not match" })
+    .refine((data) => data.password === data.password_confirmation, {
+      path: ["password_confirmation"],
+      message: "Password and Password confirmation does not match",
+    })
     .safeParse(request.body);
 };
 

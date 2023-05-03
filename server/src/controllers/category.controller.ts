@@ -6,23 +6,35 @@ import { publicDestroy, publicStore } from "../utils/storage";
 import { StoreRequest } from "../requests/category/store.request";
 import { UpdateRequest } from "../requests/category/update.request";
 import { DeleteReqeust } from "../requests/category/delete.request";
-import { BadRequestException, ConflictException, HttpException, HttpStatus, NotFoundException } from "../common";
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from "../common";
 
 /* The root directory for categories images */
 const IMAGES_DIRECTORY: string = "/categories/categories_images/";
 
 /* For getting categories documents */
 export const index = async (request: Request, response: Response) => {
-  const page = typeof request.query.page === "string" ? request.query.page : undefined;
+  const page =
+    typeof request.query.page === "string" ? request.query.page : undefined;
 
   const search: Search = {
-    value: typeof request.query.search === "string" ? request.query.search : undefined,
-    trash: typeof request.query.trash === "string" ? request.query.trash : undefined,
-    fields: ["namee"],
+    value:
+      typeof request.query.search === "string"
+        ? request.query.search
+        : undefined,
+    trash:
+      typeof request.query.trash === "string" ? request.query.trash : undefined,
+    fields: ["name"],
   };
 
   const project: Project = {
-    value: typeof request.query.project === "string" ? request.query.project : undefined,
+    value:
+      typeof request.query.project === "string"
+        ? request.query.project
+        : undefined,
     fields: {
       default: {
         name: true,
@@ -31,7 +43,8 @@ export const index = async (request: Request, response: Response) => {
   };
 
   const sort: Sort = {
-    value: typeof request.query.sort === "string" ? request.query.sort : undefined,
+    value:
+      typeof request.query.sort === "string" ? request.query.sort : undefined,
     fields: ["name"],
   };
 
@@ -39,7 +52,7 @@ export const index = async (request: Request, response: Response) => {
 
   const categories = await Category.aggregate(query);
 
-  const responseBody = await paginate(categories, page, Category, search.trash)
+  const responseBody = await paginate(categories, page, Category, search.trash);
 
   return response.json(responseBody);
 };
@@ -60,7 +73,7 @@ export const store = async (request: StoreRequest, _response: Response) => {
 
   await category.save();
 
-  throw new HttpException(category, HttpStatus.CREATED);
+  return response.status(201).json(category);
 };
 
 /* For updating category documents */
