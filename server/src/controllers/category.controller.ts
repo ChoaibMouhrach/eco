@@ -73,7 +73,7 @@ export const store = async (request: StoreRequest, response: Response) => {
 
   await category.save();
 
-  return response.status(201).json(category)
+  return response.status(201).json(category);
 };
 
 /* For updating category documents */

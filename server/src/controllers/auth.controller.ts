@@ -163,7 +163,10 @@ export const getUser = (request: AuthRequest, response: Response) => {
   return response.json(user.prepare());
 };
 
-export const forgotPassword = async (request: ForgotPasswordRequest, response: Response) => {
+export const forgotPassword = async (
+  request: ForgotPasswordRequest,
+  response: Response
+) => {
   const { email } = request.body;
 
   const user = await User.findOne({ email });

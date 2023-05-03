@@ -45,7 +45,11 @@ router.get("/me", authAccessToken, getUser);
 router.delete("/me", authAccessToken, deleteAccount);
 
 /* Update User Information */
-router.patch("/me", [authAccessToken, guard(updateUserInfo)], updateUserInformation);
+router.patch(
+  "/me",
+  [authAccessToken, guard(updateUserInfo)],
+  updateUserInformation
+);
 
 /* Logout Users */
 router.post("/logout", authRefreshToken, logout);
@@ -54,18 +58,34 @@ router.post("/logout", authRefreshToken, logout);
 router.post("/refresh", authRefreshToken, refresh);
 
 /* Send reset password email */
-router.post("/forgot-password", [emailsRateLimit, guard(forgotPasswordRequest)], forgotPassword);
+router.post(
+  "/forgot-password",
+  [emailsRateLimit, guard(forgotPasswordRequest)],
+  forgotPassword
+);
 
 /* Reset Password */
-router.post("/reset-password/:token", guard(resetPasswordRequest), resetPassword);
+router.post(
+  "/reset-password/:token",
+  guard(resetPasswordRequest),
+  resetPassword
+);
 
 /* Send confirmation email */
-router.post("/send-confirmation-email", [emailsRateLimit, authAccessToken], sendConfirmationEmail);
+router.post(
+  "/send-confirmation-email",
+  [emailsRateLimit, authAccessToken],
+  sendConfirmationEmail
+);
 
 /* Confirm email address */
 router.post("/confirm-email/:token", configEmailAddress);
 
 /* Update User Password */
-router.post("/change-password", [authAccessToken, guard(updateUserPasswordRequest)], updateUserPassword);
+router.post(
+  "/change-password",
+  [authAccessToken, guard(updateUserPasswordRequest)],
+  updateUserPassword
+);
 
 export default router;
