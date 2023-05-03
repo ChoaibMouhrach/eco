@@ -14,7 +14,17 @@ export class UnauthorizedException extends HttpException {
    * @param objectOrError string or object describing the error condition.
    * @param description string describing the error condition.
    */
-  constructor(objectOrError?: string | Record<string, any> | any, description = "Unauthorized") {
-    super(HttpException.createBody(objectOrError, description, HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+  constructor(
+    objectOrError?: string | Record<string, any> | any,
+    description = "Unauthorized"
+  ) {
+    super(
+      HttpException.createBody(
+        objectOrError,
+        description,
+        HttpStatus.UNAUTHORIZED
+      ),
+      HttpStatus.UNAUTHORIZED
+    );
   }
 }

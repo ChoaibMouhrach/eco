@@ -5,7 +5,11 @@ import { verifyRefreshToken } from "../repositories/auth.repository";
 import { NotFoundException } from "../common";
 import { UnauthorizedException } from "../common";
 
-export default async function authRefreshToken(request: AuthRequest, response: Response, next: NextFunction) {
+export default async function authRefreshToken(
+  request: AuthRequest,
+  _response: Response,
+  next: NextFunction
+) {
   const authorization = request.headers.authorization;
 
   if (!authorization) {
@@ -26,7 +30,11 @@ export default async function authRefreshToken(request: AuthRequest, response: R
 
   const user = await User.findOne({ _id: decoded._id });
 
-  if (!user || user.deletedAt || !user.refreshTokens.find((refreshToken) => refreshToken.token == token)) {
+  if (
+    !user ||
+    user.deletedAt ||
+    !user.refreshTokens.find((refreshToken) => refreshToken.token == token)
+  ) {
     throw new NotFoundException("User does not exists");
   }
 

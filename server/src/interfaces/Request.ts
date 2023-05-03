@@ -4,4 +4,6 @@ import { Request } from "express";
 
 export type Authorize = (user?: User) => any;
 
-export type Validate = (request: Request) => Promise<SafeParseReturnType<any, any>> | SafeParseReturnType<any, any>;
+export type Validate = (
+  request: Request
+) => Promise<SafeParseReturnType<any, any>> | SafeParseReturnType<any, any>;

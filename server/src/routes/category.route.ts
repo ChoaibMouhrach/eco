@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { destroy, index, store, update } from "../controllers/category.controller";
+import {
+  destroy,
+  index,
+  store,
+  update,
+} from "../controllers/category.controller";
 import authAccessToken from "../middlewares/authAccessToken";
 import multer from "multer";
 import { guard } from "../middlewares/guard";
@@ -15,10 +20,18 @@ const router = Router();
 router.get("/", index);
 
 /* create new category */
-router.post("/", [authAccessToken, upload.single("image"), guard(storeRequest)], store);
+router.post(
+  "/",
+  [authAccessToken, upload.single("image"), guard(storeRequest)],
+  store
+);
 
 /* update category */
-router.patch("/:id", [authAccessToken, upload.single("image"), guard(updateRequest)], update);
+router.patch(
+  "/:id",
+  [authAccessToken, upload.single("image"), guard(updateRequest)],
+  update
+);
 
 /* delete category */
 router.delete("/:id", [authAccessToken, guard(deleteRequest)], destroy);

@@ -4,9 +4,7 @@ import { config as dotenvConfig } from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.route";
-import logger from "./middlewares/logger";
 import categoryRouter from "./routes/category.route";
-import connectDB from "./config/database";
 import { config } from "./config/config";
 import productRouter from "./routes/product.route";
 import { errorHandler } from "./middlewares/error-handler.middlware";
@@ -16,14 +14,9 @@ dotenvConfig();
 /**
  * this function returns and instance of express
  * */
-export const app = async (): Promise<Express> => {
-  /* Database connection */
-  connectDB();
-
+const makeApp = async (): Promise<Express> => {
   /* express instance */
   const app = express();
-
-  if (config.ENV !== "testing") app.use(express.static(config.PUBLIC_STORAGE));
 
   /* middlewares */
   app.use(express.json());
@@ -34,7 +27,8 @@ export const app = async (): Promise<Express> => {
     })
   );
   app.use(cookieParser());
-  if (config.ENV !== "testing") app.use(logger);
+
+  app.use("/public", express.static(config.PUBLIC_STORAGE));
 
   /* routes */
   app.use("/", authRouter);
@@ -46,3 +40,5 @@ export const app = async (): Promise<Express> => {
 
   return app;
 };
+
+export default makeApp;

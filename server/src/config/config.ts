@@ -6,7 +6,7 @@ dotenvConfig();
 
 const envSchema = z.object({
   /* ENVIRONMENT */
-  ENV: z.enum(["development", "testing", "production"]),
+  ENV: z.enum(["development", "production"]),
 
   /* SERVER PORT */
   PORT: z

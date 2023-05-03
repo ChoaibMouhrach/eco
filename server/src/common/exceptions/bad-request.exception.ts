@@ -14,7 +14,17 @@ export class BadRequestException extends HttpException {
    * @param objectOrError string or object describing the error condition.
    * @param description string describing the error condition.
    */
-  constructor(objectOrError?: string | Record<string, any> | any, description = "Bad Request") {
-    super(HttpException.createBody(objectOrError, description, HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+  constructor(
+    objectOrError?: string | Record<string, any> | any,
+    description = "Bad Request"
+  ) {
+    super(
+      HttpException.createBody(
+        objectOrError,
+        description,
+        HttpStatus.BAD_REQUEST
+      ),
+      HttpStatus.BAD_REQUEST
+    );
   }
 }

@@ -3,8 +3,18 @@ import { AuthRequest } from "../interfaces/User";
 import { Authorize, Validate } from "../interfaces/Request";
 import { BadRequestException, ForbiddenException } from "../common";
 
-export const guard = ({ authorize, validate }: { authorize?: Authorize; validate?: Validate }) => {
-  return async (request: AuthRequest, response: Response, next: NextFunction) => {
+export const guard = ({
+  authorize,
+  validate,
+}: {
+  authorize?: Authorize;
+  validate?: Validate;
+}) => {
+  return async (
+    request: AuthRequest,
+    response: Response,
+    next: NextFunction
+  ) => {
     if (authorize && !Boolean(authorize(request.auth?.user))) {
       throw new ForbiddenException("Permission required");
     }
