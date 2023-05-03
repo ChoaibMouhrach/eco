@@ -183,22 +183,21 @@ export const update = async (
 ) => {
   const { id } = request.params as { id: string };
 
-  let body = request.body
+  let body = request.body;
 
   if (!isValidObjectId(id)) {
-    throw new BadRequestException("Invalid id")
+    throw new BadRequestException("Invalid id");
   }
 
   let product = await Product.findOne({ _id: id });
 
   if (!product || (product && product.deletedAt)) {
-    throw new NotFoundException("Product not found")
+    throw new NotFoundException("Product not found");
   }
 
-  let images: string[] = []
+  let images: string[] = [];
 
   if (request.files) {
-
     let files = request.files as Express.Multer.File[];
 
     for (let file of files) {
@@ -206,17 +205,19 @@ export const update = async (
     }
   }
 
-  await Product.findOneAndUpdate({ _id: product.id }, {
-    ...body,
-    images: images.length ? images : undefined
-  })
+  await Product.findOneAndUpdate(
+    { _id: product.id },
+    {
+      ...body,
+      images: images.length ? images : undefined,
+    }
+  );
 
   return response.json({
     ...product.toObject(),
     ...body,
-    images: images.length ? images : undefined
+    images: images.length ? images : undefined,
   });
-
 };
 
 export const destroy = async (request: Request, response: Response) => {
@@ -229,7 +230,7 @@ export const destroy = async (request: Request, response: Response) => {
   const product = await Product.findOne({ _id: id });
 
   if (!product || (product && product.deletedAt)) {
-    throw new NotFoundException("Product not found")
+    throw new NotFoundException("Product not found");
   }
 
   product.deletedAt = new Date();

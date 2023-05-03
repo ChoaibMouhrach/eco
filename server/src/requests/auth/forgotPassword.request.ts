@@ -10,10 +10,10 @@ export interface ForgotPasswordRequest extends Request {
 
 const validate: Validate = async (request: Request) => {
   const schema = z.object({
-    email: z.string().email()
-  })
+    email: z.string().email(),
+  });
 
-  return schema.safeParse(request.body)
+  return schema.safeParse(request.body);
 };
 
 export default {

@@ -73,13 +73,13 @@ const userSchema = new Schema<UserDocument>(
   {
     timestamps: true,
     methods: {
-      softDelete: async function() {
+      softDelete: async function () {
         const user = this;
         user.deletedAt = new Date();
         await user.save();
         return user;
       },
-      prepare: function() {
+      prepare: function () {
         let user = this.toObject() as {
           password?: string;
           refreshTokens?: string[];

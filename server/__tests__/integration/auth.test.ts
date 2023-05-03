@@ -40,7 +40,9 @@ describe("POST /login", () => {
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toMatchObject([{ message: "Required", path: ["email"] }]);
+    expect(response.body?.message).toMatchObject([
+      { message: "Required", path: ["email"] },
+    ]);
     expect(response.body?.error).toBe("Bad Request");
   });
 
@@ -81,7 +83,9 @@ describe("POST /login", () => {
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toMatchObject([{ message: "Required", path: ["password"] }]);
+    expect(response.body?.message).toMatchObject([
+      { message: "Required", path: ["password"] },
+    ]);
     expect(response.body?.error).toBe("Bad Request");
   });
 
@@ -95,7 +99,9 @@ describe("POST /login", () => {
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toMatchObject([{ message: "Email Address does not exists", path: ["email"] }]);
+    expect(response.body?.message).toMatchObject([
+      { message: "Email Address does not exists", path: ["email"] },
+    ]);
     expect(response.body?.error).toBe("Bad Request");
   });
 
@@ -301,7 +307,9 @@ describe("POST /forgot-password", () => {
       .send({ email: user.email });
 
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe("If the email address exists within our database an email will be sent to it");
+    expect(response.body.message).toBe(
+      "If the email address exists within our database an email will be sent to it"
+    );
   });
 
   it("Should return 200 with If the email address exists within our database an email will be sent to it ( user does not exists ) ", async () => {
@@ -310,7 +318,9 @@ describe("POST /forgot-password", () => {
       .send({ email: userPayload.email });
 
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe("If the email address exists within our database an email will be sent to it");
+    expect(response.body.message).toBe(
+      "If the email address exists within our database an email will be sent to it"
+    );
   });
 
   it("Should return 400 with email required", async () => {
@@ -318,7 +328,9 @@ describe("POST /forgot-password", () => {
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toMatchObject([{ message: "Required", path: ["email"] }]);
+    expect(response.body?.message).toMatchObject([
+      { message: "Required", path: ["email"] },
+    ]);
     expect(response.body?.error).toBe("Bad Request");
   });
 });
@@ -353,7 +365,9 @@ describe("POST /reset-password", () => {
 
     await user.save();
 
-    const response = await request(await makeApp()).post(`/reset-password/${token}`);
+    const response = await request(await makeApp()).post(
+      `/reset-password/${token}`
+    );
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
@@ -439,13 +453,17 @@ describe("POST /confirm-email", () => {
 
     await user.save();
 
-    const response = await request(await makeApp()).post(`/confirm-email/${token}`);
+    const response = await request(await makeApp()).post(
+      `/confirm-email/${token}`
+    );
 
     expect(response.status).toBe(204);
   });
 
   it("Should return 400 with token invalid", async () => {
-    const response = await request(await makeApp()).post("/confirm-email/23454");
+    const response = await request(await makeApp()).post(
+      "/confirm-email/23454"
+    );
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
@@ -458,7 +476,9 @@ describe("POST /confirm-email", () => {
 
     const token = jwt.sign({ _id: user.id }, config.CONFIRM_EMAIL_SECRET);
 
-    const response = await request(await makeApp()).post(`/confirm-email/${token}`);
+    const response = await request(await makeApp()).post(
+      `/confirm-email/${token}`
+    );
 
     expect(response.status).toBe(404);
     expect(response.body?.statusCode).toBe(404);
@@ -474,7 +494,9 @@ describe("POST /confirm-email", () => {
 
     await user.save();
 
-    const response = await request(await makeApp()).post(`/confirm-email/${token}`);
+    const response = await request(await makeApp()).post(
+      `/confirm-email/${token}`
+    );
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
@@ -531,7 +553,9 @@ describe("PATCH /me", () => {
     expect(response.status).toBe(400);
 
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toMatchObject([{ message: "Email Address is already taken", path: ["email"] }]);
+    expect(response.body?.message).toMatchObject([
+      { message: "Email Address is already taken", path: ["email"] },
+    ]);
     expect(response.body?.error).toBe("Bad Request");
   });
 });
@@ -574,7 +598,9 @@ describe("POST /change-password", () => {
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toMatchObject([{ message: "Old Password is not correct", path: ["old_password"] }]);
+    expect(response.body?.message).toMatchObject([
+      { message: "Old Password is not correct", path: ["old_password"] },
+    ]);
     expect(response.body?.error).toBe("Bad Request");
   });
 });

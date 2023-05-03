@@ -13,8 +13,8 @@ export const adminPayload = {
 };
 
 export const categoryPayload = {
-  name: "cat"
-}
+  name: "cat",
+};
 
 export const productPayload = {
   name: "Product",
@@ -23,4 +23,4 @@ export const productPayload = {
   inStock: true,
   shortDescription: "Short",
   description: "Long",
-}
+};
