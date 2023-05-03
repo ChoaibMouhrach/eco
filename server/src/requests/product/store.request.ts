@@ -45,7 +45,7 @@ const validate: Validate = (request: Request) => {
   };
 
   const schema = z.object(fields).refine(() => request.files?.length, {
-    message: "Images are required",
+    message: "Required",
     path: ["images"],
   });
 
