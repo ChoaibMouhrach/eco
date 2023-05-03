@@ -58,7 +58,7 @@ export const index = async (request: Request, response: Response) => {
 };
 
 /* For creating a new category documents */
-export const store = async (request: StoreRequest, response: Response) => {
+export const store = async (request: StoreRequest, _response: Response) => {
   const { name } = request.body;
 
   if (await Category.exists({ name })) {

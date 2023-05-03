@@ -126,7 +126,7 @@ export const show = async (request: Request, response: Response) => {
 
   /* check if the product does exists and its not soft deleted */
   if (!product || (product && product.deletedAt)) {
-    return response.sendStatus(404);
+    throw new NotFoundException("Product does not exists");
   }
 
   /* setting the response body */

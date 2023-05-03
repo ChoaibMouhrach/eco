@@ -1,10 +1,6 @@
 import { Request, Response } from "express";
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  NotFoundException,
-} from "../common";
+
+import { BadRequestException, HttpException, HttpStatus, NotFoundException, TooManyRequestsException } from "../common";
 
 import User from "../models/User";
 import bcrypt from "bcrypt";
@@ -184,7 +180,7 @@ export const forgotPassword = async (
   );
 
   if (!rateLimitValidation.success) {
-    return response.sendStatus(429);
+    throw new TooManyRequestsException("Too many requests")
   }
 
   user.forgotPasswordTokens = rateLimitValidation.tokens;
