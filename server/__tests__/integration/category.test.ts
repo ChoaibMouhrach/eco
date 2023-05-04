@@ -144,8 +144,6 @@ describe("POST /categories", () => {
       .set("Authorization", `Bearer ${token}`)
       .send(categoryPayload);
 
-    console.log(response.body)
-
     expect(response.status).toBe(201);
   });
 

@@ -33,8 +33,10 @@ export const build = (
   let pipeLineStages: PipelineStage[] = [...defaultStaging];
 
   pipeLineStages.push({ $match: queryBuilder(data.search) });
+
   if (data.project.value)
     pipeLineStages.push({ $project: projectionBuilder(data.project) });
+
   if (data.sort.value)
     pipeLineStages.push({ $sort: sortingBuilder(data.sort) });
 

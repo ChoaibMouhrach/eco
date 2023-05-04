@@ -8,6 +8,7 @@ import categoryRouter from "./routes/category.route";
 import { config } from "./config/config";
 import productRouter from "./routes/product.route";
 import { errorHandler } from "./middlewares/error-handler.middlware";
+import userRouter from "./routes/user.route";
 
 dotenvConfig();
 
@@ -34,6 +35,7 @@ const makeApp = async (): Promise<Express> => {
   app.use("/", authRouter);
   app.use("/categories", categoryRouter);
   app.use("/products", productRouter);
+  app.use("/users", userRouter);
 
   // exceptions handler
   app.use(errorHandler);
