@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { config } from "../../src/config/config";
 import makeApp from "../../src/app";
 import request from "supertest";
@@ -9,10 +8,13 @@ import { parse } from "../../src/utils/cookies";
 import jwt from "jsonwebtoken";
 
 const makeUser = () => {
+
+  const password = hashSync(userPayload.password, Number(config.SALT));
+
   return {
     ...userPayload,
-    password: hashSync(userPayload.password, Number(config.SALT)),
-    password_confirmation: hashSync(userPayload.password, Number(config.SALT)),
+    password,
+    password_confirmation: password,
   };
 };
 

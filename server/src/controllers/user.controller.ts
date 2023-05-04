@@ -35,7 +35,7 @@ export const index = async (
   };
 
   const sort: Sort = {
-    value: request.query.search,
+    value: request.query.sort,
     fields: ["firstName", "lastName", "email"],
   };
 
@@ -64,7 +64,7 @@ export const show = async (request: Request<Record<string, string>>, response: R
   const { id } = request.params
 
   if (!isValidObjectId(id)) {
-    throw new BadRequestException("Invalid id")
+    throw new BadRequestException("Id is not valid")
   }
 
   const user = await User.findOne({ _id: id });
@@ -135,7 +135,7 @@ export const destroy = async (request: Request<Record<string, string>>, response
   const user = await User.findOneAndDelete({ _id: id })
 
   if (!user) {
-    throw new NotFoundException("User not found")
+    throw new NotFoundException("User does not exists")
   }
 
   return response.sendStatus(204)
