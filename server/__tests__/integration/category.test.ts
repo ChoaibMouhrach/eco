@@ -3,8 +3,8 @@ import request from "supertest";
 import { config } from "../../src/config/config";
 import Category from "../../src/models/Category";
 import {
+  adminPayload,
   categoryPayload,
-  userPayload,
 } from "../../src/common/constants/testData.constant";
 import User from "../../src/models/User";
 import jwt from "jsonwebtoken";
@@ -16,11 +16,7 @@ beforeEach(async () => {
   await User.deleteMany({});
   jest.clearAllMocks();
 
-  const user = new User({
-    ...userPayload,
-    isAdmin: true,
-    verifiedAt: new Date(),
-  });
+  const user = new User(adminPayload);
 
   token = jwt.sign({ _id: user.id }, config.ACCESS_SECRET);
 
