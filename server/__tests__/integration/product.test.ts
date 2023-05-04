@@ -3,16 +3,14 @@ import User from "../../src/models/User";
 import Category from "../../src/models/Category";
 import Product from "../../src/models/Product";
 import {
+  adminPayload,
   categoryPayload,
   productPayload,
-  userPayload,
 } from "../../src/common/constants/testData.constant";
-import bcrypt from "bcrypt";
 import { config } from "../../src/config/config";
 import jwt from "jsonwebtoken";
 import makeApp from "../../src/app";
 import { join } from "path";
-import { existsSync } from "fs";
 
 let token: string;
 
@@ -21,15 +19,8 @@ beforeEach(async () => {
   await Category.deleteMany();
   await Product.deleteMany();
 
-  const admin = new User({
-    ...userPayload,
-    isAdmin: true,
-    verifiedAt: new Date(),
-    password: bcrypt.hashSync("password", Number(config.SALT)),
-  });
-
+  const admin = new User(adminPayload);
   token = jwt.sign({ _id: admin._id }, config.ACCESS_SECRET);
-
   await admin.save();
 });
 

@@ -1,3 +1,6 @@
+import { hashSync } from "bcrypt"
+import { config } from "../../config/config";
+
 export const userPayload = {
   firstName: "john",
   lastName: "doe",
@@ -9,7 +12,9 @@ export const adminPayload = {
   firstName: "admin",
   lastName: "admin",
   email: "admin@eco.com",
-  password: "password",
+  password: hashSync("password", Number(config.SALT)),
+  isAdmin: true,
+  verifiedAt: new Date()
 };
 
 export const categoryPayload = {
