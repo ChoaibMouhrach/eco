@@ -8,6 +8,9 @@ export interface RegisterRequest extends Request {
     firstName: string;
     lastName: string;
     email: string;
+    address: string;
+    phone: string;
+    gender: string;
     password: string;
     password_confirmation: string;
   };
@@ -27,6 +30,9 @@ const validate: Validate = async (request: Request) => {
           },
           { message: "Email Address is already taken" }
         ),
+      address: z.string().min(8).max(255),
+      gender: z.enum(["M", "F"]),
+      phone: z.string().max(255),
       password: z.string().min(8),
       password_confirmation: z.string().min(8),
     })

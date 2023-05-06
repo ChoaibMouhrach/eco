@@ -12,6 +12,9 @@ export interface User extends Document {
   forgotPasswordTokens: { token: string; createdAt: Date }[];
   confirmEmailTokens: { token: string; createdAt: Date }[];
   refreshTokens: { token: string; createdAt: Date }[];
+  address: string;
+  phone: string;
+  gender: string;
 }
 
 export interface UserDocument extends Document, User {

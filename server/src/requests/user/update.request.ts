@@ -12,7 +12,10 @@ export interface UpdateRequest extends Request {
     password?: string;
     password_confirmation?: string;
     isAdmin?: boolean;
-    verifiedAt?: string
+    verifiedAt?: string;
+    address?: string;
+    gender?: string;
+    phone?: string;
   }
 }
 
@@ -31,7 +34,10 @@ const validate: Validate = (request: Request) => {
     password: z.string().min(8).optional(),
     password_confirmation: z.string().min(8).optional(),
     isAdmin: z.boolean().optional(),
-    verifiedAt: z.string().datetime().optional()
+    verifiedAt: z.string().datetime().optional(),
+    address: z.string().max(255).optional(),
+    phone: z.string().max(255).optional(),
+    gender: z.enum(["f", "m"]).optional(),
   })
     .refine(({ password, password_confirmation }) => {
       if (password || password_confirmation) {

@@ -84,7 +84,10 @@ export const store = async (request: StoreRequest, response: Response) => {
     email,
     password,
     isAdmin,
-    verifiedAt
+    verifiedAt,
+    address,
+    phone,
+    gender
   } = request.body
 
   const user = new User({
@@ -93,6 +96,9 @@ export const store = async (request: StoreRequest, response: Response) => {
     email,
     password: bcrypt.hashSync(password, Number(config.SALT)),
     isAdmin,
+    address,
+    gender,
+    phone,
     verifiedAt
   })
 

@@ -77,6 +77,9 @@ export const register = async (
     lastName: body.lastName,
     email: body.email,
     password: bcrypt.hashSync(body.password, Number(config.SALT)),
+    address: body.address,
+    phone: body.phone,
+    gender: body.gender
   });
 
   /* generating access token  */
@@ -343,6 +346,9 @@ export const updateUserInformation = async (
   if (body.firstName) user.firstName = body.firstName;
   if (body.lastName) user.lastName = body.lastName;
   if (body.email) user.email = body.email;
+  if (body.address) user.address = body.address;
+  if (body.phone) user.phone = body.phone;
+  if (body.gender) user.gender = body.gender;
 
   await user.save();
 

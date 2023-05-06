@@ -17,6 +17,19 @@ const userSchema = new Schema<UserDocument>(
       unique: true,
       dropDups: true,
     },
+    address: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true
+    },
+    gender: {
+      type: String,
+      enum: ["M", "F"],
+      required: true
+    },
     isAdmin: {
       type: Boolean,
       default: false,
