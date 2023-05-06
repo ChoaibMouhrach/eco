@@ -36,7 +36,7 @@ const validate: Validate = async (request: Request) => {
     isAdmin: z.boolean().default(false),
     verifiedAt: z.string().datetime().nullable().default(null),
     phone: z.string().max(255),
-    address: z.string().max(255),
+    address: z.string().min(8).max(255),
     gender: z.enum(["M", "F"]),
     birthDay: z.string().datetime()
   })

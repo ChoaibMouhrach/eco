@@ -36,9 +36,9 @@ const validate: Validate = (request: Request) => {
     password_confirmation: z.string().min(8).optional(),
     isAdmin: z.boolean().optional(),
     verifiedAt: z.string().datetime().optional(),
-    address: z.string().max(255).optional(),
+    address: z.string().min(8).max(255).optional(),
     phone: z.string().max(255).optional(),
-    gender: z.enum(["f", "m"]).optional(),
+    gender: z.enum(["F", "M"]).optional(),
     birthDay: z.string().datetime().optional()
   })
     .refine(({ password, password_confirmation }) => {
