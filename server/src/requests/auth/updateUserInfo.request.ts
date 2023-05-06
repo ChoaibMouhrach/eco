@@ -22,7 +22,7 @@ const validate: Validate = (request: Request) => {
     .object({
       firstName: z.string().min(3).max(60).optional(),
       lastName: z.string().min(3).max(60).optional(),
-      address: z.string().max(255).optional(),
+      address: z.string().min(8).max(255).optional(),
       phone: z.string().max(255).optional(),
       birthDay: z.string().datetime().optional(),
       gender: z.enum(["f", "m"]).optional(),

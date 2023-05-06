@@ -5,6 +5,7 @@ import {
   Sort,
   build,
   paginate,
+  projectionBuilder,
 } from "../utils/builder";
 import User from "../models/User";
 import { isValidObjectId } from "mongoose";
@@ -21,7 +22,7 @@ export const index = async (
   const search: Search = {
     value: request.query.search,
     trash: request.query.trash,
-    fields: ["firstName", "lastName", "email"],
+    fields: ["firstName", "lastName", "email", "address", "phone", "gender"],
   };
 
   const project: Project = {
@@ -30,13 +31,19 @@ export const index = async (
       default: {
         firstName: true,
         lastName: true,
+        email: true,
+        phone: true,
+        address: true,
+        gender: true,
+        birthDay: true,
+        isAdmin: true
       },
     },
   };
 
   const sort: Sort = {
     value: request.query.sort,
-    fields: ["firstName", "lastName", "email"],
+    fields: ["firstName", "lastName", "address", "gender", "phone", "email", "birthDay"],
   };
 
   const query = build({ sort, search, project, page: request.query.page });
@@ -67,7 +74,25 @@ export const show = async (request: Request<Record<string, string>>, response: R
     throw new BadRequestException("Id is not valid")
   }
 
-  const user = await User.findOne({ _id: id });
+  const project: Project = {
+    value: typeof request.query.project === "string" ? request.query.project : undefined,
+    fields: {
+      default: {
+        isAdmin: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        address: true,
+        gender: true,
+        birthDay: true
+      }
+    }
+  }
+
+  let projection = projectionBuilder(project);
+
+  const user = await User.findOne({ _id: id }, projection);
 
   if (!user) {
     throw new NotFoundException("User Not found")
@@ -101,7 +126,7 @@ export const store = async (request: StoreRequest, response: Response) => {
     gender,
     phone,
     verifiedAt,
-    birthDay: new Date(birthDay)
+    birthDay
   })
 
   await user.save()
@@ -111,7 +136,6 @@ export const store = async (request: StoreRequest, response: Response) => {
 };
 
 export const update = async (request: UpdateRequest, response: Response) => {
-
   const { id } = request.params;
   const body = request.body
 
@@ -121,7 +145,7 @@ export const update = async (request: UpdateRequest, response: Response) => {
 
   const user = await User.findOneAndUpdate(
     { _id: id },
-    { $set: { ...body, birthDay: new Date(body.birthDay) } },
+    { $set: body },
     { new: true }
   );
 
@@ -129,7 +153,7 @@ export const update = async (request: UpdateRequest, response: Response) => {
     throw new NotFoundException("User does not exists")
   }
 
-  return response.json(user)
+  return response.json(user.prepare())
 };
 
 export const destroy = async (request: Request<Record<string, string>>, response: Response) => {

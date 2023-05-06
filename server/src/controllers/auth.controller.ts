@@ -80,7 +80,7 @@ export const register = async (
     address: body.address,
     phone: body.phone,
     gender: body.gender,
-    birthDay: new Date(body.birthDay)
+    birthDay: body.birthDay
   });
 
   /* generating access token  */
