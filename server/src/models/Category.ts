@@ -20,12 +20,12 @@ const categorySchema = new Schema(
   {
     timestamps: true,
     methods: {
-      softDelete: async function () {
-        const user = this;
-        user.deletedAt = new Date();
+      softDelete: async function() {
+        const category = this;
+        category.deletedAt = new Date();
 
-        await user.save();
-        return user;
+        await category.save();
+        return category;
       },
     },
   }
