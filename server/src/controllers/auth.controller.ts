@@ -79,7 +79,8 @@ export const register = async (
     password: bcrypt.hashSync(body.password, Number(config.SALT)),
     address: body.address,
     phone: body.phone,
-    gender: body.gender
+    gender: body.gender,
+    birthDay: new Date(body.birthDay)
   });
 
   /* generating access token  */
@@ -349,6 +350,7 @@ export const updateUserInformation = async (
   if (body.address) user.address = body.address;
   if (body.phone) user.phone = body.phone;
   if (body.gender) user.gender = body.gender;
+  if (body.birthDay) user.birthDay = new Date(body.birthDay);
 
   await user.save();
 

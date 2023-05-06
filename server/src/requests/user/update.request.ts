@@ -16,6 +16,7 @@ export interface UpdateRequest extends Request {
     address?: string;
     gender?: string;
     phone?: string;
+    birthDay: string
   }
 }
 
@@ -38,6 +39,7 @@ const validate: Validate = (request: Request) => {
     address: z.string().max(255).optional(),
     phone: z.string().max(255).optional(),
     gender: z.enum(["f", "m"]).optional(),
+    birthDay: z.string().datetime().optional()
   })
     .refine(({ password, password_confirmation }) => {
       if (password || password_confirmation) {

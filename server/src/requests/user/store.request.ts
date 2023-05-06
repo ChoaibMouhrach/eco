@@ -14,7 +14,8 @@ export interface StoreRequest extends Request {
     verifiedAt: string | null;
     address: string;
     phone: string;
-    gender: string
+    gender: string;
+    birthDay: string
   }
 }
 
@@ -36,7 +37,8 @@ const validate: Validate = async (request: Request) => {
     verifiedAt: z.string().datetime().nullable().default(null),
     phone: z.string().max(255),
     address: z.string().max(255),
-    gender: z.enum(["M", "F"])
+    gender: z.enum(["M", "F"]),
+    birthDay: z.string().datetime()
   })
     .refine(({ password_confirmation, password }) => password === password_confirmation, {
       path: ["password_confirmation"],
