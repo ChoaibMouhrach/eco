@@ -12,7 +12,7 @@ export const guard = ({
 }) => {
   return async (
     request: AuthRequest,
-    response: Response,
+    _response: Response,
     next: NextFunction
   ) => {
     if (authorize && !Boolean(authorize(request.auth?.user))) {

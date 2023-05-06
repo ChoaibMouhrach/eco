@@ -7,7 +7,7 @@ import { UnauthorizedException } from "../common";
 
 export default async function authAccessToken(
   request: AuthRequest,
-  response: Response,
+  _response: Response,
   next: NextFunction
 ) {
   const authorization = request.headers.authorization;
