@@ -13,6 +13,7 @@ export interface UpdateUserInfoRequest extends AuthRequest {
     address?: string;
     gender?: string;
     phone?: string
+    birthDay: string
   };
 }
 
@@ -23,6 +24,7 @@ const validate: Validate = (request: Request) => {
       lastName: z.string().min(3).max(60).optional(),
       address: z.string().max(255).optional(),
       phone: z.string().max(255).optional(),
+      birthDay: z.string().datetime().optional(),
       gender: z.enum(["f", "m"]).optional(),
       email: z
         .string()

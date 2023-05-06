@@ -87,7 +87,8 @@ export const store = async (request: StoreRequest, response: Response) => {
     verifiedAt,
     address,
     phone,
-    gender
+    gender,
+    birthDay
   } = request.body
 
   const user = new User({
@@ -99,7 +100,8 @@ export const store = async (request: StoreRequest, response: Response) => {
     address,
     gender,
     phone,
-    verifiedAt
+    verifiedAt,
+    birthDay: new Date(birthDay)
   })
 
   await user.save()
@@ -119,7 +121,7 @@ export const update = async (request: UpdateRequest, response: Response) => {
 
   const user = await User.findOneAndUpdate(
     { _id: id },
-    { $set: body },
+    { $set: { ...body, birthDay: new Date(body.birthDay) } },
     { new: true }
   );
 

@@ -30,6 +30,10 @@ const userSchema = new Schema<UserDocument>(
       enum: ["M", "F"],
       required: true
     },
+    birthDay: {
+      type: Date,
+      required: true,
+    },
     isAdmin: {
       type: Boolean,
       default: false,
