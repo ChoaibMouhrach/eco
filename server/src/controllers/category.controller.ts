@@ -122,10 +122,15 @@ export const destroy = async (request: DeleteReqeust, response: Response) => {
 
   const category = await Category.findOne({ _id: id });
 
-  if (category && !category.deletedAt) {
-    await category.softDelete();
-    return response.sendStatus(204);
+  if (!category) {
+    throw new NotFoundException("Category Not Found");
   }
 
-  throw new NotFoundException("Category Not Found");
+  if (category.deletedAt) {
+    await category.deleteOne()
+  } else {
+    await category.softDelete();
+  }
+
+  return response.sendStatus(204);
 };

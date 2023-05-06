@@ -229,13 +229,15 @@ export const destroy = async (request: Request, response: Response) => {
 
   const product = await Product.findOne({ _id: id });
 
-  if (!product || (product && product.deletedAt)) {
+  if (!product) {
     throw new NotFoundException("Product not found");
   }
 
-  product.deletedAt = new Date();
-
-  await product.save();
+  if (product.deletedAt) {
+    await product.deleteOne()
+  } else {
+    await product.softDelete()
+  }
 
   return response.sendStatus(204);
 };
