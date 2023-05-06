@@ -45,6 +45,15 @@ const productSchema = new Schema(
   },
   {
     timestamps: true,
+    methods: {
+      softDelete: async function() {
+        const product = this;
+        product.deletedAt = new Date();
+
+        await product.save();
+        return product;
+      },
+    }
   }
 );
 

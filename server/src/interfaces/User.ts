@@ -15,10 +15,8 @@ export interface User extends Document {
 }
 
 export interface UserDocument extends Document, User {
-  prepare: () => Omit<
-    User,
-    "password" | "refreshTokens" | "forgotPasswordTokens" | "confirmEmailTokens"
-  >;
+  prepare: () => Omit<User, "password" | "refreshTokens" | "forgotPasswordTokens" | "confirmEmailTokens">;
+  softDelete: () => Promise<User>
 }
 
 export interface Auth {
