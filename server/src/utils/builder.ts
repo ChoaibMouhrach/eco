@@ -34,18 +34,27 @@ export const build = (
 
   pipeLineStages.push({ $match: queryBuilder(data.search) });
 
-  if (data.project.value)
-    pipeLineStages.push({ $project: projectionBuilder(data.project) });
+  if (data.project.value) {
+    const project = projectionBuilder(data.project)
 
-  if (data.sort.value)
+    if (Object.keys(project).length) pipeLineStages.push({ $project: projectionBuilder(data.project) });
+  }
+
+  if (data.sort.value) {
     pipeLineStages.push({ $sort: sortingBuilder(data.sort) });
+  }
 
   let pagination = paginationBuilder(data.page);
+
   pipeLineStages = [
     ...pipeLineStages,
     { $skip: pagination.skip },
     { $limit: pagination.limit },
   ];
+
+  console.log(
+    JSON.stringify(pipeLineStages, null, 4)
+  )
 
   return pipeLineStages;
 };
