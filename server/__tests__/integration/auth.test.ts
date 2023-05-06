@@ -8,9 +8,7 @@ import { parse } from "../../src/utils/cookies";
 import jwt from "jsonwebtoken";
 
 const makeUser = () => {
-
   const password = hashSync(userPayload.password, Number(config.SALT));
-
   return {
     ...userPayload,
     password,
@@ -144,18 +142,15 @@ describe("POST /register", () => {
   });
 
   it("Should return 400 with Email Address is already taken", async () => {
-    const password = hashSync(userPayload.password, Number(config.SALT));
 
     const user = new User(makeUser());
-
     await user.save();
 
     const response = await request(await makeApp())
       .post("/register")
       .send({
         ...userPayload,
-        password,
-        password_confirmation: password,
+        password_confirmation: userPayload.password,
       });
 
     expect(response.status).toBe(400);
@@ -176,23 +171,60 @@ describe("POST /register", () => {
     expect(response.body?.statusCode).toBe(400);
 
     expect(response.body?.message).toMatchObject([
-      { path: ["firstName"], message: "Required" },
       {
-        path: ["lastName"],
-        message: "Required",
+       "path": [
+          "firstName"
+        ],
+        "message": "Required"
       },
       {
-        path: ["email"],
-        message: "Required",
+       "path": [
+          "lastName"
+        ],
+        "message": "Required"
       },
       {
-        path: ["password"],
-        message: "Required",
+       "path": [
+          "email"
+        ],
+        "message": "Required"
       },
       {
-        path: ["password_confirmation"],
-        message: "Required",
+       "path": [
+          "birthDay"
+        ],
+        "message": "Required"
       },
+      {
+       "path": [
+          "address"
+        ],
+        "message": "Required"
+      },
+      {
+       "path": [
+          "gender"
+        ],
+        "message": "Required"
+      },
+      {
+        "path": [
+          "phone"
+        ],
+        "message": "Required"
+      },
+      {
+       "path": [
+          "password"
+        ],
+        "message": "Required"
+      },
+      {
+       "path": [
+          "password_confirmation"
+        ],
+        "message": "Required"
+      }
     ]);
 
     expect(response.body?.error).toBe("Bad Request");

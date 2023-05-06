@@ -6,6 +6,10 @@ export const userPayload = {
   lastName: "doe",
   email: "john@eco.com",
   password: "password",
+  address: "address54646513",
+  phone: "+1000000",
+  birthDay: new Date(),
+  gender: "M"
 };
 
 export const adminPayload = {
@@ -14,7 +18,11 @@ export const adminPayload = {
   email: "admin@eco.com",
   password: hashSync("password", Number(config.SALT)),
   isAdmin: true,
-  verifiedAt: new Date()
+  verifiedAt: new Date(),
+  address: "address54646513",
+  phone: "+1000000",
+  birthDay: new Date(),
+  gender: "F"
 };
 
 export const categoryPayload = {

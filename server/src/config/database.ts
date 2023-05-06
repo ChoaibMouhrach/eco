@@ -13,9 +13,13 @@ export default async function connectDB() {
       firstName: "admin",
       lastName: "admin",
       email: "admin@eco.com",
-      verifiedAt: new Date(),
-      isAdmin: true,
       password: bcrypt.hashSync("password", Number(config.SALT)),
+      isAdmin: true,
+      verifiedAt: new Date(),
+      address: "address54646513",
+      phone: "+1000000",
+      birthDay: new Date(),
+      gender: "F"
     });
     await user.save();
   }
