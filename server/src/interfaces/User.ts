@@ -9,6 +9,10 @@ export interface User extends Document {
   password: string;
   deletedAt: Date | null;
   verifiedAt: Date | null;
+  address: string;
+  phone: string;
+  gender: string;
+  birthDay: Date;
   forgotPasswordTokens: { token: string; createdAt: Date }[];
   confirmEmailTokens: { token: string; createdAt: Date }[];
   refreshTokens: { token: string; createdAt: Date }[];

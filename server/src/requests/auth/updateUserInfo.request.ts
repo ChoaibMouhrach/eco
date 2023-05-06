@@ -10,6 +10,10 @@ export interface UpdateUserInfoRequest extends AuthRequest {
     lastName?: string;
     email?: string;
     password: string;
+    address?: string;
+    gender?: string;
+    phone?: string
+    birthDay: string
   };
 }
 
@@ -18,6 +22,10 @@ const validate: Validate = (request: Request) => {
     .object({
       firstName: z.string().min(3).max(60).optional(),
       lastName: z.string().min(3).max(60).optional(),
+      address: z.string().min(8).max(255).optional(),
+      phone: z.string().max(255).optional(),
+      birthDay: z.string().datetime().optional(),
+      gender: z.enum(["f", "m"]).optional(),
       email: z
         .string()
         .email()

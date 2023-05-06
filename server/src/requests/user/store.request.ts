@@ -11,7 +11,11 @@ export interface StoreRequest extends Request {
     email: string;
     password: string;
     isAdmin: boolean;
-    verifiedAt: string | null
+    verifiedAt: string | null;
+    address: string;
+    phone: string;
+    gender: string;
+    birthDay: string
   }
 }
 
@@ -30,7 +34,11 @@ const validate: Validate = async (request: Request) => {
     password: z.string().min(8),
     password_confirmation: z.string().min(8),
     isAdmin: z.boolean().default(false),
-    verifiedAt: z.string().datetime().nullable().default(null)
+    verifiedAt: z.string().datetime().nullable().default(null),
+    phone: z.string().max(255),
+    address: z.string().min(8).max(255),
+    gender: z.enum(["M", "F"]),
+    birthDay: z.string().datetime()
   })
     .refine(({ password_confirmation, password }) => password === password_confirmation, {
       path: ["password_confirmation"],
