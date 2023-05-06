@@ -132,10 +132,16 @@ export const destroy = async (request: Request<Record<string, string>>, response
     throw new BadRequestException("Id is not valid");
   }
 
-  const user = await User.findOneAndDelete({ _id: id })
+  const user = await User.findOne({ _id: id })
 
   if (!user) {
     throw new NotFoundException("User does not exists")
+  }
+
+  if (user.deletedAt) {
+    await user.deleteOne()
+  } else {
+    await user.softDelete()
   }
 
   return response.sendStatus(204)
