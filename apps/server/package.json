@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@eco/server",
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",

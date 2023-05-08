@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express'
 import {
   getUser,
   login,
@@ -12,80 +12,64 @@ import {
   updateUserInformation,
   updateUserPassword,
   deleteAccount,
-} from "../controllers/auth.controller";
-import authRefreshToken from "../middlewares/authRefreshToken";
-import authAccessToken from "../middlewares/authAccessToken";
-import { rateLimit } from "express-rate-limit";
-import { guard } from "../middlewares/guard";
-import loginRequest from "../requests/auth/login.request";
-import forgotPasswordRequest from "../requests/auth/forgotPassword.request";
-import resetPasswordRequest from "../requests/auth/resetPassword.request";
-import updateUserInfo from "../requests/auth/updateUserInfo.request";
-import updateUserPasswordRequest from "../requests/auth/updateUserPassword.request";
-import registerRequest from "../requests/auth/register.request";
+} from '../controllers/auth.controller'
+import authRefreshToken from '../middlewares/authRefreshToken'
+import authAccessToken from '../middlewares/authAccessToken'
+import { rateLimit } from 'express-rate-limit'
+import { guard } from '../middlewares/guard'
+import loginRequest from '../requests/auth/login.request'
+import forgotPasswordRequest from '../requests/auth/forgotPassword.request'
+import resetPasswordRequest from '../requests/auth/resetPassword.request'
+import updateUserInfo from '../requests/auth/updateUserInfo.request'
+import updateUserPasswordRequest from '../requests/auth/updateUserPassword.request'
+import registerRequest from '../requests/auth/register.request'
 
 // rate limit of 5 attempts per hour
 const emailsRateLimit = rateLimit({
   max: 5,
   windowMs: 60 * 60 * 1000,
-});
+})
 
-const router = Router();
+const router = Router()
 
 /* Login users */
-router.post("/login", guard(loginRequest), login);
+router.post('/login', guard(loginRequest), login)
 
 /* Register users */
-router.post("/register", guard(registerRequest), register);
+router.post('/register', guard(registerRequest), register)
 
 /* Get User information */
-router.get("/me", authAccessToken, getUser);
+router.get('/me', authAccessToken, getUser)
 
 /* Delete User */
-router.delete("/me", authAccessToken, deleteAccount);
+router.delete('/me', authAccessToken, deleteAccount)
 
 /* Update User Information */
-router.patch(
-  "/me",
-  [authAccessToken, guard(updateUserInfo)],
-  updateUserInformation
-);
+router.patch('/me', [authAccessToken, guard(updateUserInfo)], updateUserInformation)
 
 /* Logout Users */
-router.post("/logout", authRefreshToken, logout);
+router.post('/logout', authRefreshToken, logout)
 
 /* Refresh Token */
-router.post("/refresh", authRefreshToken, refresh);
+router.post('/refresh', authRefreshToken, refresh)
 
 /* Send reset password email */
-router.post(
-  "/forgot-password",
-  [emailsRateLimit, guard(forgotPasswordRequest)],
-  forgotPassword
-);
+router.post('/forgot-password', [emailsRateLimit, guard(forgotPasswordRequest)], forgotPassword)
 
 /* Reset Password */
-router.post(
-  "/reset-password/:token",
-  guard(resetPasswordRequest),
-  resetPassword
-);
+router.post('/reset-password/:token', guard(resetPasswordRequest), resetPassword)
 
 /* Send confirmation email */
-router.post(
-  "/send-confirmation-email",
-  [emailsRateLimit, authAccessToken],
-  sendConfirmationEmail
-);
+router.post('/send-confirmation-email', [emailsRateLimit, authAccessToken], sendConfirmationEmail)
 
 /* Confirm email address */
-router.post("/confirm-email/:token", configEmailAddress);
+router.post('/confirm-email/:token', configEmailAddress)
 
 /* Update User Password */
 router.post(
-  "/change-password",
+  '/change-password',
   [authAccessToken, guard(updateUserPasswordRequest)],
-  updateUserPassword
-);
+  updateUserPassword,
+)
 
-export default router;
+export default router

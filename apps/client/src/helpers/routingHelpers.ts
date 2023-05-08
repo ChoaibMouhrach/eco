@@ -3,4 +3,4 @@ export const redirect = (destination: string) => ({
     destination,
     permanent: true,
   },
-});
+})

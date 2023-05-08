@@ -1,26 +1,26 @@
-import { z } from "zod";
-import { Authorize, Validate } from "../../interfaces/Request";
-import { User } from "../../interfaces/User";
-import { Request } from "express";
-import Category from "../../models/Category";
-import { parseObject } from "../../utils/request";
-import { isValidObjectId } from "mongoose";
+import { z } from 'zod'
+import { Authorize, Validate } from '../../interfaces/Request'
+import { User } from '../../interfaces/User'
+import { Request } from 'express'
+import Category from '../../models/Category'
+import { parseObject } from '../../utils/request'
+import { isValidObjectId } from 'mongoose'
 
 export interface StoreProductRequest extends Request {
   body: {
-    name: string;
-    price: number;
-    discount?: number;
-    inStock?: boolean;
-    categories: string[];
-    shortDescription: string;
-    description: string;
-  };
+    name: string
+    price: number
+    discount?: number
+    inStock?: boolean
+    categories: string[]
+    shortDescription: string
+    description: string
+  }
 }
 
 const authorize: Authorize = (user?: User) => {
-  return user && user.isAdmin;
-};
+  return user && user.isAdmin
+}
 
 const validate: Validate = (request: Request) => {
   const fields = {
@@ -34,25 +34,25 @@ const validate: Validate = (request: Request) => {
       .array(
         z.string().refine(
           async (_id) => {
-            return isValidObjectId(_id) && (await Category.exists({ _id }));
+            return isValidObjectId(_id) && (await Category.exists({ _id }))
           },
-          { message: "Category does not exists" }
-        )
+          { message: 'Category does not exists' },
+        ),
       )
       .refine((categories) => categories.length, {
-        message: "At least one category is required",
+        message: 'At least one category is required',
       }),
-  };
+  }
 
   const schema = z.object(fields).refine(() => request.files?.length, {
-    message: "Required",
-    path: ["images"],
-  });
+    message: 'Required',
+    path: ['images'],
+  })
 
-  return schema.safeParseAsync(parseObject(request));
-};
+  return schema.safeParseAsync(parseObject(request))
+}
 
 export default {
   authorize,
   validate,
-};
+}

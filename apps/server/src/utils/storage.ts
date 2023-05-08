@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "fs";
-import { join } from "path";
-import { config } from "../config/config";
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs'
+import { join } from 'path'
+import { config } from '../config/config'
 
 /**
  * Store an uploaded file in the public storage directory.
@@ -10,25 +10,23 @@ import { config } from "../config/config";
  */
 export const publicStore = (
   file: undefined | Express.Multer.File,
-  location: string
+  location: string,
 ): string | undefined => {
   if (file) {
     if (!existsSync(join(config.PUBLIC_STORAGE, location))) {
-      mkdirSync(join(config.PUBLIC_STORAGE, location), { recursive: true });
+      mkdirSync(join(config.PUBLIC_STORAGE, location), { recursive: true })
     }
 
-    const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${
-      file.originalname
-    }`;
-    const path = join(location, fileName);
+    const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${file.originalname}`
+    const path = join(location, fileName)
 
-    writeFileSync(join(config.PUBLIC_STORAGE, path), file.buffer);
+    writeFileSync(join(config.PUBLIC_STORAGE, path), file.buffer)
 
-    return path;
+    return path
   }
 
-  return undefined;
-};
+  return undefined
+}
 
 /**
  * Delete a file from the public storage directory.
@@ -37,9 +35,9 @@ export const publicStore = (
  */
 export const publicDestroy = (location: string) => {
   try {
-    unlinkSync(join(config.PUBLIC_STORAGE, location));
-    return true;
+    unlinkSync(join(config.PUBLIC_STORAGE, location))
+    return true
   } catch (err) {
-    return true;
+    return true
   }
-};
+}

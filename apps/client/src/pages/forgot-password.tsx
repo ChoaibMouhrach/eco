@@ -1,22 +1,22 @@
-import Button from "@/components/Button";
-import Input from "@/components/Form/Input";
-import RootSuccess from "@/components/RootSuccess";
-import AuthLayout from "@/components/layouts/AuthLayout";
-import { useForgotPasswordMutation } from "@/features/apis/authApi";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import Button from '@/components/Button'
+import Input from '@/components/Form/Input'
+import RootSuccess from '@/components/RootSuccess'
+import AuthLayout from '@/components/layouts/AuthLayout'
+import { useForgotPasswordMutation } from '@/features/apis/authApi'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 type Credentials = {
-  email: string;
-};
+  email: string
+}
 
 const schema = z.object({
   email: z.string().email(),
-});
+})
 
 export default function ForgotPassword() {
-  const [forgotPassword, { isLoading, data }] = useForgotPasswordMutation();
+  const [forgotPassword, { isLoading, data }] = useForgotPasswordMutation()
 
   const {
     register,
@@ -24,11 +24,10 @@ export default function ForgotPassword() {
     formState: { errors },
   } = useForm<Credentials>({
     resolver: zodResolver(schema),
-    mode: "onChange",
-  });
+    mode: 'onChange',
+  })
 
-  const onSubmit = async (credentials: Credentials) =>
-    await forgotPassword(credentials);
+  const onSubmit = async (credentials: Credentials) => await forgotPassword(credentials)
 
   return (
     <AuthLayout
@@ -36,17 +35,17 @@ export default function ForgotPassword() {
       title="Forgot Your Password?"
       description="Please fill out the form below and you will receive an email from us."
     >
-      <RootSuccess message={data ? data.message : ""} />
+      <RootSuccess message={data ? data.message : ''} />
 
       <Input
-        {...register("email")}
+        {...register('email')}
         type="email"
         name="email"
         placeholder="Email Address..."
         error={errors.email}
       />
 
-      <Button state={isLoading ? "loading" : undefined}>Send</Button>
+      <Button state={isLoading ? 'loading' : undefined}>Send</Button>
 
       <div className="py-4 relative flex flex-col items-center justify-center">
         <div className="h-[1px] bg-slate-400 rounded-md w-full"></div>
@@ -57,5 +56,5 @@ export default function ForgotPassword() {
         Sign in
       </Button>
     </AuthLayout>
-  );
+  )
 }

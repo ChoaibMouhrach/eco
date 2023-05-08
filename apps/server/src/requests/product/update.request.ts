@@ -1,26 +1,26 @@
-import { Request } from "express";
-import { Authorize, Validate } from "../../interfaces/Request";
-import { User } from "../../interfaces/User";
-import { z } from "zod";
-import { parseObject } from "../../utils/request";
-import { isValidObjectId } from "mongoose";
-import Category from "../../models/Category";
+import { Request } from 'express'
+import { Authorize, Validate } from '../../interfaces/Request'
+import { User } from '../../interfaces/User'
+import { z } from 'zod'
+import { parseObject } from '../../utils/request'
+import { isValidObjectId } from 'mongoose'
+import Category from '../../models/Category'
 
 export interface UpdateProductRequest extends Request {
   body: {
-    name?: string;
-    price?: number;
-    discount?: number;
-    inStock?: boolean;
-    description?: string;
-    shortDescription?: string;
-    categories?: string[];
-  };
+    name?: string
+    price?: number
+    discount?: number
+    inStock?: boolean
+    description?: string
+    shortDescription?: string
+    categories?: string[]
+  }
 }
 
 const authorize: Authorize = (user?: User) => {
-  return user && user.isAdmin;
-};
+  return user && user.isAdmin
+}
 
 const validate: Validate = (request: Request) => {
   const schema = z
@@ -35,27 +35,27 @@ const validate: Validate = (request: Request) => {
         .array(
           z.string().refine(
             async (_id) => {
-              return isValidObjectId(_id) && (await Category.exists({ _id }));
+              return isValidObjectId(_id) && (await Category.exists({ _id }))
             },
-            { message: "Category does not exists" }
-          )
+            { message: 'Category does not exists' },
+          ),
         )
         .refine((categories) => categories.length, {
-          message: "At least one category is required",
+          message: 'At least one category is required',
         })
         .optional(),
     })
     .refine(
       (data) => {
-        return Object.keys(data).length;
+        return Object.keys(data).length
       },
-      { message: "Nothing to update", path: ["root"] }
-    );
+      { message: 'Nothing to update', path: ['root'] },
+    )
 
-  return schema.safeParseAsync(parseObject(request));
-};
+  return schema.safeParseAsync(parseObject(request))
+}
 
 export default {
   authorize,
   validate,
-};
+}
