@@ -3,9 +3,9 @@ export default function Card({
   title,
   description,
 }: {
-  title?: string;
-  description: string;
-  children: React.ReactNode;
+  title?: string
+  description: string
+  children: React.ReactNode
 }) {
   return (
     <div className="border rounded-md">
@@ -15,5 +15,5 @@ export default function Card({
       </div>
       {children}
     </div>
-  );
+  )
 }

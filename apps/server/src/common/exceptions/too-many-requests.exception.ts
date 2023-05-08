@@ -1,5 +1,5 @@
-import { HttpStatus } from "../enums";
-import { HttpException } from "./http.exception";
+import { HttpStatus } from '../enums'
+import { HttpException } from './http.exception'
 
 /**
  * Defines an HTTP exception for ***Not Found*** type errors.
@@ -16,15 +16,11 @@ export class TooManyRequestsException extends HttpException {
    */
   constructor(
     objectOrError?: string | Record<string, any> | any,
-    description = "Too many requests"
+    description = 'Too many requests',
   ) {
     super(
-      HttpException.createBody(
-        objectOrError,
-        description,
-        HttpStatus.TOO_MANY_REQUESTS
-      ),
-      HttpStatus.TOO_MANY_REQUESTS
-    );
+      HttpException.createBody(objectOrError, description, HttpStatus.TOO_MANY_REQUESTS),
+      HttpStatus.TOO_MANY_REQUESTS,
+    )
   }
 }

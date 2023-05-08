@@ -5,49 +5,48 @@
 export class HttpException extends Error {
   constructor(
     private readonly response: string | Record<string, any>,
-    private readonly status: number
+    private readonly status: number,
   ) {
-    super();
-    this.setMessage();
-    this.setName();
+    super()
+    this.setMessage()
+    this.setName()
   }
 
   public setMessage() {
-    if (typeof this.response === "string") {
-      this.message = this.response;
+    if (typeof this.response === 'string') {
+      this.message = this.response
     } else if (
-      typeof this.response === "object" &&
-      typeof (this.response as Record<string, any>).message === "string"
+      typeof this.response === 'object' &&
+      typeof (this.response as Record<string, any>).message === 'string'
     ) {
-      this.message = (this.response as Record<string, any>).message;
+      this.message = (this.response as Record<string, any>).message
     } else if (this.constructor) {
-      this.message = this.constructor.name;
+      this.message = this.constructor.name
     }
   }
 
   public setName() {
-    this.name = this.constructor.name;
+    this.name = this.constructor.name
   }
 
   public getResponse() {
-    return this.response;
+    return this.response
   }
 
   public getStatus() {
-    return this.status;
+    return this.status
   }
 
   public static createBody(
     objectOrErrorMessage: object | string,
     description?: string,
-    statusCode?: number
+    statusCode?: number,
   ) {
     if (!objectOrErrorMessage) {
-      return { statusCode, message: description };
+      return { statusCode, message: description }
     }
-    return typeof objectOrErrorMessage === "object" &&
-      !Array.isArray(objectOrErrorMessage)
+    return typeof objectOrErrorMessage === 'object' && !Array.isArray(objectOrErrorMessage)
       ? objectOrErrorMessage
-      : { statusCode, message: objectOrErrorMessage, error: description };
+      : { statusCode, message: objectOrErrorMessage, error: description }
   }
 }
