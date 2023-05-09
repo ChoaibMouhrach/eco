@@ -1,6 +1,20 @@
 import { Request } from 'express'
 import { Document } from 'mongoose'
 
+export interface IUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  address: string;
+  phone: string;
+  gender: "M" | "F";
+  birthDay: Date;
+  verifiedAt: Date,
+  isAdmin?: boolean;
+  deletedAt?: Date;
+}
+
 export interface User extends Document {
   firstName: string
   lastName: string
