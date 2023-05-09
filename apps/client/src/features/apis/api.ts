@@ -2,7 +2,7 @@ import { BaseQueryApi, FetchArgs, createApi, fetchBaseQuery } from '@reduxjs/too
 import Cookies from 'js-cookie'
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:8000/',
+  baseUrl: 'http://localhost:6000/',
   credentials: 'include',
 })
 
