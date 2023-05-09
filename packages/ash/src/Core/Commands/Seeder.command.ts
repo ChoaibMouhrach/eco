@@ -50,7 +50,7 @@ export class SeederCommand implements ICommand {
       const seeder = new Seeder();
 
       // run the seeder
-      seeders.push(seeder.run())
+      seeders.push(seeder.execute())
 
     }
 

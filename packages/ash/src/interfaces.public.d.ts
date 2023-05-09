@@ -6,7 +6,12 @@ export interface IConfig {
   DB_PORT: string
 };
 
+export interface IFactory {
+  definition: () => any
+}
+
 export interface ISeeder {
+  readonly execute: () => Promise<void>
   run: () => Promise<void>
 }
 

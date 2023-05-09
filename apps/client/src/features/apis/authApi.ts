@@ -70,7 +70,6 @@ export const authApi = api.injectEndpoints({
         method: 'post',
         body: data,
         headers: {
-          camado: 'choaib',
           Authorization: `Bearer ${Cookies.get('accessToken')}`,
         },
       }),
