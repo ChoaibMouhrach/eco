@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon --esm src/server.ts",
     "build": "rm -rf dist && swc src -d dist --copy-files",
+    "ash": "ts-node ./ash.ts",
     "build:start": "rm -rf dist && swc src -d dist && node dist/server.js",
     "start": "node dist/server.js",
     "test": "jest",
@@ -28,6 +29,7 @@
     "@types/node": "^18.15.5",
     "@types/nodemailer": "^6.4.7",
     "@types/supertest": "^2.0.12",
+    "ash": "*",
     "jest": "^29.5.0",
     "mongodb-memory-server": "^8.12.2",
     "nodemon": "^2.0.22",
@@ -49,7 +51,7 @@
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^6.7.0",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.2",
+    "mongoose": "^7.1.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.1",
     "zod": "^3.21.4"
