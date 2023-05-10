@@ -1,4 +1,4 @@
-import { AshException } from "./Ash.exception";
+import { AshException } from './Ash.exception'
 
 export class SeederException extends AshException {
   public constructor(message: string, description: string) {

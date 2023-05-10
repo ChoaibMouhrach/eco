@@ -1,10 +1,8 @@
-import { ICommand } from "../../interfaces";
+import { ICommand } from '../../interfaces'
+import { Command } from '../packages'
 
-export class MakerCommand  implements ICommand {
-  public static commands: string[] = ["make:model"];
+export class MakerCommand extends Command implements ICommand {
+  public static commands: string[] = ["make:seeder"]
 
-  public execute() {
-
-  }
-
+  public execute() { }
 }
