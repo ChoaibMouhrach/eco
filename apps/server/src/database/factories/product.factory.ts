@@ -1,28 +1,18 @@
-import { IFactory } from "ash";
-import Category from "../../models/Category";
-import { faker } from "@faker-js/faker"
-import { IProduct } from "../../interfaces/Product";
+import { IFactory } from 'ash'
+import { faker } from '@faker-js/faker/locale/de'
+import { IProduct } from '../../interfaces/Product'
 
 export default class ProductFactory implements IFactory {
-
-  public async definition(): Promise<IProduct> {
-
-    const category = new Category({
-      name: faker.helpers.unique(faker.name.firstName)
-    });
-
-    await category.save()
-
+  public async definition(categories: string[]): Promise<IProduct> {
     return {
       name: faker.name.firstName(),
-      images: ["image"],
+      images: ['image'],
       price: Math.floor(Math.random() * 1000) + 100,
       discount: Math.floor(Math.random() * 100) + 1,
       inStock: Math.floor(Math.random() * 10) + 1 > 5,
       shortDescription: faker.random.words(8),
       description: faker.random.words(22),
-      categories: [String(category._id)]
+      categories,
     }
   }
-
 }

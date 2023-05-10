@@ -1,2 +1,2 @@
-export * from "./Seeder.command"
-export * from "./Maker.command"
+export * from './Seeder.command'
+export * from './Maker.command'

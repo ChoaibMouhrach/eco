@@ -1,4 +1,5 @@
 - [ ] index
+
   - [ ] Search
     - id
     - by category
@@ -13,7 +14,7 @@
     - discount
     - name
   - [ ] Order
-    - desc 
+    - desc
     - inc
   - [ ] Fields
     - images
@@ -24,7 +25,8 @@
     - short description
     - description
 
-- [ ] show 
+- [ ] show
+
   - [ ] Fields
     - id
     - images
@@ -36,6 +38,7 @@
     - description
 
 - [ ] store
+
   - images
   - name
   - price
@@ -45,6 +48,7 @@
   - description
 
 - [ ] update
+
   - images
   - name
   - price

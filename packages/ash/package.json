@@ -5,5 +5,9 @@
   "license": "MIT",
   "dependencies": {
     "mongoose": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "chalk": "^5.2.0"
   }
 }

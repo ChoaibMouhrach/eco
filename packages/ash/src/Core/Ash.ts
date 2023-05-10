@@ -1,33 +1,34 @@
-import { CommandInstance } from "../interfaces";
-import { IConfig } from "../interfaces.public";
-import * as Commands from "./Commands/index"
-import { AshException, CommandNotFound } from "./Exceptions";
+import mongoose from 'mongoose'
+import { Command } from '../interfaces'
+import { IConfig } from '../interfaces.public'
+import * as Commands from './Commands/index'
+import { AshException, CommandNotFound } from './Exceptions'
 
 export class Ash {
+  public static config: IConfig
 
-  public static config: IConfig;
-  public args: string[];
-  public actions: string[] = [];
-  public options: string[] = [];
-  public flags: string[] = [];
+  public args: string[]
+
+  public actions: string[] = []
+  public options: string[] = []
+  public flags: string[] = []
 
   public constructor(config: IConfig, args: string[]) {
-    Ash.config = config;
+    Ash.config = config
     this.args = args
 
-    this.distribute();
+    this.distribute()
   }
 
   private distribute() {
     for (let arg of this.args.slice(2)) {
-
-      if (arg.includes("--")) {
+      if (arg.includes('--')) {
         this.options.push(arg)
         continue
       }
 
-      if (arg.includes("-")) {
-        this.flags.push(arg);
+      if (arg.includes('-')) {
+        this.flags.push(arg)
         continue
       }
 
@@ -35,13 +36,13 @@ export class Ash {
     }
   }
 
-  private getCommand(): CommandInstance | null {
-    let TargetedCommand: CommandInstance | null = null;
+  private getCommand(): Command | null {
+    let TargetedCommand: Command | null = null
 
     for (let Command of Object.values(Commands)) {
       if (Command.commands.includes(this.actions[0])) {
-        TargetedCommand = Command;
-        break;
+        TargetedCommand = Command
+        break
       }
     }
 
@@ -53,23 +54,20 @@ export class Ash {
       throw new CommandNotFound()
     }
 
-    const Command: CommandInstance | null = this.getCommand();
+    const Command: Command | null = this.getCommand()
 
     if (Command) {
-      const command = new Command();
-      await command.execute({ actions: this.actions, options: this.options, flags: this.flags })
-      return;
+      const command = new Command({ actions: this.actions, options: this.options, flags: this.flags })
+      await command.execute()
+      return
     }
 
     throw new CommandNotFound()
   }
 
   public async run() {
-
     try {
-
       await this.execute()
-
     } catch (err) {
 
       if (err instanceof AshException) {
@@ -80,5 +78,6 @@ export class Ash {
       console.log(err)
     }
 
+    mongoose.connection?.close()
   }
 }

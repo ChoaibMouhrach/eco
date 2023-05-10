@@ -8,9 +8,11 @@ const productSchema = new Schema<IProductDocument>(
       type: String,
       required: true,
     },
-    images: [{
-      type: String,
-    }],
+    images: [
+      {
+        type: String,
+      },
+    ],
     price: {
       type: Number,
       required: true,
@@ -45,7 +47,7 @@ const productSchema = new Schema<IProductDocument>(
   {
     timestamps: true,
     methods: {
-      softDelete: async function() {
+      softDelete: async function () {
         const product = this
         product.deletedAt = new Date()
 

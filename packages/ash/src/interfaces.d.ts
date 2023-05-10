@@ -1,8 +1,19 @@
-import { ISeeder } from "./interfaces.public"
+import { ISeeder } from './interfaces.public'
 
 export interface ICommand {
-  public execute: (param: { actions: string[], options: string[], flags: string[] }) => void | Promise<void>
-}
 
-export type Command = new () => ICommand
-export type Seeder = new () => ISeeder
+  public flags: string[];
+  public actions: string[];
+  public options: string[];
+
+  execute: () => void | Promise<void>
+};
+
+export interface ICommandConstructor {
+  actions: string[];
+  flags: string[];
+  options: string[];
+};
+
+export type Command = new (data: ICommandConstructor) => ICommand
+export type Seeder = new (actions: string[], flags: string[], options: string[]) => ISeeder
