@@ -1,16 +1,16 @@
-import { useForm } from 'react-hook-form'
-import Button from '../Button'
-import Card from '../Card'
-import CardBody from '../Card/CardBody'
-import CardFooter from '../Card/CardFooter'
-import Input from '../Form/Input'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { ChangePassword } from '@/types/Auth'
-import { useChangePasswordMutation } from '@/features/apis/authApi'
-import { handleResponseErrors } from '@/lib/responseHandlers'
-import { ResponseError } from '@/types/Errors'
-import useToast from '@/hooks/useToast'
+import { useForm } from 'react-hook-form';
+import Button from '../Button';
+import Card from '../Card';
+import CardBody from '../Card/CardBody';
+import CardFooter from '../Card/CardFooter';
+import Input from '../Form/Input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { ChangePassword } from '@/types/Auth';
+import { useChangePasswordMutation } from '@/features/apis/authApi';
+import { handleResponseErrors } from '@/lib/responseHandlers';
+import { ResponseError } from '@/types/Errors';
+import useToast from '@/hooks/useToast';
 
 const schema = z
   .object({
@@ -25,11 +25,11 @@ const schema = z
   .refine((data) => data.password !== data.old_password, {
     path: ['password'],
     message: 'The old Password and Password should not match',
-  })
+  });
 
 export default function UpdatePassword() {
-  const { toast } = useToast()
-  const [changePassword, { isLoading, isSuccess, isError }] = useChangePasswordMutation()
+  const { toast } = useToast();
+  const [changePassword, { isLoading, isSuccess, isError }] = useChangePasswordMutation();
 
   const {
     register,
@@ -40,26 +40,26 @@ export default function UpdatePassword() {
   } = useForm<ChangePassword>({
     resolver: zodResolver(schema),
     mode: 'onChange',
-  })
+  });
 
   const onSubmit = async (data: ChangePassword) => {
-    const response = await changePassword(data)
+    const response = await changePassword(data);
 
     if ('data' in response) {
-      toast([{ title: 'Password Update', variation: 'success' }])
-      setValue('old_password', '')
-      setValue('password', '')
-      setValue('password_confirmation', '')
+      toast([{ title: 'Password Update', variation: 'success' }]);
+      setValue('old_password', '');
+      setValue('password', '');
+      setValue('password_confirmation', '');
     }
 
     if ('error' in response) {
       handleResponseErrors<keyof ChangePassword>(
         response.error as ResponseError<keyof ChangePassword>,
         setError,
-      )
-      toast([{ title: 'Updating Password failed', variation: 'danger' }])
+      );
+      toast([{ title: 'Updating Password failed', variation: 'danger' }]);
     }
-  }
+  };
 
   return (
     <Card description="Change Your Password">
@@ -98,5 +98,5 @@ export default function UpdatePassword() {
         </CardFooter>
       </form>
     </Card>
-  )
+  );
 }

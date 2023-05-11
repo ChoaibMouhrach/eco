@@ -1,5 +1,5 @@
-import { HttpStatus } from '../enums'
-import { HttpException } from './http.exception'
+import { HttpStatus } from '../enums';
+import { HttpException } from './http.exception';
 
 /**
  * Defines an HTTP exception for *Forbidden* type errors.
@@ -18,6 +18,6 @@ export class ForbiddenException extends HttpException {
     super(
       HttpException.createBody(objectOrError, description, HttpStatus.FORBIDDEN),
       HttpStatus.FORBIDDEN,
-    )
+    );
   }
 }

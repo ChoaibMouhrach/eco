@@ -1,4 +1,4 @@
-import type { Config } from 'jest'
+import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest',
@@ -9,6 +9,6 @@ const config: Config = {
   testMatch: ['<rootDir>/__tests__/**/*.test.ts'],
   testTimeout: 0,
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'],
-}
+};
 
-export default config
+export default config;

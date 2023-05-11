@@ -1,12 +1,12 @@
-import { connect } from 'mongoose'
-import { config } from './config'
-import User from '../models/User'
-import bcrypt from 'bcrypt'
+import { connect } from 'mongoose';
+import { config } from './config';
+import User from '../models/User';
+import bcrypt from 'bcrypt';
 
 export default async function connectDB() {
   await connect(`${config.DATABASE_HOST}:${config.DATABASE_PORT}`, {
     dbName: config.DATABASE_NAME,
-  })
+  });
 
   if (!(await User.exists({ email: 'admin@eco.com' }))) {
     const user = new User({
@@ -20,7 +20,7 @@ export default async function connectDB() {
       phone: '+1000000',
       birthDay: new Date(),
       gender: 'F',
-    })
-    await user.save()
+    });
+    await user.save();
   }
 }

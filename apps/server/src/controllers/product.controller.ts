@@ -1,18 +1,18 @@
-import { Response, Request } from 'express'
-import { Project, Search, Sort, build, paginate, projectionBuilder } from '../utils/builder'
-import Product from '../models/Product'
-import { StoreProductRequest } from '../requests/product/store.request'
-import { publicStore } from '../utils/storage'
-import { PipelineStage, isValidObjectId } from 'mongoose'
-import { UpdateProductRequest } from '../requests/product/update.request'
-import { BadRequestException, NotFoundException } from '../common'
+import { Response, Request } from 'express';
+import { Project, Search, Sort, build, paginate, projectionBuilder } from '../utils/builder';
+import Product from '../models/Product';
+import { StoreProductRequest } from '../requests/product/store.request';
+import { publicStore } from '../utils/storage';
+import { PipelineStage, isValidObjectId } from 'mongoose';
+import { UpdateProductRequest } from '../requests/product/update.request';
+import { BadRequestException, NotFoundException } from '../common';
 
 export const index = async (request: Request, response: Response) => {
   /* sorting stage */
   const sort: Sort = {
     value: typeof request.query.sort === 'string' ? request.query.sort : undefined,
     fields: ['name', 'price', 'discount'],
-  }
+  };
 
   /* projection stage */
   const project: Project = {
@@ -36,17 +36,17 @@ export const index = async (request: Request, response: Response) => {
         },
       },
     },
-  }
+  };
 
   /* searching stage */
   const search: Search = {
     value: typeof request.query.search === 'string' ? request.query.search : undefined,
     trash: typeof request.query.trash === 'string' ? request.query.trash : undefined,
     fields: ['name', 'description', 'shortDescription', 'categories.name'],
-  }
+  };
 
   /* page for pagination */
-  const page = typeof request.query.page === 'string' ? request.query.page : undefined
+  const page = typeof request.query.page === 'string' ? request.query.page : undefined;
 
   /* relationship with categories collection */
   const defaultPipeLineStage: PipelineStage[] = [
@@ -58,26 +58,26 @@ export const index = async (request: Request, response: Response) => {
         as: 'categories',
       },
     },
-  ]
+  ];
 
   /* build the query */
-  const query = build({ search, project, sort, page }, defaultPipeLineStage)
+  const query = build({ search, project, sort, page }, defaultPipeLineStage);
 
   /* retrieving products */
-  const products = await Product.aggregate(query)
+  const products = await Product.aggregate(query);
 
-  const responseBody = await paginate(products, page, Product, search.trash)
+  const responseBody = await paginate(products, page, Product, search.trash);
 
-  return response.json(responseBody)
-}
+  return response.json(responseBody);
+};
 
 export const show = async (request: Request, response: Response) => {
   /* extract the id */
-  const { id } = request.params
+  const { id } = request.params;
 
   /* checking if the id is valid */
   if (!isValidObjectId(id)) {
-    throw new BadRequestException('Id is invalid')
+    throw new BadRequestException('Id is invalid');
   }
 
   /* data */
@@ -97,35 +97,36 @@ export const show = async (request: Request, response: Response) => {
         },
       },
     },
-  }
+  };
 
   /* Creating the projection */
-  const projection = projectionBuilder(data)
+  const projection = projectionBuilder(data);
 
   /* Retrieve product */
-  const product = await Product.findOne({ _id: id }, projection)
+  const product = await Product.findOne({ _id: id }, projection);
 
   /* check if the product does exists and its not soft deleted */
   if (!product || (product && product.deletedAt)) {
-    throw new NotFoundException('Product does not exists')
+    throw new NotFoundException('Product does not exists');
   }
 
   /* setting the response body */
-  return response.json(product)
-}
+  return response.json(product);
+};
 
 export const store = async (request: StoreProductRequest, response: Response) => {
-  const { name, price, discount, inStock, shortDescription, description, categories } = request.body
+  const { name, price, discount, inStock, shortDescription, description, categories } =
+    request.body;
 
   /* files */
-  const files = request.files as Express.Multer.File[]
+  const files = request.files as Express.Multer.File[];
 
   /* images */
-  const images: string[] = []
+  const images: string[] = [];
 
   /* store the files */
   for (const file of files) {
-    images.push(publicStore(file, 'products') as string)
+    images.push(publicStore(file, 'products') as string);
   }
 
   /* create the product */
@@ -138,37 +139,37 @@ export const store = async (request: StoreProductRequest, response: Response) =>
     description,
     categories,
     images,
-  })
+  });
 
   /* save the product */
-  await product.save()
+  await product.save();
 
   /* return the product */
-  return response.json(product)
-}
+  return response.json(product);
+};
 
 export const update = async (request: UpdateProductRequest, response: Response) => {
-  const { id } = request.params as { id: string }
+  const { id } = request.params as { id: string };
 
-  const body = request.body
+  const body = request.body;
 
   if (!isValidObjectId(id)) {
-    throw new BadRequestException('Invalid id')
+    throw new BadRequestException('Invalid id');
   }
 
-  const product = await Product.findOne({ _id: id })
+  const product = await Product.findOne({ _id: id });
 
   if (!product || (product && product.deletedAt)) {
-    throw new NotFoundException('Product not found')
+    throw new NotFoundException('Product not found');
   }
 
-  const images: string[] = []
+  const images: string[] = [];
 
   if (request.files) {
-    const files = request.files as Express.Multer.File[]
+    const files = request.files as Express.Multer.File[];
 
     for (const file of files) {
-      images.push(publicStore(file, 'products') as string)
+      images.push(publicStore(file, 'products') as string);
     }
   }
 
@@ -178,33 +179,33 @@ export const update = async (request: UpdateProductRequest, response: Response) 
       ...body,
       images: images.length ? images : undefined,
     },
-  )
+  );
 
   return response.json({
     ...product.toObject(),
     ...body,
     images: images.length ? images : undefined,
-  })
-}
+  });
+};
 
 export const destroy = async (request: Request, response: Response) => {
-  const { id } = request.params as { id: string }
+  const { id } = request.params as { id: string };
 
   if (!isValidObjectId(id)) {
-    throw new BadRequestException('Id is invalid')
+    throw new BadRequestException('Id is invalid');
   }
 
-  const product = await Product.findOne({ _id: id })
+  const product = await Product.findOne({ _id: id });
 
   if (!product) {
-    throw new NotFoundException('Product not found')
+    throw new NotFoundException('Product not found');
   }
 
   if (product.deletedAt) {
-    await product.deleteOne()
+    await product.deleteOne();
   } else {
-    await product.softDelete()
+    await product.softDelete();
   }
 
-  return response.sendStatus(204)
-}
+  return response.sendStatus(204);
+};

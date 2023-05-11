@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import Nav from '../Nav'
-import SideNav from '../SideNav'
-import Button from '../Button'
-import { useSendConfirmationEmailMutation } from '@/features/apis/authApi'
-import { getUser } from '@/features/slices/userSlice'
-import { useSelector } from 'react-redux'
+import { useState } from 'react';
+import Nav from '../Nav';
+import SideNav from '../SideNav';
+import Button from '../Button';
+import { useSendConfirmationEmailMutation } from '@/features/apis/authApi';
+import { getUser } from '@/features/slices/userSlice';
+import { useSelector } from 'react-redux';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [navBarShown, setNavBarShown] = useState<boolean>(false)
-  const [sendConfirmationEmail, { isLoading }] = useSendConfirmationEmailMutation()
-  const user = useSelector(getUser)
+  const [navBarShown, setNavBarShown] = useState<boolean>(false);
+  const [sendConfirmationEmail, { isLoading }] = useSendConfirmationEmailMutation();
+  const user = useSelector(getUser);
 
   return (
     <main className="h-screen flex flex-col">
@@ -32,5 +32,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </article>
       </section>
     </main>
-  )
+  );
 }

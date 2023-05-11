@@ -1,9 +1,9 @@
-import { useRef } from 'react'
-import { Item } from '@radix-ui/react-dropdown-menu'
-import Link from 'next/link'
+import { useRef } from 'react';
+import { Item } from '@radix-ui/react-dropdown-menu';
+import Link from 'next/link';
 
 const LinkItem = ({ href, children }: { href: string; children: React.ReactNode }) => {
-  const linkRef = useRef<HTMLAnchorElement | null>(null)
+  const linkRef = useRef<HTMLAnchorElement | null>(null);
 
   return (
     <Item onSelect={() => linkRef.current?.click()} className="group outline-none px-2">
@@ -15,7 +15,7 @@ const LinkItem = ({ href, children }: { href: string; children: React.ReactNode 
         {children}
       </Link>
     </Item>
-  )
-}
+  );
+};
 
-export default LinkItem
+export default LinkItem;

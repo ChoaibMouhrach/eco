@@ -1,5 +1,5 @@
-import { faker } from '@faker-js/faker/locale/en'
-import { IUser } from '../../interfaces/User'
+import { faker } from '@faker-js/faker/locale/en';
+import { IUser } from '../../interfaces/User';
 
 export default class UserFactory {
   public definition(): IUser {
@@ -14,6 +14,6 @@ export default class UserFactory {
       birthDay: faker.date.birthdate(),
       isAdmin: false,
       verifiedAt: new Date(),
-    }
+    };
   }
 }

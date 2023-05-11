@@ -1,20 +1,20 @@
-import * as DropDown from '@radix-ui/react-dropdown-menu'
-import LinkItem from './LinkItem'
-import ButtonItem from './ButtonItem'
-import { useSignOutMutation } from '@/features/apis/authApi'
-import { useRouter } from 'next/router'
+import * as DropDown from '@radix-ui/react-dropdown-menu';
+import LinkItem from './LinkItem';
+import ButtonItem from './ButtonItem';
+import { useSignOutMutation } from '@/features/apis/authApi';
+import { useRouter } from 'next/router';
 
 const DropDownMenu = () => {
-  const router = useRouter()
-  const [signOut] = useSignOutMutation()
+  const router = useRouter();
+  const [signOut] = useSignOutMutation();
 
   const handleSignOut = async () => {
-    const response = await signOut()
+    const response = await signOut();
 
     if ('data' in response) {
-      router.push('/sign-in')
+      router.push('/sign-in');
     }
-  }
+  };
 
   return (
     <DropDown.Root>
@@ -37,7 +37,7 @@ const DropDownMenu = () => {
         </DropDown.Content>
       </DropDown.Portal>
     </DropDown.Root>
-  )
-}
+  );
+};
 
-export default DropDownMenu
+export default DropDownMenu;

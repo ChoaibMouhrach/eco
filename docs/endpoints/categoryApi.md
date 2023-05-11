@@ -160,7 +160,7 @@ Thoes endpoints helps interacting with the categories collection.
 ```typescript
 // RESPONSE STATUS 400
 {
-  message: 'Nothing to update'
+  message: 'Nothing to update';
 }
 ```
 

@@ -1,16 +1,16 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { IconType } from 'react-icons'
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { IconType } from 'react-icons';
 
 interface Item extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  icon: IconType
+  icon: IconType;
 }
 
 const Item = ({ href, icon, children }: Item) => {
-  const Icon = icon
+  const Icon = icon;
 
-  href = href ? '/dashboard' + href : '/dashboard'
-  let pathName = useRouter().pathname
+  href = href ? '/dashboard' + href : '/dashboard';
+  let pathName = useRouter().pathname;
 
   return (
     <Link
@@ -26,7 +26,7 @@ const Item = ({ href, icon, children }: Item) => {
       <Icon className="h-5 w-5 fill-gray-800" />
       {children}
     </Link>
-  )
-}
+  );
+};
 
-export default Item
+export default Item;

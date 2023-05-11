@@ -1,19 +1,19 @@
-import Link from 'next/link'
-import DropDownMenu from '../DropDown'
-import { MdMenu } from 'react-icons/md'
-import navItems from '@/config/navItems'
-import Button from '../Button'
-import { useSelector } from 'react-redux'
-import { getUser } from '@/features/slices/userSlice'
+import Link from 'next/link';
+import DropDownMenu from '../DropDown';
+import { MdMenu } from 'react-icons/md';
+import navItems from '@/config/navItems';
+import Button from '../Button';
+import { useSelector } from 'react-redux';
+import { getUser } from '@/features/slices/userSlice';
 
 export default function Nav({
   navBarShown,
   setNavBarShown,
 }: {
-  navBarShown: boolean
-  setNavBarShown: React.Dispatch<React.SetStateAction<boolean>>
+  navBarShown: boolean;
+  setNavBarShown: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const user = useSelector(getUser)
+  const user = useSelector(getUser);
 
   return (
     <nav className="h-16 flex items-stretch justify-center">
@@ -50,5 +50,5 @@ export default function Nav({
         </div>
       </div>
     </nav>
-  )
+  );
 }

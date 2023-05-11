@@ -1,28 +1,28 @@
-import { Request } from 'express'
-import { Authorize, Validate } from '../../interfaces/Request'
-import { User as IUser } from '../../interfaces/User'
-import { z } from 'zod'
-import User from '../../models/User'
+import { Request } from 'express';
+import { Authorize, Validate } from '../../interfaces/Request';
+import { User as IUser } from '../../interfaces/User';
+import { z } from 'zod';
+import User from '../../models/User';
 
 export interface UpdateRequest extends Request {
   body: {
-    firstName?: string
-    lastName?: string
-    email?: string
-    password?: string
-    password_confirmation?: string
-    isAdmin?: boolean
-    verifiedAt?: string
-    address?: string
-    gender?: string
-    phone?: string
-    birthDay: string
-  }
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    password_confirmation?: string;
+    isAdmin?: boolean;
+    verifiedAt?: string;
+    address?: string;
+    gender?: string;
+    phone?: string;
+    birthDay: string;
+  };
 }
 
 const authorize: Authorize = (user?: IUser) => {
-  return user && user.isAdmin
-}
+  return user && user.isAdmin;
+};
 
 const validate: Validate = (request: Request) => {
   const schema = z
@@ -34,7 +34,7 @@ const validate: Validate = (request: Request) => {
         .email()
         .refine(
           async (email) => {
-            return !(await User.findOne({ email }))
+            return !(await User.findOne({ email }));
           },
           { message: 'User not found' },
         )
@@ -51,17 +51,17 @@ const validate: Validate = (request: Request) => {
     .refine(
       ({ password, password_confirmation }) => {
         if (password || password_confirmation) {
-          return password === password_confirmation
+          return password === password_confirmation;
         }
-        return true
+        return true;
       },
       { message: 'Password and password_confirmation does not match' },
-    )
+    );
 
-  return schema.safeParseAsync(request.body)
-}
+  return schema.safeParseAsync(request.body);
+};
 
 export default {
   authorize,
   validate,
-}
+};

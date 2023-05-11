@@ -1,6 +1,6 @@
-import { cva } from 'class-variance-authority'
-import { ForwardedRef, forwardRef } from 'react'
-import { FieldError } from 'react-hook-form'
+import { cva } from 'class-variance-authority';
+import { ForwardedRef, forwardRef } from 'react';
+import { FieldError } from 'react-hook-form';
 
 const input = cva(
   'w-full py-2 px-3 border transition duration-300 border-gray-300 rounded-md focus:border-gray-900 outline-none',
@@ -11,14 +11,14 @@ const input = cva(
       },
     },
   },
-)
+);
 
 interface InputProps
   extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
-  variation?: 'contained'
-  className?: string
-  error?: FieldError
-  containerClassName?: string
+  variation?: 'contained';
+  className?: string;
+  error?: FieldError;
+  containerClassName?: string;
 }
 
 const Input = forwardRef(
@@ -31,8 +31,8 @@ const Input = forwardRef(
         <input ref={ref} className={input({ variation, className })} {...props} />
         {error && <p className="text-red-700 text-sm">{error.message}</p>}
       </div>
-    )
+    );
   },
-)
+);
 
-export default Input
+export default Input;

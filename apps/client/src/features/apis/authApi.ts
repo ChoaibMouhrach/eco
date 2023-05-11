@@ -1,7 +1,7 @@
-import { ChangePassword, Credentials, UpdateUserInfo, UserSignUp } from '@/types/Auth'
-import api from './api'
-import { User } from '@/types/Auth'
-import Cookies from 'js-cookie'
+import { ChangePassword, Credentials, UpdateUserInfo, UserSignUp } from '@/types/Auth';
+import api from './api';
+import { User } from '@/types/Auth';
+import Cookies from 'js-cookie';
 
 export const authApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -48,7 +48,7 @@ export const authApi = api.injectEndpoints({
     }),
     forgotPassword: build.mutation<
       {
-        message: 'If the email address exists within our database an email will be sent to it'
+        message: 'If the email address exists within our database an email will be sent to it';
       },
       { email: string }
     >({
@@ -83,9 +83,9 @@ export const authApi = api.injectEndpoints({
         password,
         password_confirmation,
       }: {
-        token: string
-        password: string
-        password_confirmation: string
+        token: string;
+        password: string;
+        password_confirmation: string;
       }) => ({
         url: `/reset-password/${token}`,
         method: 'post',
@@ -115,7 +115,7 @@ export const authApi = api.injectEndpoints({
       }),
     }),
   }),
-})
+});
 
 export const {
   useForgotPasswordMutation,
@@ -129,4 +129,4 @@ export const {
   useChangePasswordMutation,
   useUpdateUserInfoMutation,
   useDeleteAccoutMutation,
-} = authApi
+} = authApi;
