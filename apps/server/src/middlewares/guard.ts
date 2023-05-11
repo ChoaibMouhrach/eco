@@ -1,22 +1,12 @@
-import { NextFunction, Response } from "express";
-import { AuthRequest } from "../interfaces/User";
-import { Authorize, Validate } from "../interfaces/Request";
-import { BadRequestException, ForbiddenException } from "../common";
+import { NextFunction, Response } from 'express';
+import { AuthRequest } from '../interfaces/User';
+import { Authorize, Validate } from '../interfaces/Request';
+import { BadRequestException, ForbiddenException } from '../common';
 
-export const guard = ({
-  authorize,
-  validate,
-}: {
-  authorize?: Authorize;
-  validate?: Validate;
-}) => {
-  return async (
-    request: AuthRequest,
-    _response: Response,
-    next: NextFunction
-  ) => {
-    if (authorize && !Boolean(authorize(request.auth?.user))) {
-      throw new ForbiddenException("Permission required");
+export const guard = ({ authorize, validate }: { authorize?: Authorize; validate?: Validate }) => {
+  return async (request: AuthRequest, _response: Response, next: NextFunction) => {
+    if (authorize && !authorize(request.auth?.user)) {
+      throw new ForbiddenException('Permission required');
     }
 
     if (validate) {

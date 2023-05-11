@@ -1,12 +1,12 @@
-import { dirname, join } from "path";
-import z from "zod";
-import { config as dotenvConfig } from "dotenv";
+import { dirname, join } from 'path';
+import z from 'zod';
+import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig();
 
 const envSchema = z.object({
   /* ENVIRONMENT */
-  ENV: z.enum(["development", "production"]),
+  ENV: z.enum(['development', 'production']),
 
   /* SERVER PORT */
   PORT: z
@@ -75,12 +75,12 @@ const envSchema = z.object({
 const validation = envSchema.safeParse(process.env);
 
 if (!validation.success) {
-  let firstIssue = validation.error.issues[0];
+  const firstIssue = validation.error.issues[0];
   throw Error(`${firstIssue.path[0]} ${firstIssue.message}`);
 }
 
 const ROOT_DIR = dirname(__dirname);
-const STORAGE = join(ROOT_DIR, "storage");
+const STORAGE = join(ROOT_DIR, 'storage');
 
 const internalVariables = {
   /* The root directory of the project */
@@ -90,14 +90,14 @@ const internalVariables = {
   STORAGE,
 
   /* The Public directory in the Storage */
-  PUBLIC_STORAGE: join(STORAGE, "public"),
+  PUBLIC_STORAGE: join(STORAGE, 'public'),
 
   /* The Private directory in the Storage */
-  PRIVATE_STORAGE: join(STORAGE, "private"),
+  PRIVATE_STORAGE: join(STORAGE, 'private'),
 
   /* Expiration time */
-  FORGOT_PASSWORD_TOKEN_EXPIRATION_PERIODE: "15m",
-  EMAIL_CONFIRMATION_TOKEN_EXPIRATION_PERIOD: "15m",
+  FORGOT_PASSWORD_TOKEN_EXPIRATION_PERIODE: '15m',
+  EMAIL_CONFIRMATION_TOKEN_EXPIRATION_PERIOD: '15m',
 
   /* In Minutes */
   EMAIL_CONFIRMATION_RATE_LIMIT: 60,

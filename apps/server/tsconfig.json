@@ -1,18 +1,7 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "skipLibCheck": true,
     "outDir": "dist"
-  },
-  "ts-node": {
-    "swc": true
   },
   "include": ["./src"],
   "exclude": ["./node_modules", "__tests__"]

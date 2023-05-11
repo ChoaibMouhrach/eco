@@ -5,28 +5,32 @@
 Thoes endpoints helps interacting with the categories collection.
 
 ## Config
-|key|Value|
-|:--|:--|
-|Base Url|` /categories `|
-|Default Headers|`Content-Type : application/json`|
+
+| key             | Value                             |
+| :-------------- | :-------------------------------- |
+| Base Url        | `/categories`                     |
+| Default Headers | `Content-Type : application/json` |
 
 ## List Categories
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|GET|`/`|
+
+| Verb | Path |
+| :--- | :--- |
+| GET  | `/`  |
 
 ### Query Params
-|Key|Type|Default behaviour|Description|
-|:--|:--|:--|:--|
-|?search=|string|Retrieve the initial 8 documents.|Utilize it to search the entire collection of categories by name and id.|
-|?sort=|( "_id" \| "createdAt" \| "updatedAt" \| "deletedAt" \| "name" )|Fetch the first 8 documents|Utilize it to sort the entire collection of categories.|
-|?order=|( "desc" \| "asc" )|Fetch the first 8 documents|Utilize it to order the sorted collection of categories.|
-|?fields=|( "_id" \| "name" \| "image" \| "A few or all of the prior fields delimited by a comma." )|Retrieve the initial 8 documents.|Utilize it to specify the fields of each document in the entire collection of categories.|
-|?trash=|boolean|Retrieve the initial 8 documents that have not been deleted.|Utilize it to display the soft deleted documents in the entire collection of categories.|
+
+| Key      | Type                                                                                        | Default behaviour                                            | Description                                                                               |
+| :------- | :------------------------------------------------------------------------------------------ | :----------------------------------------------------------- | :---------------------------------------------------------------------------------------- |
+| ?search= | string                                                                                      | Retrieve the initial 8 documents.                            | Utilize it to search the entire collection of categories by name and id.                  |
+| ?sort=   | ( "\_id" \| "createdAt" \| "updatedAt" \| "deletedAt" \| "name" )                           | Fetch the first 8 documents                                  | Utilize it to sort the entire collection of categories.                                   |
+| ?order=  | ( "desc" \| "asc" )                                                                         | Fetch the first 8 documents                                  | Utilize it to order the sorted collection of categories.                                  |
+| ?fields= | ( "\_id" \| "name" \| "image" \| "A few or all of the prior fields delimited by a comma." ) | Retrieve the initial 9 documents.                            | Utilize it to specify the fields of each document in the entire collection of categories. |
+| ?trash=  | boolean                                                                                     | Retrieve the initial 8 documents that have not been deleted. | Utilize it to display the soft deleted documents in the entire collection of categories.  |
 
 ### Response
+
 ```typescript
 // RESPONSE STATUS 200
 {
@@ -52,26 +56,29 @@ Thoes endpoints helps interacting with the categories collection.
 > Requires being authorized
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|POST|`/`|
+
+| Verb | Path |
+| :--- | :--- |
+| POST | `/`  |
 
 #### Headers
-|Key|Value|
-|:--|:--|
-|Content-Type|multipart/form-data;|
-|Authorization|Bearer ${accessToken}|
+
+| Key           | Value                 |
+| :------------ | :-------------------- |
+| Content-Type  | multipart/form-data;  |
+| Authorization | Bearer ${accessToken} |
 
 #### Body
 
 > **Hint:** use FormData
 
-|Key|Type|Description|
-|--|--|--|
-|name|string|The name of the category|
-|image?|file|The Image of the category|
+| Key    | Type   | Description               |
+| ------ | ------ | ------------------------- |
+| name   | string | The name of the category  |
+| image? | file   | The Image of the category |
 
 ### Response
+
 ```typescript
 // RESPONSE STATUS 201
 {
@@ -84,6 +91,7 @@ Thoes endpoints helps interacting with the categories collection.
   "__v": 0
 }
 ```
+
 ```typescript
 // RESPONSE STATUS 400
 {
@@ -96,41 +104,47 @@ Thoes endpoints helps interacting with the categories collection.
 > Requires being authorized
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|PATCH|`/:id`|
+
+| Verb  | Path   |
+| :---- | :----- |
+| PATCH | `/:id` |
 
 #### Headers
-|Key|Value|
-|:--|:--|
-|Content-Type|multipart/form-data;|
-|Authorization|Bearer ${accessToken}|
+
+| Key           | Value                 |
+| :------------ | :-------------------- |
+| Content-Type  | multipart/form-data;  |
+| Authorization | Bearer ${accessToken} |
 
 #### Body
 
 > **Hint:** use FormData
 
-|Key|Type|Description|
-|--|--|--|
-|name?|string|The name of the category|
-|image?|file|The Image of the category|
+| Key    | Type   | Description               |
+| ------ | ------ | ------------------------- |
+| name?  | string | The name of the category  |
+| image? | file   | The Image of the category |
 
 ### Response
+
 ```typescript
 // RESPONSE STATUS 204
 ```
+
 ```typescript
 // RESPONSE STATUS 404
 {
     "message": "Category not found"
 }
-````
+```
+
 ```typescript
 // RESPONSE STATUS 400
 {
     "message": "The provided id is invalid"
 }
 ```
+
 ```typescript
 // RESPONSE STATUS 400
 {
@@ -142,30 +156,36 @@ Thoes endpoints helps interacting with the categories collection.
   ]
 }
 ```
+
 ```typescript
 // RESPONSE STATUS 400
 {
-  message : "Nothing to update"
+  message: 'Nothing to update';
 }
 ```
+
 ## Delete Category
 
 ### Request
-|Verb|Path|
-|:--|:--|
-|DELETE|`/:id`|
+
+| Verb   | Path   |
+| :----- | :----- |
+| DELETE | `/:id` |
 
 #### Headers
-|Key|Value|
-|:--|:--|
-|Content-Type|application/json|
-|Authorization|Bearer ${accessToken}|
+
+| Key           | Value                 |
+| :------------ | :-------------------- |
+| Content-Type  | application/json      |
+| Authorization | Bearer ${accessToken} |
 
 ## Response
+
 ```typescript
 // RESPONSE STATUS 204
 ```
-```typescript 
+
+```typescript
 // RESPONSE STATUS 404
 {
     "message": "Category not found"

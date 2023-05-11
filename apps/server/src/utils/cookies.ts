@@ -5,8 +5,8 @@
 export const parse = (rawCookies: string[]) => {
   const cookies: Record<string, string> = {};
 
-  for (let rawCookie of rawCookies) {
-    let splitRawCookie = rawCookie.split("=");
+  for (const rawCookie of rawCookies) {
+    const splitRawCookie = rawCookie.split('=');
     cookies[splitRawCookie[0]] = splitRawCookie[1];
   }
 

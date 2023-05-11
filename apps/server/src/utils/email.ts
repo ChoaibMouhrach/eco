@@ -1,8 +1,8 @@
-import { config } from "../config/config";
-import nodemailer from "nodemailer";
-import ejs from "ejs";
-import { join } from "path";
-import { readFileSync } from "fs";
+import { config } from '../config/config';
+import nodemailer from 'nodemailer';
+import ejs from 'ejs';
+import { join } from 'path';
+import { readFileSync } from 'fs';
 
 /* Setup the smtp credentials */
 const smtp = {
@@ -15,7 +15,7 @@ const smtp = {
 };
 
 /* creating an instance of the transporter */
-let transporter = nodemailer.createTransport(smtp);
+const transporter = nodemailer.createTransport(smtp);
 
 /**
  * Sends An email with the proper email template
@@ -37,10 +37,7 @@ export const sendMail = async ({
     to,
     subject,
     html: ejs.compile(
-      readFileSync(
-        join(config.ROOT_DIR, "templates/emails", template.path),
-        "utf8"
-      )
+      readFileSync(join(config.ROOT_DIR, 'templates/emails', template.path), 'utf8'),
     )(template.data),
   });
 };

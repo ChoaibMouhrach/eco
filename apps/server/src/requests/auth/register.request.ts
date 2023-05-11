@@ -1,7 +1,7 @@
-import { Request } from "express";
-import { Validate } from "../../interfaces/Request";
-import { z } from "zod";
-import User from "../../models/User";
+import { Request } from 'express';
+import { Validate } from '../../interfaces/Request';
+import { z } from 'zod';
+import User from '../../models/User';
 
 export interface RegisterRequest extends Request {
   body: {
@@ -29,11 +29,11 @@ const validate: Validate = async (request: Request) => {
           async (email) => {
             return !(await User.exists({ email }));
           },
-          { message: "Email Address is already taken" }
+          { message: 'Email Address is already taken' },
         ),
       birthDay: z.string().datetime(),
       address: z.string().min(8).max(255),
-      gender: z.enum(["M", "F"]),
+      gender: z.enum(['M', 'F']),
       phone: z.string().max(255),
       password: z.string().min(8),
       password_confirmation: z.string().min(8),

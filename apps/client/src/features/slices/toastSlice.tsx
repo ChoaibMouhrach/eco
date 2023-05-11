@@ -1,5 +1,5 @@
-import { Toast } from "@/types/Toast";
-import { createSlice } from "@reduxjs/toolkit";
+import { Toast } from '@/types/Toast';
+import { createSlice } from '@reduxjs/toolkit';
 
 type InitialState = {
   value: Toast[];
@@ -10,16 +10,14 @@ const initialState: InitialState = {
 };
 
 const toastSlice = createSlice({
-  name: "toast",
+  name: 'toast',
   initialState,
   reducers: {
     addToasts: (state, { payload }: { payload: Toast[] }) => {
       state.value = [...state.value, ...payload];
     },
     removeToast: (state, { payload }: { payload: number }) => {
-      state.value = state.value.filter(
-        (toast, index: number) => index !== payload
-      );
+      state.value = state.value.filter((toast, index: number) => index !== payload);
     },
   },
 });

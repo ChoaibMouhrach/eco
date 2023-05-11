@@ -1,6 +1,6 @@
-import makeApp from "./app";
-import { config } from "./config/config";
-import connectDB from "./config/database";
+import makeApp from './app';
+import { config } from './config/config';
+import connectDB from './config/database';
 
 async function run() {
   /* Establish database connection */
@@ -10,7 +10,7 @@ async function run() {
   const express_app = await makeApp();
 
   express_app.listen(config.PORT, () =>
-    console.log(`The server is running on port ${config.PORT}`)
+    console.log(`The server is running on port ${config.PORT}`),
   );
 }
 

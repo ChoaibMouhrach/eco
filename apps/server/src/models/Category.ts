@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const categorySchema = new Schema(
   {
@@ -20,7 +20,7 @@ const categorySchema = new Schema(
   {
     timestamps: true,
     methods: {
-      softDelete: async function() {
+      softDelete: async function () {
         const category = this;
         category.deletedAt = new Date();
 
@@ -28,7 +28,7 @@ const categorySchema = new Schema(
         return category;
       },
     },
-  }
+  },
 );
 
-export default model("Category", categorySchema);
+export default model('Category', categorySchema);

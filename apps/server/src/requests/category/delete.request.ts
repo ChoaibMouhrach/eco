@@ -1,5 +1,5 @@
-import { User } from "../../interfaces/User";
-import { Request } from "express";
+import { User } from '../../interfaces/User';
+import { Request } from 'express';
 
 export interface DeleteReqeust extends Request {
   params: {

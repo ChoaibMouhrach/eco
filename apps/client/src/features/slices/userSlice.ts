@@ -1,5 +1,5 @@
-import { User } from "@/types/Auth";
-import { createSlice } from "@reduxjs/toolkit";
+import { User } from '@/types/Auth';
+import { createSlice } from '@reduxjs/toolkit';
 
 type InitialState = {
   value: null | User;
@@ -10,7 +10,7 @@ const initialState: InitialState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     setUser: (state: InitialState, { payload }: { payload: User }) => {

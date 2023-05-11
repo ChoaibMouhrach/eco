@@ -1,12 +1,12 @@
-import { ResponseError } from "@/types/Errors";
-import { ErrorOption } from "react-hook-form";
+import { ResponseError } from '@/types/Errors';
+import { ErrorOption } from 'react-hook-form';
 
 /**
  *Set response Errors
  * */
 export const handleResponseErrors = <T>(
   errors: ResponseError<T>,
-  setError: (name: T | "root", error: ErrorOption) => void
+  setError: (name: T | 'root', error: ErrorOption) => void,
 ) => {
   if (errors.data?.errors) {
     for (let error of errors.data.errors) {
@@ -17,7 +17,7 @@ export const handleResponseErrors = <T>(
   }
 
   if (errors.data?.message) {
-    setError("root", {
+    setError('root', {
       message: errors.data.message,
     });
   }

@@ -1,10 +1,10 @@
-import { z } from "zod";
-import { Authorize, Validate } from "../../interfaces/Request";
-import { User } from "../../interfaces/User";
-import { Request } from "express";
-import Category from "../../models/Category";
-import { parseObject } from "../../utils/request";
-import { isValidObjectId } from "mongoose";
+import { z } from 'zod';
+import { Authorize, Validate } from '../../interfaces/Request';
+import { User } from '../../interfaces/User';
+import { Request } from 'express';
+import Category from '../../models/Category';
+import { parseObject } from '../../utils/request';
+import { isValidObjectId } from 'mongoose';
 
 export interface StoreProductRequest extends Request {
   body: {
@@ -36,17 +36,17 @@ const validate: Validate = (request: Request) => {
           async (_id) => {
             return isValidObjectId(_id) && (await Category.exists({ _id }));
           },
-          { message: "Category does not exists" }
-        )
+          { message: 'Category does not exists' },
+        ),
       )
       .refine((categories) => categories.length, {
-        message: "At least one category is required",
+        message: 'At least one category is required',
       }),
   };
 
   const schema = z.object(fields).refine(() => request.files?.length, {
-    message: "Required",
-    path: ["images"],
+    message: 'Required',
+    path: ['images'],
   });
 
   return schema.safeParseAsync(parseObject(request));

@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { Validate } from "../../interfaces/Request";
-import { Request } from "express";
+import { z } from 'zod';
+import { Validate } from '../../interfaces/Request';
+import { Request } from 'express';
 
 export interface ForgotPasswordRequest extends Request {
   body: {
