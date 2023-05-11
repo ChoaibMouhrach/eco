@@ -1,0 +1,21 @@
+import { Request, Response } from "express"
+
+export const index = async (request: Request, response: Response) => {
+
+};
+
+export const show = async (request: Request, response: Response) => {
+
+};
+
+export const store = async (request: Request, response: Response) => {
+
+};
+
+export const update = async (request: Request, response: Response) => {
+
+};
+
+export const destroy = async (request: Request, response: Response) => {
+
+};

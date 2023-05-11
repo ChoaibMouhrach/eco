@@ -1,5 +1,5 @@
-import Item from './Item'
-import sideNavItems from '@/config/sideNavItems'
+import Item from './Item';
+import sideNavItems from '@/config/sideNavItems';
 
 export default function SideNav({ navBarShown }: { navBarShown: boolean }) {
   return (
@@ -18,5 +18,5 @@ export default function SideNav({ navBarShown }: { navBarShown: boolean }) {
         ))}
       </nav>
     </aside>
-  )
+  );
 }

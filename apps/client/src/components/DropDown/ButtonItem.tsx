@@ -1,11 +1,11 @@
-import { Item } from '@radix-ui/react-dropdown-menu'
-import { useRef } from 'react'
+import { Item } from '@radix-ui/react-dropdown-menu';
+import { useRef } from 'react';
 
 export default function ButtonItem({
   children,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const linkRef = useRef<HTMLAnchorElement | null>(null)
+  const linkRef = useRef<HTMLAnchorElement | null>(null);
   return (
     <Item onSelect={() => linkRef.current?.click()} className="group outline-none px-2">
       <button
@@ -15,5 +15,5 @@ export default function ButtonItem({
         {children}
       </button>
     </Item>
-  )
+  );
 }

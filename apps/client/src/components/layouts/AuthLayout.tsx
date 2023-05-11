@@ -1,4 +1,4 @@
-import { FormEventHandler } from 'react'
+import { FormEventHandler } from 'react';
 
 export default function AuthLayout({
   children,
@@ -6,10 +6,10 @@ export default function AuthLayout({
   description,
   onSubmit,
 }: {
-  children: React.ReactNode
-  onSubmit: FormEventHandler<HTMLFormElement>
-  title: string
-  description: string
+  children: React.ReactNode;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  title: string;
+  description: string;
 }) {
   return (
     <main className="min-h-screen flex items-center justify-center px-4">
@@ -22,5 +22,5 @@ export default function AuthLayout({
         {children}
       </form>
     </main>
-  )
+  );
 }

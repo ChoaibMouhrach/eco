@@ -1,5 +1,5 @@
-import { HttpStatus } from '../enums/http-status.enum'
-import { HttpException } from './http.exception'
+import { HttpStatus } from '../enums/http-status.enum';
+import { HttpException } from './http.exception';
 
 /**
  * Defines an HTTP exception for ***Bad Request*** type errors.
@@ -18,6 +18,6 @@ export class BadRequestException extends HttpException {
     super(
       HttpException.createBody(objectOrError, description, HttpStatus.BAD_REQUEST),
       HttpStatus.BAD_REQUEST,
-    )
+    );
   }
 }

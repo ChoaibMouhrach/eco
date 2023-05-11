@@ -1,22 +1,22 @@
-import Button from '@/components/Button'
-import Input from '@/components/Form/Input'
-import RootSuccess from '@/components/RootSuccess'
-import AuthLayout from '@/components/layouts/AuthLayout'
-import { useForgotPasswordMutation } from '@/features/apis/authApi'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import Button from '@/components/Button';
+import Input from '@/components/Form/Input';
+import RootSuccess from '@/components/RootSuccess';
+import AuthLayout from '@/components/layouts/AuthLayout';
+import { useForgotPasswordMutation } from '@/features/apis/authApi';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 type Credentials = {
-  email: string
-}
+  email: string;
+};
 
 const schema = z.object({
   email: z.string().email(),
-})
+});
 
 export default function ForgotPassword() {
-  const [forgotPassword, { isLoading, data }] = useForgotPasswordMutation()
+  const [forgotPassword, { isLoading, data }] = useForgotPasswordMutation();
 
   const {
     register,
@@ -25,9 +25,9 @@ export default function ForgotPassword() {
   } = useForm<Credentials>({
     resolver: zodResolver(schema),
     mode: 'onChange',
-  })
+  });
 
-  const onSubmit = async (credentials: Credentials) => await forgotPassword(credentials)
+  const onSubmit = async (credentials: Credentials) => await forgotPassword(credentials);
 
   return (
     <AuthLayout
@@ -56,5 +56,5 @@ export default function ForgotPassword() {
         Sign in
       </Button>
     </AuthLayout>
-  )
+  );
 }

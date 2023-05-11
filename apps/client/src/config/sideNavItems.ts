@@ -1,11 +1,11 @@
-import { IconType } from 'react-icons'
-import { MdOutlinePersonOutline } from 'react-icons/md'
+import { IconType } from 'react-icons';
+import { MdOutlinePersonOutline } from 'react-icons/md';
 
 type SideNavConfig = {
-  title: string
-  href: string
-  icon: IconType
-}[]
+  title: string;
+  href: string;
+  icon: IconType;
+}[];
 
 const sideNavItems: SideNavConfig = [
   {
@@ -13,6 +13,6 @@ const sideNavItems: SideNavConfig = [
     href: '/profile',
     icon: MdOutlinePersonOutline,
   },
-]
+];
 
-export default sideNavItems
+export default sideNavItems;

@@ -1,8 +1,8 @@
-import { dirname, join } from 'path'
-import z from 'zod'
-import { config as dotenvConfig } from 'dotenv'
+import { dirname, join } from 'path';
+import z from 'zod';
+import { config as dotenvConfig } from 'dotenv';
 
-dotenvConfig()
+dotenvConfig();
 
 const envSchema = z.object({
   /* ENVIRONMENT */
@@ -70,17 +70,17 @@ const envSchema = z.object({
     .min(1)
     .regex(/^[0-9]+$/gi),
   CLIENT_HOST: z.string().min(1),
-})
+});
 
-const validation = envSchema.safeParse(process.env)
+const validation = envSchema.safeParse(process.env);
 
 if (!validation.success) {
-  const firstIssue = validation.error.issues[0]
-  throw Error(`${firstIssue.path[0]} ${firstIssue.message}`)
+  const firstIssue = validation.error.issues[0];
+  throw Error(`${firstIssue.path[0]} ${firstIssue.message}`);
 }
 
-const ROOT_DIR = dirname(__dirname)
-const STORAGE = join(ROOT_DIR, 'storage')
+const ROOT_DIR = dirname(__dirname);
+const STORAGE = join(ROOT_DIR, 'storage');
 
 const internalVariables = {
   /* The root directory of the project */
@@ -102,6 +102,6 @@ const internalVariables = {
   /* In Minutes */
   EMAIL_CONFIRMATION_RATE_LIMIT: 60,
   FORGOT_PASSWORD_RATE_LIMIT: 60,
-}
+};
 
-export const config = { ...validation.data, ...internalVariables }
+export const config = { ...validation.data, ...internalVariables };

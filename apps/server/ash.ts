@@ -1,8 +1,8 @@
-import { Ash, IConfig } from 'ash'
-import { config } from './src/config/config'
-import { join } from 'path'
+import { Ash, IConfig } from 'ash';
+import { config } from './src/config/config';
+import { join } from 'path';
 
-const ROOT_DIR: string = __dirname
+const ROOT_DIR: string = __dirname;
 
 const ashConfig: IConfig = {
   ROOT_DIR,
@@ -10,8 +10,8 @@ const ashConfig: IConfig = {
   DB_NAME: config.DATABASE_NAME,
   DB_HOST: config.DATABASE_HOST,
   DB_PORT: config.DATABASE_PORT,
-}
+};
 
-const ash = new Ash(ashConfig, process.argv)
+const ash = new Ash(ashConfig, process.argv);
 
-ash.run()
+ash.run();

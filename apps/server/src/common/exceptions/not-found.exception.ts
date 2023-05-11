@@ -1,5 +1,5 @@
-import { HttpException } from './http.exception'
-import { HttpStatus } from '../enums/http-status.enum'
+import { HttpException } from './http.exception';
+import { HttpStatus } from '../enums/http-status.enum';
 
 /**
  * Defines an HTTP exception for ***Not Found*** type errors.
@@ -18,6 +18,6 @@ export class NotFoundException extends HttpException {
     super(
       HttpException.createBody(objectOrError, description, HttpStatus.NOT_FOUND),
       HttpStatus.NOT_FOUND,
-    )
+    );
   }
 }

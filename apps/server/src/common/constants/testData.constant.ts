@@ -1,5 +1,5 @@
-import { hashSync } from 'bcrypt'
-import { config } from '../../config/config'
+import { hashSync } from 'bcrypt';
+import { config } from '../../config/config';
 
 export const userPayload = {
   firstName: 'john',
@@ -10,7 +10,7 @@ export const userPayload = {
   phone: '+1000000',
   birthDay: new Date(),
   gender: 'M',
-}
+};
 
 export const adminPayload = {
   firstName: 'admin',
@@ -23,11 +23,11 @@ export const adminPayload = {
   phone: '+1000000',
   birthDay: new Date(),
   gender: 'F',
-}
+};
 
 export const categoryPayload = {
   name: 'cat',
-}
+};
 
 export const productPayload = {
   name: 'Product',
@@ -36,4 +36,4 @@ export const productPayload = {
   inStock: true,
   shortDescription: 'Short',
   description: 'Long',
-}
+};

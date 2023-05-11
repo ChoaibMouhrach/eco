@@ -1,18 +1,18 @@
-import { removeToast } from '@/features/slices/toastSlice'
-import { Toast } from '@/types/Toast'
-import * as ToastC from '@radix-ui/react-toast'
-import { useEffect } from 'react'
-import { MdClose } from 'react-icons/md'
-import { useDispatch } from 'react-redux'
+import { removeToast } from '@/features/slices/toastSlice';
+import { Toast } from '@/types/Toast';
+import * as ToastC from '@radix-ui/react-toast';
+import { useEffect } from 'react';
+import { MdClose } from 'react-icons/md';
+import { useDispatch } from 'react-redux';
 
 export default function Toast({ variation, title, index }: Toast & { index: number }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setTimeout(() => {
-      dispatch(removeToast(index))
-    }, 5000)
-  }, [])
+      dispatch(removeToast(index));
+    }, 5000);
+  }, []);
 
   return (
     <ToastC.Root
@@ -31,7 +31,7 @@ export default function Toast({ variation, title, index }: Toast & { index: numb
       <ToastC.Action className="[grid-area:_action]" asChild altText="Goto schedule to ">
         <button
           onClick={() => {
-            dispatch(removeToast(index))
+            dispatch(removeToast(index));
           }}
           className="text-white"
         >
@@ -39,5 +39,5 @@ export default function Toast({ variation, title, index }: Toast & { index: numb
         </button>
       </ToastC.Action>
     </ToastC.Root>
-  )
+  );
 }

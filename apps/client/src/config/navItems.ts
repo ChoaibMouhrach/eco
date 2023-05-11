@@ -1,4 +1,4 @@
-type NavItems = { title: string; href: string }[]
+type NavItems = { title: string; href: string }[];
 
 const navItems: NavItems = [
   {
@@ -13,6 +13,6 @@ const navItems: NavItems = [
     title: 'About us',
     href: '/about-us',
   },
-]
+];
 
-export default navItems
+export default navItems;

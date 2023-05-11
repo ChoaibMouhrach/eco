@@ -1,6 +1,6 @@
-import { IFactory } from 'ash'
-import { faker } from '@faker-js/faker/locale/de'
-import { IProduct } from '../../interfaces/Product'
+import { IFactory } from 'ash';
+import { faker } from '@faker-js/faker/locale/de';
+import { IProduct } from '../../interfaces/Product';
 
 export default class ProductFactory implements IFactory {
   public async definition(categories: string[]): Promise<IProduct> {
@@ -13,6 +13,6 @@ export default class ProductFactory implements IFactory {
       shortDescription: faker.random.words(8),
       description: faker.random.words(22),
       categories,
-    }
+    };
   }
 }

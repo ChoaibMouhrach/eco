@@ -1,19 +1,19 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import Button from '@/components/Button'
-import Input from '@/components/Form/Input'
-import { UserSignUp } from '@/types/Auth'
-import RootError from '@/components/RootError'
-import { useSignUpMutation } from '@/features/apis/authApi'
-import { ResponseError } from '@/types/Errors'
-import { useRouter } from 'next/router'
-import { setUser } from '@/features/slices/userSlice'
-import { useDispatch } from 'react-redux'
-import { GetServerSideProps } from 'next'
-import { guest } from '@/middlewares/guest'
-import AuthLayout from '@/components/layouts/AuthLayout'
-import { handleResponseErrors } from '@/lib/responseHandlers'
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import Button from '@/components/Button';
+import Input from '@/components/Form/Input';
+import { UserSignUp } from '@/types/Auth';
+import RootError from '@/components/RootError';
+import { useSignUpMutation } from '@/features/apis/authApi';
+import { ResponseError } from '@/types/Errors';
+import { useRouter } from 'next/router';
+import { setUser } from '@/features/slices/userSlice';
+import { useDispatch } from 'react-redux';
+import { GetServerSideProps } from 'next';
+import { guest } from '@/middlewares/guest';
+import AuthLayout from '@/components/layouts/AuthLayout';
+import { handleResponseErrors } from '@/lib/responseHandlers';
 
 /* Validation schema */
 const schema = z
@@ -26,12 +26,12 @@ const schema = z
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: 'Password and Password confirmation does not match',
-  })
+  });
 
 export default function Login() {
-  const dispatch = useDispatch()
-  const router = useRouter()
-  const [signUp, { isLoading }] = useSignUpMutation()
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [signUp, { isLoading }] = useSignUpMutation();
 
   /* Preparing the form */
   const {
@@ -42,23 +42,23 @@ export default function Login() {
   } = useForm<UserSignUp>({
     resolver: zodResolver(schema),
     mode: 'onChange',
-  })
+  });
 
   /* Form Handler */
   const onSubmit = async (data: UserSignUp) => {
-    const response = await signUp(data)
+    const response = await signUp(data);
 
     if ('data' in response) {
-      dispatch(setUser(response.data))
-      router.push('/dashboard/profile')
+      dispatch(setUser(response.data));
+      router.push('/dashboard/profile');
     }
 
     if ('error' in response)
       handleResponseErrors<keyof UserSignUp>(
         response.error as ResponseError<keyof UserSignUp>,
         setError,
-      )
-  }
+      );
+  };
 
   return (
     <AuthLayout
@@ -120,7 +120,7 @@ export default function Login() {
         Sign in
       </Button>
     </AuthLayout>
-  )
+  );
 }
 
-export const getServerSideProps: GetServerSideProps = guest
+export const getServerSideProps: GetServerSideProps = guest;

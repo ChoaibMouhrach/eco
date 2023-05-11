@@ -1,20 +1,20 @@
-import Button from '@/components/Button'
-import Input from '@/components/Form/Input'
-import RootError from '@/components/RootError'
-import RootSuccess from '@/components/RootSuccess'
-import AuthLayout from '@/components/layouts/AuthLayout'
-import { useResetPasswordMutation } from '@/features/apis/authApi'
-import { handleResponseErrors } from '@/lib/responseHandlers'
-import { ResponseError } from '@/types/Errors'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/router'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import Button from '@/components/Button';
+import Input from '@/components/Form/Input';
+import RootError from '@/components/RootError';
+import RootSuccess from '@/components/RootSuccess';
+import AuthLayout from '@/components/layouts/AuthLayout';
+import { useResetPasswordMutation } from '@/features/apis/authApi';
+import { handleResponseErrors } from '@/lib/responseHandlers';
+import { ResponseError } from '@/types/Errors';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 type Credentials = {
-  password: string
-  password_confirmation: string
-}
+  password: string;
+  password_confirmation: string;
+};
 
 const schema = z
   .object({
@@ -24,13 +24,13 @@ const schema = z
   .refine((data) => data.password === data.password_confirmation, {
     message: 'Password and Password confirmation does not match',
     path: ['password_confirmation'],
-  })
+  });
 
 export default function ResetPassword() {
-  const router = useRouter()
-  const { token } = router.query as { token: string }
+  const router = useRouter();
+  const { token } = router.query as { token: string };
 
-  const [resetPassword, { isLoading, isSuccess }] = useResetPasswordMutation()
+  const [resetPassword, { isLoading, isSuccess }] = useResetPasswordMutation();
 
   const {
     register,
@@ -40,23 +40,23 @@ export default function ResetPassword() {
   } = useForm<Credentials>({
     resolver: zodResolver(schema),
     mode: 'onChange',
-  })
+  });
 
   const onSubmit = async (data: Credentials) => {
     const response = await resetPassword({
       token,
       password: data.password,
       password_confirmation: data.password_confirmation,
-    })
+    });
 
     if ('error' in response)
       handleResponseErrors<keyof Credentials>(
         response.error as ResponseError<keyof Credentials>,
         setError,
-      )
+      );
 
-    if ('data' in response) router.push('/sign-in')
-  }
+    if ('data' in response) router.push('/sign-in');
+  };
 
   return (
     <AuthLayout
@@ -92,5 +92,5 @@ export default function ResetPassword() {
         Sign in
       </Button>
     </AuthLayout>
-  )
+  );
 }

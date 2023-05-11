@@ -1,5 +1,5 @@
-import { HttpStatus } from '../enums'
-import { HttpException } from './http.exception'
+import { HttpStatus } from '../enums';
+import { HttpException } from './http.exception';
 
 /**
  * Defines an HTTP exception for *Conflict* type errors.
@@ -18,6 +18,6 @@ export class ConflictException extends HttpException {
     super(
       HttpException.createBody(objectOrError, description, HttpStatus.CONFLICT),
       HttpStatus.CONFLICT,
-    )
+    );
   }
 }

@@ -1,8 +1,8 @@
-import React from 'react'
-import { cva } from 'class-variance-authority'
-import Link from 'next/link'
-import { ImSpinner8 } from 'react-icons/im'
-import { IconType } from 'react-icons'
+import React from 'react';
+import { cva } from 'class-variance-authority';
+import Link from 'next/link';
+import { ImSpinner8 } from 'react-icons/im';
+import { IconType } from 'react-icons';
 
 const button = cva(
   'px-4 py-2 flex items-center justify-center gap-3 text-center rounded-md font-semibold tracking-wide transition duration-200',
@@ -46,16 +46,16 @@ const button = cva(
       color: 'default',
     },
   },
-)
+);
 
 interface ButtonInterface
   extends React.ButtonHTMLAttributes<HTMLButtonElement | HTMLAnchorElement> {
-  variation?: 'default' | 'outlined' | 'text'
-  color?: 'default' | 'danger' | 'success'
-  href?: string
-  iconClassName?: string
-  state?: 'loading'
-  Icon?: IconType
+  variation?: 'default' | 'outlined' | 'text';
+  color?: 'default' | 'danger' | 'success';
+  href?: string;
+  iconClassName?: string;
+  state?: 'loading';
+  Icon?: IconType;
 }
 
 const Button = ({
@@ -74,7 +74,7 @@ const Button = ({
       <Link href={href} className={button({ variation, color, className })} {...props}>
         {children}
       </Link>
-    )
+    );
   }
 
   return (
@@ -83,7 +83,7 @@ const Button = ({
       {Icon && <Icon />}
       {children}
     </button>
-  )
-}
+  );
+};
 
-export default Button
+export default Button;

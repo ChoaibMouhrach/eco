@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose'
-import { UserDocument } from '../interfaces/User'
+import { Schema, model } from 'mongoose';
+import { UserDocument } from '../interfaces/User';
 
 const userSchema = new Schema<UserDocument>(
   {
@@ -91,28 +91,28 @@ const userSchema = new Schema<UserDocument>(
     timestamps: true,
     methods: {
       softDelete: async function () {
-        const user = this
-        user.deletedAt = new Date()
-        await user.save()
-        return user
+        const user = this;
+        user.deletedAt = new Date();
+        await user.save();
+        return user;
       },
       prepare: function () {
         const user = this.toObject() as {
-          password?: string
-          refreshTokens?: string[]
-          forgotPasswordTokens?: string[]
-          confirmEmailTokens?: string[]
-        }
+          password?: string;
+          refreshTokens?: string[];
+          forgotPasswordTokens?: string[];
+          confirmEmailTokens?: string[];
+        };
 
-        delete user.password
-        delete user.refreshTokens
-        delete user.forgotPasswordTokens
-        delete user.confirmEmailTokens
+        delete user.password;
+        delete user.refreshTokens;
+        delete user.forgotPasswordTokens;
+        delete user.confirmEmailTokens;
 
-        return user
+        return user;
       },
     },
   },
-)
+);
 
-export default model<UserDocument>('User', userSchema)
+export default model<UserDocument>('User', userSchema);

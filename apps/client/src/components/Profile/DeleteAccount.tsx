@@ -1,20 +1,20 @@
-import { useDeleteAccoutMutation } from '@/features/apis/authApi'
-import Button from '../Button'
-import Card from '../Card'
-import CardFooter from '../Card/CardFooter'
-import { useRouter } from 'next/router'
-import useToast from '@/hooks/useToast'
+import { useDeleteAccoutMutation } from '@/features/apis/authApi';
+import Button from '../Button';
+import Card from '../Card';
+import CardFooter from '../Card/CardFooter';
+import { useRouter } from 'next/router';
+import useToast from '@/hooks/useToast';
 
 export default function DeleteAccount() {
-  const { toast } = useToast()
-  const router = useRouter()
-  const [deleteAccount, { isLoading }] = useDeleteAccoutMutation()
+  const { toast } = useToast();
+  const router = useRouter();
+  const [deleteAccount, { isLoading }] = useDeleteAccoutMutation();
 
   async function handleDelete() {
-    const response = await deleteAccount()
+    const response = await deleteAccount();
 
     if ('error' in response) {
-      toast([{ title: "We couldn't delete your account", variation: 'danger' }])
+      toast([{ title: "We couldn't delete your account", variation: 'danger' }]);
     }
     if ('data' in response) {
       toast([
@@ -22,8 +22,8 @@ export default function DeleteAccount() {
           title: 'Your account has bein deleted successfully',
           variation: 'success',
         },
-      ])
-      router.push('/')
+      ]);
+      router.push('/');
     }
   }
 
@@ -35,5 +35,5 @@ export default function DeleteAccount() {
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

@@ -1,20 +1,20 @@
-import Button from '@/components/Button'
-import { useConfirmEmailMutation } from '@/features/apis/authApi'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { MdCheck, MdOutlineSmsFailed } from 'react-icons/md'
-import { CgSpinnerTwoAlt } from 'react-icons/cg'
+import Button from '@/components/Button';
+import { useConfirmEmailMutation } from '@/features/apis/authApi';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { MdCheck, MdOutlineSmsFailed } from 'react-icons/md';
+import { CgSpinnerTwoAlt } from 'react-icons/cg';
 
 export default function ConfirmEmail() {
-  const router = useRouter()
-  const { token } = router.query as { token: string }
-  const [confirm, { isLoading, isSuccess, isError }] = useConfirmEmailMutation()
+  const router = useRouter();
+  const { token } = router.query as { token: string };
+  const [confirm, { isLoading, isSuccess, isError }] = useConfirmEmailMutation();
 
   useEffect(() => {
     if (token) {
-      confirm({ token })
+      confirm({ token });
     }
-  }, [token])
+  }, [token]);
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 lg:px-0">
@@ -53,5 +53,5 @@ export default function ConfirmEmail() {
         </Button>
       </div>
     </main>
-  )
+  );
 }
