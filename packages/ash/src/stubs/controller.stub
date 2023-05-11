@@ -1,21 +1,21 @@
 import { Request, Response } from "express"
 
-export const index = async (request: Request, response: Response) => {
-
+export const index = async (_request: Request, _response: Response) => {
+  //
 };
 
-export const show = async (request: Request, response: Response) => {
-
+export const show = async (_request: Request, _response: Response) => {
+  //
 };
 
-export const store = async (request: Request, response: Response) => {
-
+export const store = async (_request: Request, _response: Response) => {
+  //
 };
 
-export const update = async (request: Request, response: Response) => {
-
+export const update = async (_request: Request, _response: Response) => {
+  //
 };
 
-export const destroy = async (request: Request, response: Response) => {
-
+export const destroy = async (_request: Request, _response: Response) => {
+  //
 };
