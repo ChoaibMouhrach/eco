@@ -1,6 +1,6 @@
-import { Request } from "express";
-import { Validate } from "../../interfaces/Request";
-import { z } from "zod";
+import { Request } from 'express';
+import { Validate } from '../../interfaces/Request';
+import { z } from 'zod';
 
 export interface ResetPasswordRequest extends Request {
   body: {
@@ -16,8 +16,8 @@ const validate: Validate = (request: Request) => {
       password_confirmation: z.string().min(8),
     })
     .refine((data) => data.password === data.password_confirmation, {
-      path: ["password_confirmation"],
-      message: "Password and Password confirmation does not match",
+      path: ['password_confirmation'],
+      message: 'Password and Password confirmation does not match',
     })
     .safeParse(request.body);
 };

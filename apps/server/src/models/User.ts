@@ -1,5 +1,5 @@
-import { Schema, model } from "mongoose";
-import { UserDocument } from "../interfaces/User";
+import { Schema, model } from 'mongoose';
+import { UserDocument } from '../interfaces/User';
 
 const userSchema = new Schema<UserDocument>(
   {
@@ -23,12 +23,12 @@ const userSchema = new Schema<UserDocument>(
     },
     phone: {
       type: String,
-      required: true
+      required: true,
     },
     gender: {
       type: String,
-      enum: ["M", "F"],
-      required: true
+      enum: ['M', 'F'],
+      required: true,
     },
     birthDay: {
       type: Date,
@@ -90,14 +90,14 @@ const userSchema = new Schema<UserDocument>(
   {
     timestamps: true,
     methods: {
-      softDelete: async function() {
+      softDelete: async function () {
         const user = this;
         user.deletedAt = new Date();
         await user.save();
         return user;
       },
-      prepare: function() {
-        let user = this.toObject() as {
+      prepare: function () {
+        const user = this.toObject() as {
           password?: string;
           refreshTokens?: string[];
           forgotPasswordTokens?: string[];
@@ -112,7 +112,7 @@ const userSchema = new Schema<UserDocument>(
         return user;
       },
     },
-  }
+  },
 );
 
-export default model<UserDocument>("User", userSchema);
+export default model<UserDocument>('User', userSchema);

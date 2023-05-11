@@ -1,7 +1,7 @@
-import { getToasts } from "@/features/slices/toastSlice";
-import { Toast } from "@/types/Toast";
-import { useSelector } from "react-redux";
-import ToastC from "./index";
+import { getToasts } from '@/features/slices/toastSlice';
+import { Toast } from '@/types/Toast';
+import { useSelector } from 'react-redux';
+import ToastC from './index';
 
 export default function ToastCer() {
   const toasts = useSelector(getToasts);

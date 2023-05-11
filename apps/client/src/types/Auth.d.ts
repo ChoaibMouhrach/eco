@@ -23,9 +23,9 @@ export type User = {
   updatedAt: string;
 };
 
-export type UpdateUserInfo = Partial<
-  Pick<User, "firstName" | "lastName" | "email">
-> & { password: string };
+export type UpdateUserInfo = Partial<Pick<User, 'firstName' | 'lastName' | 'email'>> & {
+  password: string;
+};
 
 export type ChangePassword = {
   old_password: string;

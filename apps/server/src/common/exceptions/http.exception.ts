@@ -5,7 +5,7 @@
 export class HttpException extends Error {
   constructor(
     private readonly response: string | Record<string, any>,
-    private readonly status: number
+    private readonly status: number,
   ) {
     super();
     this.setMessage();
@@ -13,11 +13,11 @@ export class HttpException extends Error {
   }
 
   public setMessage() {
-    if (typeof this.response === "string") {
+    if (typeof this.response === 'string') {
       this.message = this.response;
     } else if (
-      typeof this.response === "object" &&
-      typeof (this.response as Record<string, any>).message === "string"
+      typeof this.response === 'object' &&
+      typeof (this.response as Record<string, any>).message === 'string'
     ) {
       this.message = (this.response as Record<string, any>).message;
     } else if (this.constructor) {
@@ -40,13 +40,12 @@ export class HttpException extends Error {
   public static createBody(
     objectOrErrorMessage: object | string,
     description?: string,
-    statusCode?: number
+    statusCode?: number,
   ) {
     if (!objectOrErrorMessage) {
       return { statusCode, message: description };
     }
-    return typeof objectOrErrorMessage === "object" &&
-      !Array.isArray(objectOrErrorMessage)
+    return typeof objectOrErrorMessage === 'object' && !Array.isArray(objectOrErrorMessage)
       ? objectOrErrorMessage
       : { statusCode, message: objectOrErrorMessage, error: description };
   }

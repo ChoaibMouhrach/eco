@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { Request } from "express";
-import User from "../../models/User";
+import { z } from 'zod';
+import { Request } from 'express';
+import User from '../../models/User';
 
 export interface LoginRequest extends Request {
   body: {
@@ -19,7 +19,7 @@ const validate = async (request: Request) => {
           const user = await User.findOne({ email });
           return user && !user.deletedAt;
         },
-        { message: "Email Address does not exists" }
+        { message: 'Email Address does not exists' },
       ),
     password: z.string().min(8),
   });

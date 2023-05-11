@@ -1,6 +1,6 @@
-import { Request } from "express";
-import { User } from "../../interfaces/User";
-import { z } from "zod";
+import { Request } from 'express';
+import { User } from '../../interfaces/User';
+import { z } from 'zod';
 
 export interface UpdateRequest extends Request {
   body: {

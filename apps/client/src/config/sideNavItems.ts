@@ -1,5 +1,5 @@
-import { IconType } from "react-icons";
-import { MdOutlinePersonOutline } from "react-icons/md";
+import { IconType } from 'react-icons';
+import { MdOutlinePersonOutline } from 'react-icons/md';
 
 type SideNavConfig = {
   title: string;
@@ -9,8 +9,8 @@ type SideNavConfig = {
 
 const sideNavItems: SideNavConfig = [
   {
-    title: "Profile",
-    href: "/profile",
+    title: 'Profile',
+    href: '/profile',
     icon: MdOutlinePersonOutline,
   },
 ];

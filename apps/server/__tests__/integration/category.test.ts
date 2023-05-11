@@ -1,13 +1,10 @@
-import makeApp from "../../src/app";
-import request from "supertest";
-import { config } from "../../src/config/config";
-import Category from "../../src/models/Category";
-import {
-  adminPayload,
-  categoryPayload,
-} from "../../src/common/constants/testData.constant";
-import User from "../../src/models/User";
-import jwt from "jsonwebtoken";
+import makeApp from '../../src/app';
+import request from 'supertest';
+import { config } from '../../src/config/config';
+import Category from '../../src/models/Category';
+import { adminPayload, categoryPayload } from '../../src/common/constants/testData.constant';
+import User from '../../src/models/User';
+import jwt from 'jsonwebtoken';
 
 let token: string;
 
@@ -28,12 +25,12 @@ afterEach(async () => {
   await User.deleteMany({});
 });
 
-describe("GET /categories", () => {
-  it("Should return 200 with a list of categories", async () => {
+describe('GET /categories', () => {
+  it('Should return 200 with a list of categories', async () => {
     const category = new Category(categoryPayload);
     await category.save();
 
-    const response = await request(await makeApp()).get("/categories");
+    const response = await request(await makeApp()).get('/categories');
 
     expect(response.status).toBe(200);
 
@@ -45,13 +42,11 @@ describe("GET /categories", () => {
     expect(response.body?.count).toBeDefined();
   });
 
-  it("Should return 200 with a list of projected categories", async () => {
+  it('Should return 200 with a list of projected categories', async () => {
     const category = new Category(categoryPayload);
     await category.save();
 
-    const response = await request(await makeApp()).get(
-      `/categories?project=name`
-    );
+    const response = await request(await makeApp()).get(`/categories?project=name`);
 
     expect(response.status).toBe(200);
 
@@ -66,16 +61,14 @@ describe("GET /categories", () => {
     expect(response.body?.page).toBeDefined();
   });
 
-  it("Should return 200 with a list of searched categories", async () => {
+  it('Should return 200 with a list of searched categories', async () => {
     const category1 = new Category(categoryPayload);
     await category1.save();
 
-    const category = new Category({ name: "mouse" });
+    const category = new Category({ name: 'mouse' });
     await category.save();
 
-    const response = await request(await makeApp()).get(
-      "/categories?search=cat"
-    );
+    const response = await request(await makeApp()).get('/categories?search=cat');
 
     expect(response.status).toBe(200);
 
@@ -88,16 +81,14 @@ describe("GET /categories", () => {
     expect(response.body?.page).toBeDefined();
   });
 
-  it("Should return 200 with a list of sorted categories", async () => {
-    const category = new Category({ name: "b" });
+  it('Should return 200 with a list of sorted categories', async () => {
+    const category = new Category({ name: 'b' });
     await category.save();
 
-    const category1 = new Category({ name: "a" });
+    const category1 = new Category({ name: 'a' });
     await category1.save();
 
-    const response = await request(await makeApp()).get(
-      "/categories?sort=name"
-    );
+    const response = await request(await makeApp()).get('/categories?sort=name');
 
     expect(response.status).toBe(200);
 
@@ -110,16 +101,14 @@ describe("GET /categories", () => {
     expect(response.body?.page).toBeDefined();
   });
 
-  it("Should return 200 with a list of sorted categories DESC", async () => {
-    const category1 = new Category({ name: "a" });
+  it('Should return 200 with a list of sorted categories DESC', async () => {
+    const category1 = new Category({ name: 'a' });
     await category1.save();
 
-    const category = new Category({ name: "b" });
+    const category = new Category({ name: 'b' });
     await category.save();
 
-    const response = await request(await makeApp()).get(
-      "/categories?sort=name:desc"
-    );
+    const response = await request(await makeApp()).get('/categories?sort=name:desc');
 
     expect(response.status).toBe(200);
 
@@ -133,102 +122,100 @@ describe("GET /categories", () => {
   });
 });
 
-describe("POST /categories", () => {
-  it("Should return 201 with Category", async () => {
+describe('POST /categories', () => {
+  it('Should return 201 with Category', async () => {
     const response = await request(await makeApp())
-      .post("/categories")
-      .set("Authorization", `Bearer ${token}`)
+      .post('/categories')
+      .set('Authorization', `Bearer ${token}`)
       .send(categoryPayload);
 
     expect(response.status).toBe(201);
   });
 
-  it("Should return 400 with name required", async () => {
+  it('Should return 400 with name required', async () => {
     const response = await request(await makeApp())
-      .post("/categories")
-      .set("Authorization", `Bearer ${token}`);
+      .post('/categories')
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toMatchObject([
-      { message: "Required", path: ["name"] },
-    ]);
-    expect(response.body?.error).toBe("Bad Request");
+    expect(response.body?.message).toMatchObject([{ message: 'Required', path: ['name'] }]);
+    expect(response.body?.error).toBe('Bad Request');
   });
 
-  it("Should return 409 with Category already exist", async () => {
+  it('Should return 409 with Category already exist', async () => {
     const category = new Category(categoryPayload);
     await category.save();
 
     const response = await request(await makeApp())
-      .post("/categories")
-      .set("Authorization", `Bearer ${token}`)
+      .post('/categories')
+      .set('Authorization', `Bearer ${token}`)
       .send(categoryPayload);
 
     expect(response.status).toBe(409);
 
     expect(response.body?.statusCode).toBe(409);
-    expect(response.body?.message).toBe("Category already exist");
-    expect(response.body?.error).toBe("Conflict");
+    expect(response.body?.message).toBe('Category already exist');
+    expect(response.body?.error).toBe('Conflict');
   });
 });
 
-describe("PATCH /categories/:id", () => {
-  it("Should return 204", async () => {
+describe('PATCH /categories/:id', () => {
+  it('Should return 204', async () => {
     const category = new Category(categoryPayload);
     await category.save();
 
     const response = await request(await makeApp())
       .patch(`/categories/${category._id}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ name: categoryPayload.name + 1 });
 
     expect(response.status).toBe(204);
   });
 
-  it("Should return 400 with The provided id is invalid", async () => {
+  it('Should return 400 with The provided id is invalid', async () => {
     const response = await request(await makeApp())
       .patch(`/categories/1`)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ name: categoryPayload.name + 1 });
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toBe("The provided id is invalid");
-    expect(response.body?.error).toBe("Bad Request");
+    expect(response.body?.message).toBe('The provided id is invalid');
+    expect(response.body?.error).toBe('Bad Request');
   });
 
-  it("Should return 404 with Category not found", async () => {
+  it('Should return 404 with Category not found', async () => {
     const category = new Category(categoryPayload);
 
     const response = await request(await makeApp())
       .patch(`/categories/${category._id}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(categoryPayload);
 
     expect(response.status).toBe(404);
 
     expect(response.body?.statusCode).toBe(404);
-    expect(response.body?.message).toBe("Category Not Found");
-    expect(response.body?.error).toBe("Not Found");
+    expect(response.body?.message).toBe('Category Not Found');
+    expect(response.body?.error).toBe('Not Found');
   });
 
-  it("Should return 400 with Nothing to update", async () => {
+  it('Should return 400 with Nothing to update', async () => {
     const category = new Category(categoryPayload);
     await category.save();
 
     const response = await request(await makeApp())
       .patch(`/categories/${category._id}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(400);
 
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toBe("Nothing to update");
-    expect(response.body?.error).toBe("Bad Request");
+    expect(response.body?.message).toBe('Nothing to update');
+    expect(response.body?.error).toBe('Bad Request');
   });
 
-  it("Should return 409 with Name already exists", async () => {
+  it('Should return 409 with Name already exists', async () => {
     const category = new Category(categoryPayload);
     await category.save();
 
@@ -237,53 +224,53 @@ describe("PATCH /categories/:id", () => {
 
     const response = await request(await makeApp())
       .patch(`/categories/${category._id}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ name: categoryPayload.name + 1 });
 
     expect(response.status).toBe(409);
 
     expect(response.body?.statusCode).toBe(409);
-    expect(response.body?.message).toBe("Name already exists");
-    expect(response.body?.error).toBe("Conflict");
+    expect(response.body?.message).toBe('Name already exists');
+    expect(response.body?.error).toBe('Conflict');
   });
 });
 
-describe("DELETE /categories/:id", () => {
-  it("Should return 204", async () => {
+describe('DELETE /categories/:id', () => {
+  it('Should return 204', async () => {
     const category = new Category({ name: categoryPayload.name + 1 });
     await category.save();
 
     const response = await request(await makeApp())
       .delete(`/categories/${category._id}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ name: categoryPayload.name + 1 });
 
     expect(response.status).toBe(204);
   });
 
-  it("Should return 404 with Category not found", async () => {
+  it('Should return 404 with Category not found', async () => {
     const category = new Category({ name: categoryPayload.name + 1 });
 
     const response = await request(await makeApp())
       .delete(`/categories/${category._id}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ name: categoryPayload.name + 1 });
 
     expect(response.status).toBe(404);
     expect(response.body?.statusCode).toBe(404);
-    expect(response.body?.message).toBe("Category Not Found");
-    expect(response.body?.error).toBe("Not Found");
+    expect(response.body?.message).toBe('Category Not Found');
+    expect(response.body?.error).toBe('Not Found');
   });
 
-  it("Should return 400 with The provided id is invalid", async () => {
+  it('Should return 400 with The provided id is invalid', async () => {
     const response = await request(await makeApp())
       .delete(`/categories/1`)
-      .set("Authorization", `Bearer ${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ name: categoryPayload.name + 1 });
 
     expect(response.status).toBe(400);
     expect(response.body?.statusCode).toBe(400);
-    expect(response.body?.message).toBe("The provided id is invalid");
-    expect(response.body?.error).toBe("Bad Request");
+    expect(response.body?.message).toBe('The provided id is invalid');
+    expect(response.body?.error).toBe('Bad Request');
   });
 });

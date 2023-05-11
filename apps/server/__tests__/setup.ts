@@ -1,11 +1,11 @@
-import { config } from "../src/config/config";
-import { join } from "path";
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
+import { config } from '../src/config/config';
+import { join } from 'path';
+import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 const mongodb = new MongoMemoryServer({
   binary: {
-    version: "4.0.3",
+    version: '4.0.3',
   },
 });
 
@@ -14,7 +14,7 @@ beforeAll((done) => {
   mongodb.start().then(() => {
     mongoose
       .connect(mongodb.getUri())
-      .catch((err) => console.log("Connection failed", err))
+      .catch((err) => ('Connection failed', err))
       .then(() => done());
   });
 });

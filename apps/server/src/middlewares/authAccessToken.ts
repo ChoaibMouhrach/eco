@@ -1,40 +1,40 @@
-import { NextFunction, Response } from "express";
-import User from "../models/User";
-import { AuthRequest } from "../interfaces/User";
-import { verifyAccessToken } from "../repositories/auth.repository";
-import { UnauthorizedException } from "../common";
+import { NextFunction, Response } from 'express';
+import User from '../models/User';
+import { AuthRequest } from '../interfaces/User';
+import { verifyAccessToken } from '../repositories/auth.repository';
+import { UnauthorizedException } from '../common';
 
 export default async function authAccessToken(
   request: AuthRequest,
   _response: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const authorization = request.headers.authorization;
 
   if (!authorization) {
-    throw new UnauthorizedException("unauthorized");
+    throw new UnauthorizedException('unauthorized');
   }
 
-  const token = authorization.split(" ")[1];
+  const token = authorization.split(' ')[1];
 
   if (!token) {
-    throw new UnauthorizedException("unauthorized");
+    throw new UnauthorizedException('unauthorized');
   }
 
   const decoded = verifyAccessToken(token);
 
-  if ("err" in decoded) {
-    if (decoded.err === "jwt expired") {
-      throw new UnauthorizedException("token expired");
+  if ('err' in decoded) {
+    if (decoded.err === 'jwt expired') {
+      throw new UnauthorizedException('token expired');
     }
 
-    throw new UnauthorizedException("unauthorized");
+    throw new UnauthorizedException('unauthorized');
   }
 
   const user = await User.findOne({ _id: decoded._id });
 
   if (!user || user.deletedAt) {
-    throw new UnauthorizedException("User does not exists");
+    throw new UnauthorizedException('User does not exists');
   }
 
   request.auth = {

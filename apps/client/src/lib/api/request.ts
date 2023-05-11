@@ -1,17 +1,17 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { GetServerSidePropsContext } from "next";
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { GetServerSidePropsContext } from 'next';
 
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: 'http://localhost:6000',
   withCredentials: true,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 const request = async (
   config: AxiosRequestConfig<any>,
-  ctx: GetServerSidePropsContext
+  ctx: GetServerSidePropsContext,
 ): Promise<AxiosResponse | null> => {
   const tokens = ctx.req.cookies as {
     accessToken?: string;
@@ -28,13 +28,13 @@ const request = async (
       },
     });
   } catch (err: any) {
-    /* Check if the roken has expired */
-    if (err.response.data?.message === "token expired") {
+    /* Check if the token has expired */
+    if (err.response?.data?.message === 'token expired') {
       try {
         /* refresh the token */
         const response = await api({
-          url: "/refresh",
-          method: "post",
+          url: '/refresh',
+          method: 'post',
           headers: {
             Authorization: `Bearer ${tokens?.refreshToken}`,
           },
@@ -47,7 +47,7 @@ const request = async (
         };
 
         /* update the headers */
-        ctx.res.setHeader("set-cookie", [
+        ctx.res.setHeader('set-cookie', [
           `refreshToken=${refreshToken}`,
           `accessToken=${accessToken}`,
         ]);
@@ -62,19 +62,13 @@ const request = async (
         });
       } catch (err) {
         /* return null if the refresh token failed and clear cookies */
-        ctx.res.setHeader("set-cookie", [
-          `refreshToken=;Max-Age=0`,
-          `accessToken=;Max-Age=0`,
-        ]);
+        ctx.res.setHeader('set-cookie', [`refreshToken=;Max-Age=0`, `accessToken=;Max-Age=0`]);
 
         return null;
       }
     }
 
-    ctx.res.setHeader("set-cookie", [
-      `refreshToken=;Max-Age=0`,
-      `accessToken=;Max-Age=0`,
-    ]);
+    ctx.res.setHeader('set-cookie', [`refreshToken=;Max-Age=0`, `accessToken=;Max-Age=0`]);
 
     /* if the token is not expired */
     return null;

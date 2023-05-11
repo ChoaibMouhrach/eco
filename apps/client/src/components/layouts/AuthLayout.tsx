@@ -1,4 +1,4 @@
-import { FormEventHandler } from "react";
+import { FormEventHandler } from 'react';
 
 export default function AuthLayout({
   children,

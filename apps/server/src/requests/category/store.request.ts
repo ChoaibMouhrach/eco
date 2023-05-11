@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { User } from "../../interfaces/User";
-import { Request } from "express";
-import { Authorize, Validate } from "../../interfaces/Request";
+import { z } from 'zod';
+import { User } from '../../interfaces/User';
+import { Request } from 'express';
+import { Authorize, Validate } from '../../interfaces/Request';
 
 export interface StoreRequest extends Request {
   body: {

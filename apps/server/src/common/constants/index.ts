@@ -1,1 +1,1 @@
-export * from "./testData.constant";
+export * from './testData.constant';

@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "fs";
-import { join } from "path";
-import { config } from "../config/config";
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import { config } from '../config/config';
 
 /**
  * Store an uploaded file in the public storage directory.
@@ -10,16 +10,14 @@ import { config } from "../config/config";
  */
 export const publicStore = (
   file: undefined | Express.Multer.File,
-  location: string
+  location: string,
 ): string | undefined => {
   if (file) {
     if (!existsSync(join(config.PUBLIC_STORAGE, location))) {
       mkdirSync(join(config.PUBLIC_STORAGE, location), { recursive: true });
     }
 
-    const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${
-      file.originalname
-    }`;
+    const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${file.originalname}`;
     const path = join(location, fileName);
 
     writeFileSync(join(config.PUBLIC_STORAGE, path), file.buffer);

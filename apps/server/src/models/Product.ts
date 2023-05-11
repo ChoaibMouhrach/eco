@@ -1,7 +1,8 @@
-import { model, Schema } from "mongoose";
-import Category from "./Category";
+import { model, Schema } from 'mongoose';
+import Category from './Category';
+import { IProductDocument } from '../interfaces/Product';
 
-const productSchema = new Schema(
+const productSchema = new Schema<IProductDocument>(
   {
     name: {
       type: String,
@@ -46,15 +47,15 @@ const productSchema = new Schema(
   {
     timestamps: true,
     methods: {
-      softDelete: async function() {
+      softDelete: async function () {
         const product = this;
         product.deletedAt = new Date();
 
         await product.save();
         return product;
       },
-    }
-  }
+    },
+  },
 );
 
-export default model("Product", productSchema);
+export default model('Product', productSchema);
