@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { GetServerSidePropsContext } from 'next';
 
 const api = axios.create({
-  baseURL: 'http://38.242.207.181/',
+  baseURL: 'http://choaibmouhrach.tech/',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
