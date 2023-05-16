@@ -2,7 +2,7 @@ import { BaseQueryApi, FetchArgs, createApi, fetchBaseQuery } from '@reduxjs/too
 import Cookies from 'js-cookie';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://38.242.207.181/',
+  baseUrl: 'http://choaibmouhrach.tech/',
   credentials: 'include',
 });
 
