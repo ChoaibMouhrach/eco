@@ -1,0 +1,8 @@
+{
+  "name": "eco-config",
+  "version": "1.0.0",
+  "files": [
+    "./tailwind.config.js",
+    "./postcss.config.js"
+  ]
+}
