@@ -1,0 +1,28 @@
+version: "0"
+
+services:
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - my-data:/var/lib/mysql
+    healthcheck:
+      test: "mysql -uroot -p6003"
+      interval: 1s
+      retries: 20
+    environment:
+      MYSQL_ROOT_PASSWORD: "6003"
+      MYSQL_DATABASE: "eco"
+
+  main:
+    image: eco:0.0
+    ports:
+      - 3000:3000
+      - 3001:3001
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  my-data:
