@@ -1,13 +1,8 @@
-import express, { Request, Response } from "express";
+import config from "./config/config";
+import makeApp from "./app";
 
-const app = express();
+const app = makeApp();
 
-app.get("/products", (_req: Request, res: Response) =>
-  res.json([
-    {
-      name: "SAMSUNG S21",
-    },
-  ])
+app.listen(config.APP_PORT, () =>
+  console.log(`The server os listening on port ${config.APP_PORT}`)
 );
-
-app.listen(3000, () => console.log("The server os listening on port 3000"));

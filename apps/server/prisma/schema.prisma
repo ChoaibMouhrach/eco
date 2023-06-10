@@ -11,5 +11,193 @@ datasource db {
 }
 
 model User {
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+
+  email String @unique
+  phone String @unique
+
+  address String
+
+  refreshTokens RefreshToken[]
+  role         Role           @relation(fields: [roleId], references: [id])
+  roleId        Int
+  Order         Order[]
+  Purchase      Purchase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("users")
+}
+
+model Role {
   id Int @id @default(autoincrement())
+
+  name String @unique
+  User User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("roles")
+}
+
+model OrderState {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("orderStates")
+}
+
+model OrderProduct {
+  id Int @id @default(autoincrement())
+
+  quantity Int
+  price    Float
+
+  order   Order @relation(fields: [orderId], references: [id])
+  orderId Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Order {
+  id    Int            @id @default(autoincrement())
+  items OrderProduct[]
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("orders")
+}
+
+model PurchaseProduct {
+  id Int @id @default(autoincrement())
+
+  quantity Int
+  price    Float
+
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  purchaseId Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Purchase {
+  id Int @id @default(autoincrement())
+
+  user            User              @relation(fields: [userId], references: [id])
+  userId          Int
+  PurchaseProduct PurchaseProduct[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("purchases")
+}
+
+model RefreshToken {
+  id Int @id @default(autoincrement())
+
+  token String @unique
+  ip    String
+
+  User   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("refreshTokens")
+}
+
+model Image {
+  id   Int    @id @default(autoincrement())
+  path String
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("images")
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+
+  name        String
+  description String @db.LongText
+
+  price    Float
+  quantity Int
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  unit   Unit @relation(fields: [unitId], references: [id])
+  unitId Int
+
+  images          Image[]
+  tags            Tag[]
+  OrderProduct    OrderProduct[]
+  PurchaseProduct PurchaseProduct[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("products")
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("tags")
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+
+  name    String
+  Product Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("categories")
+}
+
+model Unit {
+  id Int @id @default(autoincrement())
+
+  name    String
+  Product Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("units")
 }
