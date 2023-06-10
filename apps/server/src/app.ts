@@ -1,12 +1,12 @@
 import "express-async-errors";
 import express from "express";
-import router from "./routes";
-import config from "./config/config";
 import { join } from "path";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import config from "./config/config";
+import router from "./routes";
 import { errorHandler } from "./middlewares";
 
 const makeApp = () => {

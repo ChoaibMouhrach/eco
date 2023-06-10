@@ -1,6 +1,6 @@
 import z from "zod";
-import { Validate } from "..";
 import db from "@src/config/db";
+import { Validate } from "..";
 
 const validate: Validate = (body: any) => {
   const schema = z.object({
