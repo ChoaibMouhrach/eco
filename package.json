@@ -9,7 +9,8 @@
     "lint:fix": "eslint --fix \"**/*.{ts,tsx}\"",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare:husky": "husky install",
-    "migrate": "turbo migrate"
+    "migrate": "turbo migrate",
+    "seed": "turbo seed"
   },
   "devDependencies": {
     "@turbo/gen": "^1.9.7",
