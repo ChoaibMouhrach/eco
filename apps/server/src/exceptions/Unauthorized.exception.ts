@@ -1,11 +1,11 @@
 import { HttpException } from "./http.exception";
 
 export class UnauthorizedException extends HttpException {
-  constructor(content?: any) {
+  constructor() {
     super({
       error: "Unauthorized",
       statusCode: 401,
-      content: content ?? "Unauthorized",
+      content: "Unauthorized",
     });
   }
 }

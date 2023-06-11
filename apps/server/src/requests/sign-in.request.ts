@@ -1,19 +1,13 @@
 import z from "zod";
-import db from "@src/config/db";
 import { Request } from "express";
 import { Validate } from "..";
 
 const validate: Validate = (body: any) => {
   const schema = z.object({
-    email: z
-      .string()
-      .email()
-      .refine(async (email) => await db.user.findUnique({ where: { email } }), {
-        message: "Use does not exists",
-      }),
+    email: z.string().email(),
   });
 
-  return schema.safeParseAsync(body);
+  return schema.safeParse(body);
 };
 
 export interface SignInRequest extends Request {
