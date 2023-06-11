@@ -10,4 +10,4 @@ services:
     env_file:
       - apps/server/.env.prod
 
-    command: sh -c "pnpm run seed && pnpm run test"
+    command: sh -c "pnpm run migrate && pnpm run test"
