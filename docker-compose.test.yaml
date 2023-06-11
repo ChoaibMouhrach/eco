@@ -7,9 +7,6 @@ services:
     environment:
       DATABASE_URL: mysql://root:6003@mysql:3306/eco-test
 
-    volumes:
-      - ./:/app
-
     env_file:
       - apps/server/.env.prod
 
