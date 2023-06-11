@@ -1,9 +1,9 @@
 import makeApp from "@src/app";
 import db from "@src/config/db";
 import request from "supertest";
-import { makeUser } from "../config/test-data";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import config from "@src/config/config";
+import { makeUser } from "../config/test-data";
 
 jest.mock("../../src/lib/mailer.lib", () => ({
   sendMail: () => Promise.resolve(),
@@ -90,45 +90,47 @@ describe("POST /sign-up", () => {
       .send(userPayload);
 
     expect(response.status).toBe(400);
-    expect(response.body.statusCode).toBe(400)
-    expect(response.body.content).toEqual(expect.arrayContaining([
-      expect.objectContaining({
-        message: "Email address already exists",
-        path: ["email"]
-      })
-    ]));
+    expect(response.body.statusCode).toBe(400);
+    expect(response.body.content).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          message: "Email address already exists",
+          path: ["email"],
+        }),
+      ])
+    );
     expect(response.body.error).toBe("Bad Request");
 
     await db.user.delete({
       where: {
-        id: user.id
+        id: user.id,
       },
     });
   });
 
   it("Should return 400 with email required", async () => {
-    const response = await request(makeApp())
-      .post("/api/sign-up")
+    const response = await request(makeApp()).post("/api/sign-up");
 
     expect(response.status).toBe(400);
-    expect(response.body.statusCode).toBe(400)
-    expect(response.body.content).toEqual(expect.arrayContaining([
-      expect.objectContaining({
-        message: "Required",
-        path: ["email"]
-      })
-    ]));
+    expect(response.body.statusCode).toBe(400);
+    expect(response.body.content).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          message: "Required",
+          path: ["email"],
+        }),
+      ])
+    );
     expect(response.body.error).toBe("Bad Request");
   });
-
 });
 
 describe("POST /sign-out", () => {
   it("Should return 204", async () => {
     const userPayload = makeUser();
     const user = await db.user.create({
-      data: userPayload
-    })
+      data: userPayload,
+    });
 
     const refreshToken = jwt.sign({ id: user.id }, config.SECRET_REFRESH);
 
@@ -136,41 +138,36 @@ describe("POST /sign-out", () => {
       data: {
         userId: user.id,
         token: refreshToken,
-        ip: "243"
-      }
-    })
+        ip: "243",
+      },
+    });
 
     const response = await request(makeApp())
       .post("/api/sign-out")
-      .set("Cookie", `refreshToken=${refreshToken}`)
+      .set("Cookie", `refreshToken=${refreshToken}`);
 
     expect(response.status).toBe(204);
 
     await db.user.delete({
       where: {
-        id: user.id
-      }
-    })
+        id: user.id,
+      },
+    });
   });
 
   it("Should return 401 when token is missing", async () => {
-
-    const response = await request(makeApp())
-      .post("/api/sign-out")
+    const response = await request(makeApp()).post("/api/sign-out");
     expect(response.status).toBe(401);
-
   });
 });
 
 describe("POST /auth", () => {
-
   it("Should return 200 with tokens and user info", async () => {
-
-    const userPayload = makeUser()
+    const userPayload = makeUser();
 
     const user = await db.user.create({
-      data: userPayload
-    })
+      data: userPayload,
+    });
 
     const token = jwt.sign({ id: user.id }, config.SECRET_AUTH_EMAIL);
 
@@ -178,46 +175,41 @@ describe("POST /auth", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({
-      email: user.email
+      email: user.email,
     });
 
     await db.user.delete({
       where: {
-        id: user.id
-      }
-    })
-
+        id: user.id,
+      },
+    });
   });
 
   it("Should return 404 when user does not exists", async () => {
-
-    const userPayload = makeUser()
+    const userPayload = makeUser();
 
     const user = await db.user.create({
-      data: userPayload
-    })
+      data: userPayload,
+    });
 
     const token = jwt.sign({ id: user.id }, config.SECRET_AUTH_EMAIL);
 
     await db.user.delete({
       where: {
-        id: user.id
-      }
-    })
+        id: user.id,
+      },
+    });
 
     const response = await request(makeApp()).post(`/api/auth/${token}`);
 
     expect(response.status).toBe(404);
     expect(response.body.statusCode).toBe(404);
-    expect(response.body.error).toBe("Not Found")
+    expect(response.body.error).toBe("Not Found");
     expect(response.body.content).toBe("User does not exists");
-
   });
-
 
   it("Should return 401 when token does not exists", async () => {
     const response = await request(makeApp()).post(`/api/auth/354654654`);
     expect(response.status).toBe(401);
   });
-
 });
