@@ -2,7 +2,7 @@ import "express-async-errors";
 import express from "express";
 import { join } from "path";
 import cors from "cors";
-import morgan from "morgan";
+// import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import config from "./config/config";
@@ -21,7 +21,7 @@ const makeApp = () => {
   );
 
   app.use(helmet());
-  app.use(morgan("combined"));
+  //  app.use(morgan("combined"));
   app.use(express.json());
   app.use(cookieParser());
 

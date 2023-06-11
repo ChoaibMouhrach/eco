@@ -74,7 +74,7 @@ model Order {
   id    Int            @id @default(autoincrement())
   items OrderProduct[]
 
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 
   createdAt DateTime @default(now())
@@ -102,7 +102,7 @@ model PurchaseProduct {
 model Purchase {
   id Int @id @default(autoincrement())
 
-  user            User              @relation(fields: [userId], references: [id])
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          Int
   PurchaseProduct PurchaseProduct[]
 
@@ -118,7 +118,7 @@ model RefreshToken {
   token String @unique
   ip    String
 
-  User   User @relation(fields: [userId], references: [id])
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 
   createdAt DateTime @default(now())

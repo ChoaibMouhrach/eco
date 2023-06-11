@@ -1,13 +1,14 @@
 import config from "@src/config/config";
 import db from "@src/config/db";
 import { NotFoundException, UnauthorizedException } from "@src/exceptions";
-import { mailer } from "@src/lib";
+import mailer from "@src/lib/mailer.lib";
 import { SignInRequest, SignUpRequest } from "@src/requests";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 const signIn = async (request: SignInRequest, response: Response) => {
   const { email } = request.body;
+
   const user = await db.user.findUnique({ where: { email } });
 
   if (!user) {
@@ -32,7 +33,6 @@ const auth = async (request: Request, response: Response) => {
   const { token } = request.params;
 
   let id: number;
-
   try {
     const decoded = jwt.verify(token, config.SECRET_AUTH_EMAIL) as {
       id: number;
@@ -101,7 +101,7 @@ const signUp = async (request: SignUpRequest, response: Response) => {
     html: `<!DOCTYPE><html><body><a href="${config.APP_CLIENT_URL}/sign-in/${emailToken}" >Sign In</a></body></html>`,
   });
 
-  return response.json({
+  return response.status(201).json({
     message: "Check your inbox",
   });
 };
@@ -114,11 +114,9 @@ const signOut = async (request: Request, response: Response) => {
   }
 
   try {
-    jwt.verify(refreshToken, config.SECRET_REFRESH) as {
-      id: number;
-    };
+    jwt.verify(refreshToken, config.SECRET_REFRESH);
   } catch (err) {
-    throw new UnauthorizedException(err);
+    throw new UnauthorizedException();
   }
 
   try {
