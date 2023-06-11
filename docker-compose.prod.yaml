@@ -1,5 +1,8 @@
 services:
   mysql:
+    volumes:
+      - my-data:/var/lib/mysql
+
     environment:
       MYSQL_DATABASE: "eco"
 
@@ -11,3 +14,6 @@ services:
       - apps/server/.env.prod
 
     command: "pnpm run start"
+
+volumes:
+  my-data:

@@ -3,7 +3,11 @@
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "start": {
-      "dependsOn": ["migrate", "build"]
+      "dependsOn": ["seed", "build"]
+    },
+    "seed": {
+      "dependsOn": ["migrate"],
+      "cache": false
     },
     "test": {
       "cache": false

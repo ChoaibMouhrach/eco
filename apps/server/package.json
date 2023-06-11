@@ -13,7 +13,8 @@
     "lint:fix": "eslint --fix \"**/*.{ts,tsx}\"",
     "format": "prettier --write .",
     "migrate": "prisma migrate dev",
-    "test": "jest"
+    "test": "jest",
+    "seed": "prisma db seed"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",
