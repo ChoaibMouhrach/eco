@@ -1,4 +1,4 @@
-import db from "@src/config/db";
+import db from "../src/config/db";
 
 const main = async () => {
   await db.role.createMany({

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "prisma": {
-    "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
