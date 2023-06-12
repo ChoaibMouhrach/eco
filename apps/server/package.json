@@ -2,6 +2,9 @@
   "name": "server",
   "version": "1.0.0",
   "main": "index.js",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "build": "rm -rf dist && swc src -d dist --copy-files",
@@ -10,7 +13,8 @@
     "lint:fix": "eslint --fix \"**/*.{ts,tsx}\"",
     "format": "prettier --write .",
     "migrate": "prisma migrate dev",
-    "test": "jest"
+    "test": "jest",
+    "seed": "prisma db seed"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",

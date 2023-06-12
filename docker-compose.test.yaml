@@ -1,13 +1,5 @@
 services:
-  mysql:
-    environment:
-      MYSQL_DATABASE: "eco-test"
-
   main:
     environment:
-      DATABASE_URL: mysql://root:6003@mysql:3306/eco-test
-
-    env_file:
-      - apps/server/.env.prod
-
-    command: sh -c "pnpm run migrate && pnpm run test"
+      DATABASE_URL: mysql://root:6003@mysql:3306/eco
+    command: sh -c "pnpm run migrate && pnpm run seed && pnpm run test"

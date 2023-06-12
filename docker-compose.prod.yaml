@@ -1,19 +1,5 @@
 services:
-  mysql:
-    volumes:
-      - my-data:/var/lib/mysql
-
-    environment:
-      MYSQL_DATABASE: "eco"
-
   main:
     environment:
       DATABASE_URL: mysql://root:6003@mysql:3306/eco
-
-    env_file:
-      - apps/server/.env.prod
-
     command: "pnpm run start"
-
-volumes:
-  my-data:
