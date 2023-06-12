@@ -1,4 +1,6 @@
-import db from "../src/config/db";
+import { PrismaClient } from "@prisma/client";
+
+const db = new PrismaClient();
 
 const main = async () => {
   await db.role.createMany({

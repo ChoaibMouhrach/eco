@@ -5,15 +5,18 @@
     "start": {
       "dependsOn": ["migrate", "build"]
     },
+    "seed": {
+      "cache": false
+    },
+    "migrate": {
+      "cache": false
+    },
     "test": {
       "cache": false
     },
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]
-    },
-    "migrate": {
-      "cache": false
     },
     "lint": {},
     "dev": {
