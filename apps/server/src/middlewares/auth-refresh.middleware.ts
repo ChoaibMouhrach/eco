@@ -1,12 +1,11 @@
-import { NextFunction } from "express";
-import { AuthRequest } from "..";
+import { NextFunction, Response } from "express";
 import {
   findRefreshTokenOrThrow,
   findUserOrThrow,
   verifyRefreshToken,
 } from "@src/repositories";
 import { UnauthorizedException } from "@src/exceptions";
-import { Response } from "express";
+import { AuthRequest } from "..";
 
 export const authRefresh = async (
   request: AuthRequest,
