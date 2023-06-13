@@ -11,8 +11,8 @@ const validate: Validate = (body: any) => {
         async (email) => !(await db.user.findUnique({ where: { email } })),
         { message: "Email address already exists" }
       ),
-    firstName: z.string().min(3),
-    lastName: z.string().min(3),
+    firstName: z.string().min(3).max(60),
+    lastName: z.string().min(3).max(60),
     phone: z
       .string()
       .regex(/^\+[1-9]\d{1,14}$/)
@@ -20,7 +20,7 @@ const validate: Validate = (body: any) => {
         async (phone) => !(await db.user.findUnique({ where: { phone } })),
         { message: "Phone number already exists" }
       ),
-    address: z.string().min(1),
+    address: z.string().min(3).max(255),
   });
 
   return schema.safeParseAsync(body);

@@ -1,21 +1,25 @@
 import config from "@src/config/config";
 import db from "@src/config/db";
-import { NotFoundException, UnauthorizedException } from "@src/exceptions";
+import { UnauthorizedException } from "@src/exceptions";
 import mailer from "@src/lib/mailer.lib";
+import {
+  createAccessToken,
+  createConfirmEmailToken,
+  createRefreshToken,
+  findUserOrThrow,
+  verifyEmailToken,
+} from "@src/repositories";
 import { SignInRequest, SignUpRequest } from "@src/requests";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import { UpdateProfileRequest } from "@src/requests/update-profile.request";
+import { AuthRequest } from "..";
 
 const signIn = async (request: SignInRequest, response: Response) => {
   const { email } = request.body;
 
-  const user = await db.user.findUnique({ where: { email } });
+  const user = await findUserOrThrow({ email });
 
-  if (!user) {
-    throw new NotFoundException("User does not exists");
-  }
-
-  const emailToken = jwt.sign({ id: user.id }, config.SECRET_AUTH_EMAIL);
+  const emailToken = createConfirmEmailToken(user.id);
 
   await mailer.sendMail({
     from: config.SMTP_USER,
@@ -32,24 +36,14 @@ const signIn = async (request: SignInRequest, response: Response) => {
 const auth = async (request: Request, response: Response) => {
   const { token } = request.params;
 
-  let id: number;
-  try {
-    const decoded = jwt.verify(token, config.SECRET_AUTH_EMAIL) as {
-      id: number;
-    };
-    id = decoded.id;
-  } catch (err) {
-    throw new UnauthorizedException();
-  }
+  const {
+    res: { id },
+  } = verifyEmailToken<{ id: number }>(token);
 
-  const user = await db.user.findUnique({ where: { id } });
+  const user = await findUserOrThrow({ id });
 
-  if (!user) {
-    throw new NotFoundException("User does not exists");
-  }
-
-  const refreshToken = jwt.sign({ id: user.id }, config.SECRET_REFRESH);
-  const accessToken = jwt.sign({ id: user.id }, config.SECRET_ACCESS);
+  const refreshToken = createRefreshToken(id);
+  const accessToken = createAccessToken(id);
 
   await db.refreshToken.create({
     data: {
@@ -66,37 +60,20 @@ const auth = async (request: Request, response: Response) => {
 };
 
 const signUp = async (request: SignUpRequest, response: Response) => {
-  const {
-    firstName,
-    lastName,
-
-    email,
-    phone,
-
-    address,
-  } = request.body;
+  const { body } = request;
 
   const user = await db.user.create({
     data: {
-      firstName,
-      lastName,
-      email,
-      phone,
-      address,
+      ...body,
       roleId: 1,
     },
   });
 
-  const emailToken = jwt.sign(
-    {
-      id: user.id,
-    },
-    config.SECRET_AUTH_EMAIL
-  );
+  const emailToken = createConfirmEmailToken(user.id);
 
   mailer.sendMail({
     from: config.SMTP_USER,
-    to: email,
+    to: user.email,
     subject: "Sign up request",
     html: `<!DOCTYPE><html><body><a href="${config.APP_CLIENT_URL}/sign-in/${emailToken}" >Sign In</a></body></html>`,
   });
@@ -106,23 +83,13 @@ const signUp = async (request: SignUpRequest, response: Response) => {
   });
 };
 
-const signOut = async (request: Request, response: Response) => {
-  const { refreshToken } = request.cookies;
-
-  if (!refreshToken) {
-    throw new UnauthorizedException();
-  }
-
-  try {
-    jwt.verify(refreshToken, config.SECRET_REFRESH);
-  } catch (err) {
-    throw new UnauthorizedException();
-  }
+const signOut = async (request: AuthRequest, response: Response) => {
+  const { token } = request.auth!.refreshToken!;
 
   try {
     await db.refreshToken.delete({
       where: {
-        token: refreshToken,
+        token,
       },
     });
   } catch (err) {
@@ -132,9 +99,71 @@ const signOut = async (request: Request, response: Response) => {
   return response.sendStatus(204);
 };
 
+const refresh = async (request: AuthRequest, response: Response) => {
+  const refreshToken = request.auth!.refreshToken!;
+
+  await db.refreshToken.delete({
+    where: {
+      id: refreshToken.id,
+    },
+  });
+
+  const newAccessToken = createAccessToken(refreshToken.userId);
+  const newRefreshToken = createRefreshToken(refreshToken.userId);
+
+  await db.refreshToken.create({
+    data: {
+      ip: request.ip,
+      token: newRefreshToken,
+      userId: refreshToken.userId,
+    },
+  });
+
+  response.cookie("accessToken", newAccessToken, { httpOnly: true });
+  response.cookie("refreshToken", newRefreshToken, { httpOnly: true });
+
+  return response.sendStatus(204);
+};
+
+const profile = async (request: AuthRequest, response: Response) =>
+  response.json(await findUserOrThrow({ id: request.auth!.user.id }));
+
+const updateProfile = async (
+  request: UpdateProfileRequest,
+  response: Response
+) => {
+  const { user } = request.auth!;
+  const data = request.body;
+
+  await db.user.update({
+    where: {
+      id: user.id,
+    },
+    data,
+  });
+
+  return response.sendStatus(204);
+};
+
+const deleteProfile = async (request: AuthRequest, response: Response) => {
+  const { user } = request.auth!;
+
+  await db.user.delete({
+    where: {
+      id: user.id,
+    },
+  });
+
+  return response.sendStatus(204);
+};
+
 export const authController = {
   signIn,
   signUp,
   signOut,
   auth,
+  refresh,
+  profile,
+  updateProfile,
+  deleteProfile,
 };
