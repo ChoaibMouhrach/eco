@@ -11,8 +11,8 @@ import {
 } from "@src/repositories";
 import { SignInRequest, SignUpRequest } from "@src/requests";
 import { Request, Response } from "express";
-import { AuthRequest } from "..";
 import { UpdateProfileRequest } from "@src/requests/update-profile.request";
+import { AuthRequest } from "..";
 
 const signIn = async (request: SignInRequest, response: Response) => {
   const { email } = request.body;

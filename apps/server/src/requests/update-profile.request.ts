@@ -1,6 +1,6 @@
-import { AuthRequest, Validate } from "..";
 import { z } from "zod";
 import db from "@src/config/db";
+import { AuthRequest, Validate } from "..";
 
 const validate: Validate = (body: any) => {
   const schema = z
