@@ -10,10 +10,10 @@ interface ValidatorParams {
 export const validator = ({ validate, authorize }: ValidatorParams) => {
   return async (request: Request, _response: Response, next: NextFunction) => {
     if (authorize) {
-      const { authorized, reason } = await authorize(request);
+      const authorized = await authorize(request);
 
       if (!authorized) {
-        throw new UnauthorizedException(reason);
+        throw new UnauthorizedException();
       }
     }
 

@@ -21,7 +21,7 @@ model User {
   address String
 
   refreshTokens RefreshToken[]
-  role         Role           @relation(fields: [roleId], references: [id])
+  role          Role           @relation(fields: [roleId], references: [id])
   roleId        Int
   Order         Order[]
   Purchase      Purchase[]
@@ -102,9 +102,10 @@ model PurchaseProduct {
 model Purchase {
   id Int @id @default(autoincrement())
 
-  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          Int
-  PurchaseProduct PurchaseProduct[]
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  items PurchaseProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

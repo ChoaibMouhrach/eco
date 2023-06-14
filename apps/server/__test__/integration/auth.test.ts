@@ -215,38 +215,37 @@ describe("POST /auth", () => {
 });
 
 describe("POST /refresh", () => {
-
   it("Should return 200 with new tokens", async () => {
-
     const userPayload = makeUser();
 
     const user = await db.user.create({
-      data: userPayload
-    })
+      data: userPayload,
+    });
 
-    const refreshToken = jwt.sign({ id: user.id }, config.SECRET_REFRESH)
+    const refreshToken = jwt.sign({ id: user.id }, config.SECRET_REFRESH);
 
     await db.refreshToken.create({
       data: {
         token: refreshToken,
         ip: "100",
-        userId: user.id
-      }
-    })
+        userId: user.id,
+      },
+    });
 
-    const response = await request(makeApp()).post("/api/refresh").set("Cookie", `refreshToken=${refreshToken}`)
+    const response = await request(makeApp())
+      .post("/api/refresh")
+      .set("Cookie", `refreshToken=${refreshToken}`);
 
     expect(response.status).toBe(204);
-    expect(response.headers["set-cookie"]).toEqual(expect.arrayContaining([
-      expect.stringContaining("refreshToken")
-    ]))
+    expect(response.headers["set-cookie"]).toEqual(
+      expect.arrayContaining([expect.stringContaining("refreshToken")])
+    );
 
     await db.user.delete({
       where: {
-        id: user.id
-      }
-    })
-
+        id: user.id,
+      },
+    });
   });
 
   it("Should return 401 when token is not provided", async () => {
@@ -256,76 +255,73 @@ describe("POST /refresh", () => {
 
   it("Should return 404 when user does not exists", async () => {
     const refreshToken = jwt.sign({ id: Math.random() }, config.SECRET_REFRESH);
-    const response = await request(makeApp()).post("/api/refresh").set("Cookie", `refreshToken=${refreshToken}`)
+    const response = await request(makeApp())
+      .post("/api/refresh")
+      .set("Cookie", `refreshToken=${refreshToken}`);
 
-    expect(response.status).toBe(404)
-    expect(response.body.statusCode).toBe(404)
+    expect(response.status).toBe(404);
+    expect(response.body.statusCode).toBe(404);
     expect(response.body.content).toBe("User not found");
-    expect(response.body.error).toBe("Not Found")
+    expect(response.body.error).toBe("Not Found");
   });
-
 });
 
 describe("GET /me", () => {
-
   it("Should return user info", async () => {
-
     const user = await db.user.create({
-      data: makeUser()
-    })
+      data: makeUser(),
+    });
 
     const accessToken = jwt.sign({ id: user.id }, config.SECRET_ACCESS);
-    const response = await request(makeApp()).get("/api/me").set("Cookie", `accessToken=${accessToken}`);
+    const response = await request(makeApp())
+      .get("/api/me")
+      .set("Cookie", `accessToken=${accessToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.id).toBe(user.id)
+    expect(response.body.id).toBe(user.id);
 
     await db.user.delete({
       where: {
-        id: user.id
-      }
-    })
-
-  })
-
+        id: user.id,
+      },
+    });
+  });
 });
 
 describe("PATCH /me", () => {
-
   it("Should return 204 and firstName should be changed", async () => {
-
     const user = await db.user.create({
-      data: makeUser()
-    })
+      data: makeUser(),
+    });
 
     const accessToken = jwt.sign({ id: user.id }, config.SECRET_ACCESS);
-    const response = await request(makeApp()).patch("/api/me").set("Cookie", `accessToken=${accessToken}`).send({
-      firstName: "camado"
-    })
+    const response = await request(makeApp())
+      .patch("/api/me")
+      .set("Cookie", `accessToken=${accessToken}`)
+      .send({
+        firstName: "camado",
+      });
 
     expect(response.status).toBe(204);
     expect(await db.user.findUnique({ where: { id: user.id } })).toMatchObject({
-      firstName: "camado"
-    })
+      firstName: "camado",
+    });
   });
-
 });
 
 describe("DELETE /me", () => {
-
   it("Should return 204", async () => {
-
     const user = await db.user.create({
-      data: makeUser()
+      data: makeUser(),
     });
 
     const accessToken = jwt.sign({ id: user.id }, config.SECRET_ACCESS);
 
-    const response = await request(makeApp()).delete("/api/me").set("Cookie", `accessToken=${accessToken}`);
+    const response = await request(makeApp())
+      .delete("/api/me")
+      .set("Cookie", `accessToken=${accessToken}`);
 
-    expect(response.status).toBe(204)
-    expect(await db.user.findUnique({ where: { id: user.id } })).toBe(null)
-
+    expect(response.status).toBe(204);
+    expect(await db.user.findUnique({ where: { id: user.id } })).toBe(null);
   });
-
 });
