@@ -1,5 +1,5 @@
 import { ROLES } from "@src/constants";
-import { z } from "zod";
+import z from "zod";
 import db from "@src/config/db";
 import { AuthRequest, Authorize, Validate } from "..";
 
@@ -11,6 +11,13 @@ const authorize: Authorize = (request: AuthRequest) => {
 
 const validate: Validate = (request: AuthRequest) => {
   const schema = z.object({
+    name: z
+      .string()
+      .min(1)
+      .max(255)
+      .refine(async (name) => !(await db.unit.findUnique({ where: { name } })), {
+        message: "Unit already exists",
+      }),
     xId: z
       .string()
       .regex(/^\d+$/gi)
@@ -18,16 +25,9 @@ const validate: Validate = (request: AuthRequest) => {
         z
           .string()
           .transform((v) => Number(v))
-          .refine(
-            async (id) => {
-              return await db.tag.findUnique({
-                where: {
-                  id,
-                },
-              });
-            },
-            { message: "Tag not found" }
-          )
+          .refine(async (id) => await db.unit.findUnique({ where: { id } }), {
+            message: "Unit not found",
+          })
       ),
   });
 
@@ -37,13 +37,14 @@ const validate: Validate = (request: AuthRequest) => {
   });
 };
 
-export interface DeleteTagRequest extends AuthRequest {
+export interface UpdateUnitRequest extends AuthRequest {
   body: {
+    name: string;
     xId: number;
   };
 }
 
-export const deleteTagRequest = {
+export const updateUnitRequest = {
   validate,
   authorize,
-};
+}
