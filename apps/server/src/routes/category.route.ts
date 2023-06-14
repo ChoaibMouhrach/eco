@@ -1,10 +1,11 @@
 import { categoryController } from "@src/controllers";
-import { authAccess } from "@src/middlewares";
+import { authAccess, validator } from "@src/middlewares";
+import { storeCategoryRequest, updateCategoryRequest } from "@src/requests";
 import { Router } from "express";
 
 export const categoryRouter = Router();
 
 categoryRouter.get("", categoryController.index);
-categoryRouter.post("", [authAccess], categoryController.store);
-categoryRouter.patch("/:id", [authAccess], categoryController.update);
+categoryRouter.post("", [authAccess, validator(storeCategoryRequest)], categoryController.store);
+categoryRouter.patch("/:id", [authAccess, validator(updateCategoryRequest)], categoryController.update);
 categoryRouter.delete("/:id", [authAccess], categoryController.destroy);
