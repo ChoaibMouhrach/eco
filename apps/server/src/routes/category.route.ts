@@ -17,4 +17,8 @@ categoryRouter.patch(
   [authAccess, validator(updateCategoryRequest)],
   categoryController.update
 );
-categoryRouter.delete("/:id", [authAccess, validator(deleteCategoryRequest)], categoryController.destroy);
+categoryRouter.delete(
+  "/:id",
+  [authAccess, validator(deleteCategoryRequest)],
+  categoryController.destroy
+);

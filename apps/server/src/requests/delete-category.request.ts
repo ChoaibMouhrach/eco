@@ -8,14 +8,18 @@ const validate: Validate = (request: Request) => {
   const schema = z.object({
     xId: z
       .string()
-      .regex(/^\d+$/ig)
-      .pipe(z.string().transform((xId) => Number(xId))
-        .refine(
-          async (xId) => await db.category.findUnique({ where: { id: xId } }),
-          {
-            message: "Category not found",
-          }
-        )),
+      .regex(/^\d+$/gi)
+      .pipe(
+        z
+          .string()
+          .transform((xId) => Number(xId))
+          .refine(
+            async (xId) => await db.category.findUnique({ where: { id: xId } }),
+            {
+              message: "Category not found",
+            }
+          )
+      ),
   });
 
   return schema.safeParseAsync({

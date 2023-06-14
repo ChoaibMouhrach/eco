@@ -1,8 +1,8 @@
-import makeApp from "@src/app"
-import supertest from "supertest"
+import makeApp from "@src/app";
+import supertest from "supertest";
 
 const request = () => {
-  return supertest(makeApp("test"))
-}
+  return supertest(makeApp("test"));
+};
 
-export default request
+export default request;
