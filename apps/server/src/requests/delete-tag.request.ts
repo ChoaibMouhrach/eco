@@ -32,7 +32,6 @@ const validate: Validate = (request: AuthRequest) => {
   });
 
   return schema.safeParseAsync({
-    ...request.body,
     xId: request.params.id,
   });
 };

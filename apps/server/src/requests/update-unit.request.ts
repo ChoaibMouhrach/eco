@@ -15,9 +15,12 @@ const validate: Validate = (request: AuthRequest) => {
       .string()
       .min(1)
       .max(255)
-      .refine(async (name) => !(await db.unit.findUnique({ where: { name } })), {
-        message: "Unit already exists",
-      }),
+      .refine(
+        async (name) => !(await db.unit.findUnique({ where: { name } })),
+        {
+          message: "Unit already exists",
+        }
+      ),
     xId: z
       .string()
       .regex(/^\d+$/gi)
@@ -47,4 +50,4 @@ export interface UpdateUnitRequest extends AuthRequest {
 export const updateUnitRequest = {
   validate,
   authorize,
-}
+};

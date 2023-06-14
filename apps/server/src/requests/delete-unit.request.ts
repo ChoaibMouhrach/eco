@@ -32,7 +32,6 @@ const validate: Validate = (request: AuthRequest) => {
   });
 
   return schema.safeParseAsync({
-    ...request.body,
     xId: request.params.id,
   });
 };
@@ -46,4 +45,4 @@ export interface DeleteUnitRequest extends AuthRequest {
 export const deleteUnitRequest = {
   validate,
   authorize,
-}
+};

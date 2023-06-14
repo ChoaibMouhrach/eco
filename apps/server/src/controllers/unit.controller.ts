@@ -1,6 +1,10 @@
 import db from "@src/config/db";
 import validateQuery from "@src/lib/query-validator.lib";
-import { DeleteUnitRequest, StoreUnitRequest, UpdateUnitRequest } from "@src/requests";
+import {
+  DeleteUnitRequest,
+  StoreUnitRequest,
+  UpdateUnitRequest,
+} from "@src/requests";
 import { Request, Response } from "express";
 
 const index = async (request: Request, response: Response) => {
@@ -26,55 +30,47 @@ const index = async (request: Request, response: Response) => {
 };
 
 const store = async (request: StoreUnitRequest, response: Response) => {
-  const {
-    name
-  } = request.body
+  const { name } = request.body;
 
   const unit = await db.unit.create({
     data: {
-      name
-    }
-  })
+      name,
+    },
+  });
 
-  return response.status(201).json(unit)
-}
+  return response.status(201).json(unit);
+};
 
 const update = async (request: UpdateUnitRequest, response: Response) => {
-
-  const {
-    name,
-    xId
-  } = request.body;
+  const { name, xId } = request.body;
 
   await db.unit.update({
     where: {
-      id: xId
+      id: xId,
     },
     data: {
-      name
-    }
-  })
+      name,
+    },
+  });
 
-  return response.sendStatus(204)
-}
+  return response.sendStatus(204);
+};
 
 const destroy = async (request: DeleteUnitRequest, response: Response) => {
-  const {
-    xId
-  } = request.body;
+  const { xId } = request.body;
 
   await db.unit.delete({
     where: {
-      id: xId
-    }
-  })
+      id: xId,
+    },
+  });
 
-  return response.sendStatus(204)
-}
+  return response.sendStatus(204);
+};
 
 export const unitController = {
   index,
   store,
   update,
-  destroy
+  destroy,
 };

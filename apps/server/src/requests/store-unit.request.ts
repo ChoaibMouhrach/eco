@@ -14,9 +14,12 @@ const validate: Validate = (request: AuthRequest) => {
       .string()
       .min(1)
       .max(255)
-      .refine(async (name) => !(await db.unit.findUnique({ where: { name } })), {
-        message: "Unit already exists",
-      }),
+      .refine(
+        async (name) => !(await db.unit.findUnique({ where: { name } })),
+        {
+          message: "Unit already exists",
+        }
+      ),
   });
 
   return schema.safeParseAsync(request.body);

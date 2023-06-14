@@ -14,3 +14,15 @@ export const makeCategory = () => {
     name: `Cat${Math.random()}`,
   };
 };
+
+export const makeTag = () => {
+  return {
+    name: `Tag${Math.random()}`,
+  };
+}
+
+export const makeUnit = () => {
+  return {
+    name: `Unit${Math.random()}`,
+  };
+}
