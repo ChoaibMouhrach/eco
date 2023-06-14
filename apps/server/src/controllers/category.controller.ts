@@ -27,50 +27,42 @@ const index = async (request: Request, response: Response) => {
 };
 
 const store = async (request: StoreCategoryRequest, response: Response) => {
-  const {
-    name
-  } = request.body
+  const { name } = request.body;
 
   const category = await db.category.create({
     data: {
-      name
-    }
-  })
+      name,
+    },
+  });
 
-  return response.status(204).json(category)
+  return response.status(201).json(category);
 };
 
 const update = async (request: UpdateCategoryRequest, response: Response) => {
-  const {
-    name,
-    xId
-  } = request.body
+  const { name, xId } = request.body;
 
   await db.category.update({
     where: {
-      id: xId
+      id: xId,
     },
     data: {
-      name
-    }
-  })
+      name,
+    },
+  });
 
   return response.sendStatus(204);
 };
 
 const destroy = async (request: DeleteCategoryRequest, response: Response) => {
-
-  const {
-    xId
-  } = request.body
+  const { xId } = request.body;
 
   await db.category.delete({
     where: {
-      id: xId
-    }
-  })
+      id: xId,
+    },
+  });
 
-  return response.json()
+  return response.sendStatus(204);
 };
 
 export const categoryController = {
