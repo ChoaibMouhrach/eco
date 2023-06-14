@@ -14,21 +14,21 @@ const validate: Validate = (request: AuthRequest) => {
       .string()
       .min(1)
       .max(255)
-      .refine(async (name) => !(await db.tag.findUnique({ where: { name } })), {
-        message: "Tag already exists",
+      .refine(async (name) => !(await db.unit.findUnique({ where: { name } })), {
+        message: "Unit already exists",
       }),
   });
 
   return schema.safeParseAsync(request.body);
 };
 
-export interface StoreTagRequest extends AuthRequest {
+export interface StoreUnitRequest extends AuthRequest {
   body: {
     name: string;
   };
 }
 
-export const storeTagRequest = {
+export const storeUnitRequest = {
   validate,
   authorize,
 };

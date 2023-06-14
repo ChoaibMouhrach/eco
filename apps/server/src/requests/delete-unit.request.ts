@@ -20,13 +20,13 @@ const validate: Validate = (request: AuthRequest) => {
           .transform((v) => Number(v))
           .refine(
             async (id) => {
-              return await db.tag.findUnique({
+              return await db.unit.findUnique({
                 where: {
                   id,
                 },
               });
             },
-            { message: "Tag not found" }
+            { message: "Unit not found" }
           )
       ),
   });
@@ -37,13 +37,13 @@ const validate: Validate = (request: AuthRequest) => {
   });
 };
 
-export interface DeleteTagRequest extends AuthRequest {
+export interface DeleteUnitRequest extends AuthRequest {
   body: {
     xId: number;
   };
 }
 
-export const deleteTagRequest = {
+export const deleteUnitRequest = {
   validate,
   authorize,
-};
+}

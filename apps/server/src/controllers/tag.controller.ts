@@ -34,44 +34,38 @@ const store = async (request: StoreTagRequest, response: Response) => {
 
   const tag = await db.tag.create({
     data: {
-      name
-    }
-  })
+      name,
+    },
+  });
 
-  return response.status(201).json(
-    tag
-  )
+  return response.status(201).json(tag);
 };
 
 const update = async (request: UpdateTagRequest, response: Response) => {
-  const {
-    name, xId
-  } = request.body
+  const { name, xId } = request.body;
 
   await db.tag.update({
     where: {
-      id: xId
+      id: xId,
     },
     data: {
-      name
-    }
-  })
+      name,
+    },
+  });
 
-  return response.sendStatus(204)
+  return response.sendStatus(204);
 };
 
 const destroy = async (request: DeleteTagRequest, response: Response) => {
-  const {
-    xId
-  } = request.body
+  const { xId } = request.body;
 
   await db.tag.delete({
     where: {
-      id: xId
-    }
-  })
+      id: xId,
+    },
+  });
 
-  return response.sendStatus(204)
+  return response.sendStatus(204);
 };
 
 export const tagController = {
