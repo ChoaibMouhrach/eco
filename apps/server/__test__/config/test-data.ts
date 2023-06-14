@@ -13,4 +13,4 @@ export const makeCategory = () => {
   return {
     name: `Cat${Math.random()}`,
   };
-}
+};

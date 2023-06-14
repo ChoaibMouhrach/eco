@@ -1,7 +1,7 @@
 import db from "@src/config/db";
-import request from "../config/request";
 import jwt from "jsonwebtoken";
 import config from "@src/config/config";
+import request from "../config/request";
 import { makeUser } from "../config/test-data";
 
 jest.mock("../../src/lib/mailer.lib", () => ({
@@ -63,9 +63,7 @@ describe("POST /sign-in", () => {
 describe("POST /sign-up", () => {
   it("Should return 200 with message Check your inbox", async () => {
     const userPayload = makeUser();
-    const response = await request()
-      .post("/api/sign-up")
-      .send(userPayload);
+    const response = await request().post("/api/sign-up").send(userPayload);
 
     expect(response.status).toBe(201);
     expect(response.body.message).toBe("Check your inbox");
@@ -84,9 +82,7 @@ describe("POST /sign-up", () => {
       data: userPayload,
     });
 
-    const response = await request()
-      .post("/api/sign-up")
-      .send(userPayload);
+    const response = await request().post("/api/sign-up").send(userPayload);
 
     expect(response.status).toBe(400);
     expect(response.body.statusCode).toBe(400);
