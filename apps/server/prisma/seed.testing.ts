@@ -1,0 +1,23 @@
+import { Prisma, PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
+
+const db = new PrismaClient();
+
+const main = async () => {
+  const tags: Prisma.TagCreateInput[] = [];
+  const products: Prisma.CategoryCreateInput[] = [];
+
+  for (let i = 0; i < 10; i += 1) {
+    tags.push({
+      name: faker.commerce.productMaterial(),
+    });
+  }
+
+  await db.tag.createMany({
+    data: tags,
+  });
+
+  console.log("Done");
+};
+
+main();
