@@ -8,3 +8,9 @@ export const makeUser = (roleId: number = 1) => {
     roleId,
   };
 };
+
+export const makeCategory = () => {
+  return {
+    name: `Cat${Math.random()}`,
+  };
+}

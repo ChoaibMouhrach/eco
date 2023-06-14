@@ -1,36 +1,41 @@
 import z from "zod";
-import { AuthRequest, Authorize, Validate } from "..";
 import { Request } from "express";
 import { ROLES } from "@src/constants";
 import db from "@src/config/db";
+import { AuthRequest, Authorize, Validate } from "..";
 
 const validate: Validate = (request: Request) => {
   const schema = z.object({
-    xId: z.string().regex(/^\d+$/ig).transform((xId) => Number(xId)).refine(async (xId) => await db.category.findUnique({ where: { id: xId } }), {
-      message: "Category not found"
-    })
-  })
+    xId: z
+      .string()
+      .regex(/^\d+$/ig)
+      .pipe(z.string().transform((xId) => Number(xId))
+        .refine(
+          async (xId) => await db.category.findUnique({ where: { id: xId } }),
+          {
+            message: "Category not found",
+          }
+        )),
+  });
 
-  return schema.safeParse({
-    xId: request.query.id
-  })
-}
+  return schema.safeParseAsync({
+    xId: request.params.id,
+  });
+};
 
 export interface DeleteCategoryRequest extends AuthRequest {
   body: {
-    xId: number
-  }
+    xId: number;
+  };
 }
 
 const authorize: Authorize = (request: AuthRequest) => {
-  const {
-    user
-  } = request.auth!
+  const { user } = request.auth!;
 
-  return user.roleId === ROLES.ADMIN
-}
+  return user.roleId === ROLES.ADMIN;
+};
 
 export const deleteCategoryRequest = {
   authorize,
-  validate
-}
+  validate,
+};

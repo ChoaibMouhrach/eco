@@ -1,7 +1,7 @@
 import z from "zod";
 import db from "@src/config/db";
-import { Validate } from "..";
 import { Request } from "express";
+import { Validate } from "..";
 
 const validate: Validate = (request: Request) => {
   const schema = z.object({

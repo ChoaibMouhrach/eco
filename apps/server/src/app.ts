@@ -9,7 +9,7 @@ import config from "./config/config";
 import router from "./routes";
 import { errorHandler } from "./middlewares";
 
-const makeApp = () => {
+const makeApp = (env: "prod" | "dev" | "test" = "dev") => {
   const app = express();
 
   // cors config
@@ -21,7 +21,7 @@ const makeApp = () => {
   );
 
   app.use(helmet());
-  app.use(morgan("combined"));
+  if (env !== "test") app.use(morgan("combined"));
   app.use(express.json());
   app.use(cookieParser());
 

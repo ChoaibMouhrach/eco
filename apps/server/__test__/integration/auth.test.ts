@@ -1,6 +1,5 @@
-import makeApp from "@src/app";
 import db from "@src/config/db";
-import request from "supertest";
+import request from "../config/request";
 import jwt from "jsonwebtoken";
 import config from "@src/config/config";
 import { makeUser } from "../config/test-data";
@@ -17,7 +16,7 @@ describe("POST /sign-in", () => {
       data: userPayload,
     });
 
-    const response = await request(makeApp()).post("/api/sign-in").send({
+    const response = await request().post("/api/sign-in").send({
       email: user.email,
     });
 
@@ -34,7 +33,7 @@ describe("POST /sign-in", () => {
   });
 
   it("Should return 404 with user not found", async () => {
-    const response = await request(makeApp()).post("/api/sign-in").send({
+    const response = await request().post("/api/sign-in").send({
       email: "example@example.com",
     });
 
@@ -45,7 +44,7 @@ describe("POST /sign-in", () => {
   });
 
   it("Should return 400 email required", async () => {
-    const response = await request(makeApp()).post("/api/sign-in");
+    const response = await request().post("/api/sign-in");
 
     expect(response.status).toBe(400);
     expect(response.body.statusCode).toBe(400);
@@ -64,7 +63,7 @@ describe("POST /sign-in", () => {
 describe("POST /sign-up", () => {
   it("Should return 200 with message Check your inbox", async () => {
     const userPayload = makeUser();
-    const response = await request(makeApp())
+    const response = await request()
       .post("/api/sign-up")
       .send(userPayload);
 
@@ -85,7 +84,7 @@ describe("POST /sign-up", () => {
       data: userPayload,
     });
 
-    const response = await request(makeApp())
+    const response = await request()
       .post("/api/sign-up")
       .send(userPayload);
 
@@ -109,7 +108,7 @@ describe("POST /sign-up", () => {
   });
 
   it("Should return 400 with email required", async () => {
-    const response = await request(makeApp()).post("/api/sign-up");
+    const response = await request().post("/api/sign-up");
 
     expect(response.status).toBe(400);
     expect(response.body.statusCode).toBe(400);
@@ -142,7 +141,7 @@ describe("POST /sign-out", () => {
       },
     });
 
-    const response = await request(makeApp())
+    const response = await request()
       .post("/api/sign-out")
       .set("Cookie", `refreshToken=${refreshToken}`);
 
@@ -156,7 +155,7 @@ describe("POST /sign-out", () => {
   });
 
   it("Should return 401 when token is missing", async () => {
-    const response = await request(makeApp()).post("/api/sign-out");
+    const response = await request().post("/api/sign-out");
     expect(response.status).toBe(401);
   });
 });
@@ -171,7 +170,7 @@ describe("POST /auth", () => {
 
     const token = jwt.sign({ id: user.id }, config.SECRET_AUTH_EMAIL);
 
-    const response = await request(makeApp()).post(`/api/auth/${token}`);
+    const response = await request().post(`/api/auth/${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({
@@ -200,7 +199,7 @@ describe("POST /auth", () => {
       },
     });
 
-    const response = await request(makeApp()).post(`/api/auth/${token}`);
+    const response = await request().post(`/api/auth/${token}`);
 
     expect(response.status).toBe(404);
     expect(response.body.statusCode).toBe(404);
@@ -209,7 +208,7 @@ describe("POST /auth", () => {
   });
 
   it("Should return 401 when token does not exists", async () => {
-    const response = await request(makeApp()).post(`/api/auth/354654654`);
+    const response = await request().post(`/api/auth/354654654`);
     expect(response.status).toBe(401);
   });
 });
@@ -232,7 +231,7 @@ describe("POST /refresh", () => {
       },
     });
 
-    const response = await request(makeApp())
+    const response = await request()
       .post("/api/refresh")
       .set("Cookie", `refreshToken=${refreshToken}`);
 
@@ -249,13 +248,13 @@ describe("POST /refresh", () => {
   });
 
   it("Should return 401 when token is not provided", async () => {
-    const response = await request(makeApp()).post("/api/refresh");
+    const response = await request().post("/api/refresh");
     expect(response.status).toBe(401);
   });
 
   it("Should return 404 when user does not exists", async () => {
     const refreshToken = jwt.sign({ id: Math.random() }, config.SECRET_REFRESH);
-    const response = await request(makeApp())
+    const response = await request()
       .post("/api/refresh")
       .set("Cookie", `refreshToken=${refreshToken}`);
 
@@ -273,7 +272,7 @@ describe("GET /me", () => {
     });
 
     const accessToken = jwt.sign({ id: user.id }, config.SECRET_ACCESS);
-    const response = await request(makeApp())
+    const response = await request()
       .get("/api/me")
       .set("Cookie", `accessToken=${accessToken}`);
 
@@ -295,7 +294,7 @@ describe("PATCH /me", () => {
     });
 
     const accessToken = jwt.sign({ id: user.id }, config.SECRET_ACCESS);
-    const response = await request(makeApp())
+    const response = await request()
       .patch("/api/me")
       .set("Cookie", `accessToken=${accessToken}`)
       .send({
@@ -317,7 +316,7 @@ describe("DELETE /me", () => {
 
     const accessToken = jwt.sign({ id: user.id }, config.SECRET_ACCESS);
 
-    const response = await request(makeApp())
+    const response = await request()
       .delete("/api/me")
       .set("Cookie", `accessToken=${accessToken}`);
 
