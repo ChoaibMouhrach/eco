@@ -1,8 +1,9 @@
 import z from "zod";
 import db from "@src/config/db";
 import { Validate } from "..";
+import { Request } from "express";
 
-const validate: Validate = (body: any) => {
+const validate: Validate = (request: Request) => {
   const schema = z.object({
     email: z
       .string()
@@ -23,7 +24,7 @@ const validate: Validate = (body: any) => {
     address: z.string().min(3).max(255),
   });
 
-  return schema.safeParseAsync(body);
+  return schema.safeParseAsync(request.body);
 };
 
 export interface SignUpRequest {

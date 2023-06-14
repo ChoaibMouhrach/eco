@@ -182,7 +182,7 @@ model Tag {
 model Category {
   id Int @id @default(autoincrement())
 
-  name    String
+  name    String @unique
   Product Product[]
 
   createdAt DateTime @default(now())

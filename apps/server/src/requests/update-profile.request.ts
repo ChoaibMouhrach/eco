@@ -1,8 +1,9 @@
 import { z } from "zod";
 import db from "@src/config/db";
 import { AuthRequest, Validate } from "..";
+import { Request } from "express";
 
-const validate: Validate = (body: any) => {
+const validate: Validate = (request: Request) => {
   const schema = z
     .object({
       firstName: z.string().min(3).max(60).optional(),
@@ -24,7 +25,7 @@ const validate: Validate = (body: any) => {
       { message: "At least one field is required" }
     );
 
-  return schema.safeParseAsync(body);
+  return schema.safeParseAsync(request.body);
 };
 
 export interface UpdateProfileRequest extends AuthRequest {

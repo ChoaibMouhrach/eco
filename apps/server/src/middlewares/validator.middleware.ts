@@ -18,7 +18,7 @@ export const validator = ({ validate, authorize }: ValidatorParams) => {
     }
 
     if (validate) {
-      const validation = await validate(request.body);
+      const validation = await validate(request);
 
       if (validation.success) {
         request.body = validation.data;
