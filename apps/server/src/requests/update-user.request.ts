@@ -1,8 +1,8 @@
 import { ROLES } from "@src/constants";
 import { z } from "zod";
 import { Request } from "express";
-import { AuthRequest, Authorize, Validate } from "..";
 import db from "@src/config/db";
+import { AuthRequest, Authorize, Validate } from "..";
 
 const validate: Validate = (request: Request) => {
   const schema = z.object({
@@ -13,19 +13,42 @@ const validate: Validate = (request: Request) => {
         z
           .string()
           .transform((v) => Number(v))
-          .refine(async () => { })
+          .refine(async (id) => await db.user.findUnique({ where: { id } }), {
+            message: "User not found",
+          })
       ),
     firstName: z.string().min(3).max(60).optional(),
     lastName: z.string().min(3).max(60).optional(),
-    email: z.string().email().refine(async (email) => !(await db.user.findUnique({ where: { email } })), { message: "Email Address already exists" }).optional(),
-    phone: z.string()
+    email: z
+      .string()
+      .email()
+      .refine(
+        async (email) => !(await db.user.findUnique({ where: { email } })),
+        { message: "Email Address already exists" }
+      )
+      .optional(),
+    phone: z
+      .string()
       .regex(/^\+[1-9]\d{1,14}$/)
-      .refine(async (phone) => !(await db.user.findUnique({ where: { phone } })), { message: "Phone is already taken" }).optional(),
+      .refine(
+        async (phone) => !(await db.user.findUnique({ where: { phone } })),
+        { message: "Phone already exists" }
+      )
+      .optional(),
     address: z.string().min(3).max(255).optional(),
-    roleId: z.number().refine(async (id) => await db.role.findUnique({ where: { id } }), "Role not found")
+    roleId: z
+      .number()
+      .refine(
+        async (id) => await db.role.findUnique({ where: { id } }),
+        "Role not found"
+      )
+      .optional(),
   });
 
-  return schema.safeParseAsync(request.body);
+  return schema.safeParseAsync({
+    ...request.body,
+    xId: request.params.id,
+  });
 };
 
 const authorize: Authorize = (request: AuthRequest) => {

@@ -1,6 +1,7 @@
 import { ROLES } from "@src/constants";
 import { z } from "zod";
 import { Request } from "express";
+import db from "@src/config/db";
 import { AuthRequest, Authorize, Validate } from "..";
 
 const validate: Validate = (request: Request) => {
@@ -12,7 +13,10 @@ const validate: Validate = (request: Request) => {
         z
           .string()
           .transform((v) => Number(v))
-          .refine(async () => { })
+          .refine(
+            async (id: number) => await db.user.findUnique({ where: { id } }),
+            { message: "User not found" }
+          )
       ),
   });
 

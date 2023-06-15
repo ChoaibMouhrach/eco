@@ -1,7 +1,12 @@
 import db from "@src/config/db";
 import validateQuery from "@src/lib/query-validator.lib";
 import { Request, Response } from "express";
-import { DeleteUserRequest, ShowUserRequest, StoreUserRequest, UpdateUserRequest } from "@src/requests";
+import {
+  DeleteUserRequest,
+  ShowUserRequest,
+  StoreUserRequest,
+  UpdateUserRequest,
+} from "@src/requests";
 
 const index = async (request: Request, response: Response) => {
   const { search, page, sort } = validateQuery(request.query);
@@ -50,43 +55,32 @@ const index = async (request: Request, response: Response) => {
 };
 
 const show = async (request: ShowUserRequest, response: Response) => {
-
-  const {
-    xId
-  } = request.body
+  const { xId } = request.body;
 
   const user = await db.user.findUnique({
     where: {
-      id: xId
-    }
-  })
+      id: xId,
+    },
+  });
 
-  return response.json(user)
-}
+  return response.json(user);
+};
 
 const store = async (request: StoreUserRequest, response: Response) => {
   const user = await db.user.create({
-    data: request.body
-  })
+    data: request.body,
+  });
 
-  return response.status(201).json(user)
-}
+  return response.status(201).json(user);
+};
 
 const update = async (request: UpdateUserRequest, response: Response) => {
-
-  const {
-    xId,
-    firstName,
-    lastName,
-    email,
-    phone,
-    address,
-    roleId
-  } = request.body
+  const { xId, firstName, lastName, email, phone, address, roleId } =
+    request.body;
 
   await db.user.update({
     where: {
-      id: xId
+      id: xId,
     },
     data: {
       firstName,
@@ -94,31 +88,29 @@ const update = async (request: UpdateUserRequest, response: Response) => {
       email,
       phone,
       address,
-      roleId
-    }
-  })
+      roleId,
+    },
+  });
 
   return response.sendStatus(204);
-}
+};
 
 const destroy = async (request: DeleteUserRequest, response: Response) => {
-  const {
-    xId
-  } = request.body
+  const { xId } = request.body;
 
   await db.user.delete({
     where: {
-      id: xId
-    }
-  })
+      id: xId,
+    },
+  });
 
   return response.sendStatus(204);
-}
+};
 
 export const userController = {
   index,
   show,
   store,
   update,
-  destroy
+  destroy,
 };
