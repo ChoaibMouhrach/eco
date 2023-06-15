@@ -12,3 +12,9 @@ export * from "./delete-tag.request";
 export * from "./store-unit.request";
 export * from "./update-unit.request";
 export * from "./delete-unit.request";
+
+export * from "./index-user.request"
+export * from "./show-user.request"
+export * from "./store-user.request"
+export * from "./update-user.request"
+export * from "./delete-user.request"
