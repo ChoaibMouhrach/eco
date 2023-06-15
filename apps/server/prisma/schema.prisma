@@ -11,33 +11,27 @@ datasource db {
 }
 
 model User {
-  id        Int    @id @default(autoincrement())
-  firstName String
-  lastName  String
-
-  email String @unique
-  phone String @unique
-
-  address String
-
+  id            Int            @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  email         String         @unique
+  phone         String         @unique
+  address       String
   refreshTokens RefreshToken[]
   role          Role           @relation(fields: [roleId], references: [id])
   roleId        Int
   Order         Order[]
   Purchase      Purchase[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
 
   @@map("users")
 }
 
 model Role {
-  id Int @id @default(autoincrement())
-
-  name String @unique
-  User User[]
-
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  User      User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -45,9 +39,8 @@ model Role {
 }
 
 model OrderState {
-  id   Int    @id @default(autoincrement())
-  name String
-
+  id        Int      @id @default(autoincrement())
+  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -55,44 +48,37 @@ model OrderState {
 }
 
 model OrderProduct {
-  id Int @id @default(autoincrement())
-
-  quantity Int
-  price    Float
-
-  order   Order @relation(fields: [orderId], references: [id])
-  orderId Int
-
-  product   Product @relation(fields: [productId], references: [id])
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  price     Float
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
-
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Order {
-  id    Int            @id @default(autoincrement())
-  items OrderProduct[]
-
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id        Int            @id @default(autoincrement())
+  items     OrderProduct[]
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @default(now()) @updatedAt
 
   @@map("orders")
 }
 
 model PurchaseProduct {
-  id Int @id @default(autoincrement())
-
+  id       Int   @id @default(autoincrement())
   quantity Int
   price    Float
 
-  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
   purchaseId Int
 
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
 
   createdAt DateTime @default(now())
@@ -100,28 +86,22 @@ model PurchaseProduct {
 }
 
 model Purchase {
-  id Int @id @default(autoincrement())
-
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-
-  items PurchaseProduct[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id        Int               @id @default(autoincrement())
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  items     PurchaseProduct[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @default(now()) @updatedAt
 
   @@map("purchases")
 }
 
 model RefreshToken {
-  id Int @id @default(autoincrement())
-
-  token String @unique
-  ip    String
-
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  ip        String
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -129,12 +109,10 @@ model RefreshToken {
 }
 
 model Image {
-  id   Int    @id @default(autoincrement())
-  path String
-
-  product   Product @relation(fields: [productId], references: [id])
+  id        Int      @id @default(autoincrement())
+  path      String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
-
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -142,63 +120,51 @@ model Image {
 }
 
 model Product {
-  id Int @id @default(autoincrement())
-
-  name        String
-  description String @db.LongText
-
-  price    Float
-  quantity Int
-
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
-
-  unit   Unit @relation(fields: [unitId], references: [id])
-  unitId Int
-
+  id              Int               @id @default(autoincrement())
+  name            String
+  description     String            @db.LongText
+  price           Float
+  quantity        Int
+  category        Category          @relation(fields: [categoryId], references: [id])
+  categoryId      Int
+  unit            Unit              @relation(fields: [unitId], references: [id])
+  unitId          Int
   images          Image[]
   tags            Tag[]
   OrderProduct    OrderProduct[]
   PurchaseProduct PurchaseProduct[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now()) @updatedAt
 
   @@map("products")
 }
 
 model Tag {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-
-  products Product[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 
   @@map("tags")
 }
 
 model Category {
-  id Int @id @default(autoincrement())
-
-  name    String    @unique
-  Product Product[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  Product   Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 
   @@map("categories")
 }
 
 model Unit {
-  id Int @id @default(autoincrement())
-
-  name    String    @unique
-  Product Product[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  Product   Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 
   @@map("units")
 }
