@@ -18,3 +18,8 @@ export * from "./show-user.request";
 export * from "./store-user.request";
 export * from "./update-user.request";
 export * from "./delete-user.request";
+
+export * from "./show-product.request";
+export * from "./store-product.request";
+export * from "./update-product.request";
+export * from "./delete-product.request";

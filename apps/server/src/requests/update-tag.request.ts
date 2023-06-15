@@ -14,7 +14,7 @@ const validate: Validate = (request: AuthRequest) => {
     name: z
       .string()
       .min(1)
-      .max(255)
+      .max(60)
       .refine(async (name) => !(await db.tag.findUnique({ where: { name } })), {
         message: "Tag already exists",
       }),
