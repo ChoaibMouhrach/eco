@@ -125,14 +125,19 @@ model Product {
   description     String            @db.LongText
   price           Float
   quantity        Int
+
   category        Category          @relation(fields: [categoryId], references: [id])
   categoryId      Int
+
   unit            Unit              @relation(fields: [unitId], references: [id])
   unitId          Int
+
   images          Image[]
   tags            Tag[]
+
   OrderProduct    OrderProduct[]
   PurchaseProduct PurchaseProduct[]
+
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now()) @updatedAt
 
