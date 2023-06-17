@@ -32,4 +32,4 @@ export const storeFile = (name: string, buffer: Buffer): string => {
 /**
  * use to destroy files inside storage directory
  */
-export const destroy = () => { };
+export const destroy = () => {};
