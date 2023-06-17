@@ -39,7 +39,7 @@ describe("POST /sign-in", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.statusCode).toBe(404);
-    expect(response.body.content).toBe("User not found");
+    expect(response.body.content.message).toBe("User not found");
     expect(response.body.error).toBe("Not Found");
   });
 
@@ -200,7 +200,7 @@ describe("POST /auth", () => {
     expect(response.status).toBe(404);
     expect(response.body.statusCode).toBe(404);
     expect(response.body.error).toBe("Not Found");
-    expect(response.body.content).toBe("User not found");
+    expect(response.body.content.message).toBe("User not found");
   });
 
   it("Should return 401 when token does not exists", async () => {
@@ -256,7 +256,7 @@ describe("POST /refresh", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.statusCode).toBe(404);
-    expect(response.body.content).toBe("User not found");
+    expect(response.body.content.message).toBe("User not found");
     expect(response.body.error).toBe("Not Found");
   });
 });
