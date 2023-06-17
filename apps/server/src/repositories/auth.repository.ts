@@ -30,7 +30,7 @@ const verify = <T>(
       token,
     };
   } catch (err: any) {
-    throw new UnauthorizedException(err);
+    throw new UnauthorizedException(err.message);
   }
 };
 
