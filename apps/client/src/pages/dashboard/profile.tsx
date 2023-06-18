@@ -1,5 +1,13 @@
 import ProfilePage from "@/Components/Pages/ProfilePage";
+import { User } from "@/index";
+import withAuth from "@/middlewares/withAuth";
 
-export default function Profile() {
-  return <ProfilePage />;
+interface ProfileProps {
+  user?: User;
 }
+
+export default function Profile({ user }: ProfileProps) {
+  return <ProfilePage user={user} />;
+}
+
+export const getServerSideProps = withAuth();

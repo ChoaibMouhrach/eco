@@ -1,5 +1,12 @@
 import PublicLayout from "../Layouts/PublicLayout";
+import { User } from "@/index";
 
-export default function HomePage() {
-  return <PublicLayout>Home</PublicLayout>;
+interface HomePageProps {
+  user?: User;
+}
+
+export default function HomePage({ user }: HomePageProps) {
+  return (
+    <PublicLayout>{user ? "Authenticated" : "UnAuthenticated"}</PublicLayout>
+  );
 }
