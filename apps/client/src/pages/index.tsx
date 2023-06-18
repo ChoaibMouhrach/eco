@@ -1,9 +1,5 @@
-import { Button } from "ui";
+import HomePage from "@/Components/Pages/HomePage";
 
 export default function Home() {
-  return (
-    <div className="bg-red-700">
-      <Button>Camado</Button>
-    </div>
-  );
+  return <HomePage />;
 }
