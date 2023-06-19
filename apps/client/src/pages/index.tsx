@@ -1,8 +1,7 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import HomePage from "@/Components/Pages/HomePage";
 import { User } from "..";
-// import api from "@/lib/api";
-import newApi from "@/lib/apip";
+import api from "@/lib/api";
 
 interface HomeProps {
   user?: User;
@@ -24,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (
   }
 
   try {
-    const response = await newApi(
+    const response = await api(
       {
         url: "/me",
         method: "GET",

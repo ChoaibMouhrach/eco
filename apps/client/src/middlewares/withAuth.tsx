@@ -1,7 +1,7 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { AxiosError } from "axios";
 import { User } from "..";
-import newApi from "@/lib/apip";
+import api from "@/lib/api";
 
 interface AuthGetServerSidePropsContext extends GetServerSidePropsContext {
   user?: User;
@@ -23,7 +23,7 @@ const withAuth = (
     }
 
     try {
-      const response = await newApi(
+      const response = await api(
         {
           url: "/me",
           method: "GET",

@@ -7,6 +7,8 @@ interface HomePageProps {
 
 export default function HomePage({ user }: HomePageProps) {
   return (
-    <PublicLayout>{user ? "Authenticated" : "UnAuthenticated"}</PublicLayout>
+    <PublicLayout user={user}>
+      {user ? "Authenticated" : "UnAuthenticated"}
+    </PublicLayout>
   );
 }
