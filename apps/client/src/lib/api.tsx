@@ -1,41 +1,67 @@
-import axios from "axios";
-import { HttpError } from "..";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { GetServerSidePropsContext } from "next";
 
-const api = axios.create({
+const instance = axios.create({
   baseURL: process.env.API_URL,
+  withCredentials: true,
 });
 
-api.interceptors.response.use(
-  (r) => r,
-  async (err: HttpError) => {
+const api = async (
+  config: AxiosRequestConfig<any>,
+  ctx?: GetServerSidePropsContext
+): Promise<AxiosResponse> => {
+  let accessToken: string | undefined;
+  let refreshToken: string | undefined;
+
+  if (ctx) {
+    accessToken = ctx.req.cookies.accessToken;
+    refreshToken = ctx.req.cookies.refreshToken;
+  }
+
+  try {
+    return await instance({
+      ...config,
+      headers:
+        accessToken && refreshToken
+          ? {
+              Cookie: [
+                `accessToken=${accessToken}`,
+                `refreshToken=${refreshToken}`,
+              ],
+            }
+          : undefined,
+    });
+  } catch (err) {
     if (
+      err instanceof AxiosError &&
       err.response &&
-      !(err.response.data.content instanceof Array) &&
-      err.response.data.content.message === "jwt expired"
+      "message" in err.response.data.content &&
+      err.response?.data.content.message === "jwt expired"
     ) {
-      const response = await api({
+      const response = await instance({
         url: "/refresh",
-        method: "post",
-        headers: {
-          Cookie: err.config?.headers.Cookie,
-        },
+        method: "POST",
+        headers: refreshToken
+          ? {
+              Cookie: [`refreshToken=${refreshToken}`],
+            }
+          : undefined,
       });
 
-      if (response.status === 204) {
-        return await api({
-          url: err.config?.url,
-          method: err.config?.method,
-          headers: {
-            ...err.config?.headers,
-            Cookie: response.headers["set-cookie"],
-            "set-cookie": response.headers["set-cookie"],
-          },
-        });
+      if (ctx && response.headers["set-cookie"]) {
+        ctx.res.setHeader("set-cookie", response.headers["set-cookie"]);
       }
+
+      return await instance({
+        ...config,
+        headers: {
+          Cookie: response.headers["set-cookie"],
+        },
+      });
     }
 
     return Promise.reject(err);
   }
-);
+};
 
 export default api;
