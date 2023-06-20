@@ -18,16 +18,16 @@ function NavigationLinks({ user, location = "bar" }: NavigationLinksProps) {
         location === "bar" ? "hidden" : "flex flex-col h-full justify-center"
       } lg:flex items-center gap-4`}
     >
-      <Link className="text-neutral-600" href="/">
+      <Link className="text-neutral-600 hover:text-gray-900" href="/">
         Home
       </Link>
-      <Link className="text-neutral-600" href="/">
+      <Link className="text-neutral-600 hover:text-gray-900" href="/shop">
         Shop
       </Link>
-      <Link className="text-neutral-600" href="/">
+      <Link className="text-neutral-600 hover:text-gray-900" href="/about-us">
         About us
       </Link>
-      <Link className="text-neutral-600" href="/">
+      <Link className="text-neutral-600 hover:text-gray-900" href="/contact-us">
         Contact us
       </Link>
       {!user && <Button href="/sign-in">Sign In</Button>}

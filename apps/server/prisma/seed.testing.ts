@@ -5,7 +5,6 @@ const db = new PrismaClient();
 
 const main = async () => {
   const tags: Prisma.TagCreateInput[] = [];
-  const products: Prisma.CategoryCreateInput[] = [];
 
   for (let i = 0; i < 10; i += 1) {
     tags.push({
