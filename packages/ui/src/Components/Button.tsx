@@ -32,10 +32,10 @@ const button = cva(
       },
       color: {
         primary: [
-          "bg-stone-900",
-          "hover:bg-stone-700",
-          "active:bg-stone-500",
-          "disabled:bg-stone-500",
+          "bg-gray-900",
+          "hover:bg-gray-700",
+          "active:bg-gray-500",
+          "disabled:bg-gray-500",
         ],
         danger: [
           "bg-red-700",
@@ -58,9 +58,9 @@ const button = cva(
         color: "primary",
         class: [
           "bg-transparent",
-          "!text-stone-800",
-          "hover:!bg-stone-100",
-          "active:!bg-stone-200",
+          "!text-gray-800",
+          "hover:!bg-gray-100",
+          "active:!bg-gray-200",
         ],
       },
       {
@@ -87,11 +87,11 @@ const button = cva(
         variant: "outlined",
         color: "primary",
         class: [
-          "bg-transparent",
-          "text-stone-800",
-          "border-stone-800",
-          "hover:!bg-stone-100",
-          "active:!bg-stone-200",
+          "!bg-transparent",
+          "!text-gray-900",
+          "border-gray-200",
+          "hover:!bg-gray-100",
+          "active:!bg-gray-200",
         ],
       },
       {
