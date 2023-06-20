@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import router from "./routes";
 import { errorHandler } from "./middlewares";
+import config from "./config/config";
 
 const makeApp = (env: "prod" | "dev" | "test" = "dev") => {
   const app = express();
@@ -14,7 +15,7 @@ const makeApp = (env: "prod" | "dev" | "test" = "dev") => {
   app.use(
     cors({
       credentials: true,
-      origin: ["http://localhost:3000"],
+      origin: [config.APP_CLIENT_URL],
     })
   );
 
@@ -26,6 +27,8 @@ const makeApp = (env: "prod" | "dev" | "test" = "dev") => {
   // routes
   //  app.use("/storage", express.static(ROOT_DIR));
   app.use("/api", router);
+
+  app.get("/test", () => console.log("test"));
 
   // error handler
   app.use(errorHandler);

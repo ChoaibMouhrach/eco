@@ -36,12 +36,16 @@ export default function Avatar({ user }: AvatarProps) {
       </DropDownTrigger>
       <DropDownItemsWrapper>
         <DropDownItem>
-          <Button variant="text" className="text-start">
+          <Button
+            href="/dashboard"
+            variant="text"
+            className="!justify-start w-full"
+          >
             Dashboard
           </Button>
         </DropDownItem>
         <DropDownItem>
-          <Button variant="text" className="text-start">
+          <Button variant="text" className="!justify-start w-full">
             Profile
           </Button>
         </DropDownItem>
@@ -49,7 +53,7 @@ export default function Avatar({ user }: AvatarProps) {
           <Button
             onClick={handleSubmit}
             variant="text"
-            className="text-start"
+            className="!justify-start w-full"
             isLoading={isLoading}
           >
             Sign Out
