@@ -19,7 +19,7 @@ export const Input = forwardRef(
         <div>
           <input
             ref={ref}
-            className={`border border-stone-300 p-2 translate duration-300 rounded-md w-full outline-none disabled:bg-stone-100 focus:border-stone-900 ${className}`}
+            className={`border border-gray-300 p-2 translate duration-300 rounded-md w-full outline-none disabled:bg-stone-100 focus:border-stone-900 ${className}`}
             {...rest}
           />
           {(error || help) && (

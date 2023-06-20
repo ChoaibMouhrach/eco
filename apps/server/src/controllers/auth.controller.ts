@@ -25,7 +25,7 @@ const signIn = async (request: SignInRequest, response: Response) => {
     from: config.SMTP_USER,
     to: email,
     subject: "Sign In confirmation",
-    html: `<a href='${config.APP_CLIENT_URL}/sign-in/${emailToken}' >Sign In</a>`,
+    html: `<a href='${config.APP_CLIENT_URL}/auth/${emailToken}' >Sign In</a>`,
   });
 
   return response.json({
@@ -75,7 +75,7 @@ const signUp = async (request: SignUpRequest, response: Response) => {
     from: config.SMTP_USER,
     to: user.email,
     subject: "Sign up request",
-    html: `<!DOCTYPE><html><body><a href="${config.APP_CLIENT_URL}/sign-in/${emailToken}" >Sign In</a></body></html>`,
+    html: `<!DOCTYPE><html><body><a href="${config.APP_CLIENT_URL}/auth/${emailToken}" >Sign In</a></body></html>`,
   });
 
   return response.status(201).json({
@@ -92,8 +92,17 @@ const signOut = async (request: AuthRequest, response: Response) => {
         token,
       },
     });
+
+    response.cookie("refreshToken", "", {
+      maxAge: 0,
+      path: "/",
+    });
+    response.cookie("accessToken", "", {
+      maxAge: 0,
+      path: "/",
+    });
   } catch (err) {
-    throw new UnauthorizedException();
+    throw new UnauthorizedException("Token invalid");
   }
 
   return response.sendStatus(204);
