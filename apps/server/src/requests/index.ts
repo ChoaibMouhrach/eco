@@ -23,3 +23,9 @@ export * from "./show-product.request";
 export * from "./store-product.request";
 export * from "./update-product.request";
 export * from "./delete-product.request";
+
+export * from "./index-order.request";
+export * from "./show-order.request";
+export * from "./store-order.request";
+export * from "./update-order.request";
+export * from "./delete-order.request";
