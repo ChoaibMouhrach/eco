@@ -4,6 +4,7 @@ import {
   DeleteTagRequest,
   StoreTagRequest,
   UpdateTagRequest,
+  ShowTagRequest,
 } from "@src/requests";
 import { Request, Response } from "express";
 
@@ -27,6 +28,18 @@ const index = async (request: Request, response: Response) => {
     limit: 8,
     page: page ?? 1,
   });
+};
+
+const show = async (request: ShowTagRequest, response: Response) => {
+  const { xId: id } = request.body;
+
+  const tag = await db.tag.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+
+  return response.json(tag);
 };
 
 const store = async (request: StoreTagRequest, response: Response) => {
@@ -73,4 +86,5 @@ export const tagController = {
   store,
   update,
   destroy,
+  show,
 };
