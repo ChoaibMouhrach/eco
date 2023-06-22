@@ -16,7 +16,7 @@ function SideNavLink({ link }: SideNavLinkProps) {
 
   return (
     <Link
-      key={link.href}
+      key={link.href + Math.random()}
       className={`flex items-center text-sm p-3 hover:bg-gray-50 font-semibold rounded-md tracking-wide text-gray-800 gap-4 ${
         router.pathname === link.href ? "bg-gray-100" : ""
       }`}
