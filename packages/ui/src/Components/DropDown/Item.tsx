@@ -9,7 +9,7 @@ interface DropDownItemProps {
 export function DropDownItem({ children, className }: DropDownItemProps) {
   return (
     <DropdownMenu.Item
-      className={`rounded-md hover:bg-gray-100 outline-none ${className}`}
+      className={`rounded-md hover:bg-gray-50 outline-none ${className}`}
     >
       {children}
     </DropdownMenu.Item>

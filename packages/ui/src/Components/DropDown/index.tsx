@@ -4,6 +4,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 export * from "./Item";
 export * from "./ItemsWrapper";
 export * from "./Trigger";
+export * from "./Separator";
 
 interface DropDownProps {
   children: React.ReactNode;
