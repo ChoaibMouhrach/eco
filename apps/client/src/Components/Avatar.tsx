@@ -1,13 +1,20 @@
 import {
-  Button,
   DropDown,
   DropDownItem,
   DropDownItemsWrapper,
+  DropDownSeparator,
   DropDownTrigger,
 } from "ui";
 import { useRouter } from "next/router";
-import { User } from "..";
+import Link from "next/link";
+import {
+  MdOutlineDashboard,
+  MdOutlineExitToApp,
+  MdOutlinePersonOutline,
+} from "react-icons/md";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import useSignOut from "@/hooks/useSignOut";
+import { User } from "..";
 
 interface AvatarProps {
   user: User;
@@ -35,29 +42,40 @@ export default function Avatar({ user }: AvatarProps) {
         </div>
       </DropDownTrigger>
       <DropDownItemsWrapper>
+        <div className="p-3 pb-0 flex flex-col justify-start">
+          <span className="font-bold tracking-wide">
+            {user.firstName.toUpperCase()}
+          </span>
+          <span className="text-neutral-500">{user.email}</span>
+        </div>
+        <DropDownSeparator />
         <DropDownItem>
-          <Button
-            href="/dashboard"
-            variant="text"
-            className="!justify-start w-full"
-          >
+          <Link href="/dashboard" className="p-1 px-2 flex items-center gap-2">
+            <MdOutlineDashboard />
             Dashboard
-          </Button>
+          </Link>
         </DropDownItem>
         <DropDownItem>
-          <Button variant="text" className="!justify-start w-full">
-            Profile
-          </Button>
-        </DropDownItem>
-        <DropDownItem>
-          <Button
-            onClick={handleSubmit}
-            variant="text"
-            className="!justify-start w-full"
-            isLoading={isLoading}
+          <Link
+            href="/dashboard/profile"
+            className="p-1 px-2 flex items-center gap-2"
           >
+            <MdOutlinePersonOutline />
+            Profile
+          </Link>
+        </DropDownItem>
+        <DropDownItem>
+          <button
+            type="button"
+            className="p-1 w-full px-2 flex items-center gap-2"
+            onClick={handleSubmit}
+          >
+            <MdOutlineExitToApp />
             Sign Out
-          </Button>
+            {isLoading && (
+              <AiOutlineLoading3Quarters className="animate-spin" />
+            )}
+          </button>
         </DropDownItem>
       </DropDownItemsWrapper>
     </DropDown>

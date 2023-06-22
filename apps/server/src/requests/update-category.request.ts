@@ -14,7 +14,7 @@ const validate: Validate = (request: Request) => {
     name: z
       .string()
       .min(1)
-      .max(255)
+      .max(60)
       .refine(
         async (name) => !(await db.category.findUnique({ where: { name } })),
         { message: "Category already exists" }

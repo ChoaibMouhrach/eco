@@ -1,8 +1,12 @@
 import db from "@src/config/db";
 import validateQuery from "@src/lib/query-validator.lib";
-import { StoreCategoryRequest, UpdateCategoryRequest } from "@src/requests";
+import {
+  DeleteCategoryRequest,
+  ShowCategoryRequest,
+  StoreCategoryRequest,
+  UpdateCategoryRequest,
+} from "@src/requests";
 import { Request, Response } from "express";
-import { DeleteCategoryRequest } from "@src/requests/delete-category.request";
 
 const index = async (request: Request, response: Response) => {
   const { search, sort, page } = validateQuery(request.query);
@@ -24,6 +28,18 @@ const index = async (request: Request, response: Response) => {
     page: page ?? 1,
     limit: 8,
   });
+};
+
+const show = async (request: ShowCategoryRequest, response: Response) => {
+  const { xId: id } = request.body;
+
+  const category = await db.category.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return response.status(200).json(category);
 };
 
 const store = async (request: StoreCategoryRequest, response: Response) => {
@@ -67,6 +83,7 @@ const destroy = async (request: DeleteCategoryRequest, response: Response) => {
 
 export const categoryController = {
   index,
+  show,
   store,
   update,
   destroy,
