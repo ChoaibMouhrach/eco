@@ -9,9 +9,12 @@ import {
   findUserOrThrow,
   verifyEmailToken,
 } from "@src/repositories";
-import { SignInRequest, SignUpRequest } from "@src/requests";
+import {
+  SignInRequest,
+  UpdateProfileRequest,
+  SignUpRequest,
+} from "@src/requests";
 import { Request, Response } from "express";
-import { UpdateProfileRequest } from "@src/requests/update-profile.request";
 import { AuthRequest } from "..";
 
 const signIn = async (request: SignInRequest, response: Response) => {

@@ -1,8 +1,8 @@
 import DashboardLayout from "@/Components/Layouts/DashboardLayout";
-import { Product } from "@/index";
+import { User } from "@/index";
 
 interface CreateProductPageProps {
-  user: Product;
+  user: User;
 }
 
 export default function CreateProductPage({ user }: CreateProductPageProps) {
