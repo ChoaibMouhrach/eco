@@ -56,3 +56,87 @@ type UpdateProfileDataKeys =
   | "address";
 export type UpdateProfileDataError = HttpError<UpdateProfileDataKeys>;
 export type UpdateProfileData = Partial<Record<UpdateProfileDataKeys, string>>;
+
+// TAG
+export interface Tag extends TimeStamp {
+  name: string;
+}
+
+export interface Unit extends TimeStamp {
+  name: string;
+}
+
+export interface Category extends TimeStamp {
+  name: string;
+}
+
+export interface Product extends TimeStamp {
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  images: string[];
+
+  category?: Category;
+  unit?: Unit;
+  tags: Tag[];
+}
+
+interface OrderState extends TimeStamp {
+  name: string;
+}
+
+export interface Item {
+  price: number;
+  quantity: number;
+  product: Product;
+}
+
+export interface Order extends TimeStamp {
+  items: Item[];
+  user: User;
+  userId: number;
+  orderState?: OrderState;
+}
+
+export interface Query {
+  search?: string;
+  page?: number;
+}
+
+export interface Paginate<TData> {
+  data: TData[];
+  count: number;
+  limit: number;
+  page: number;
+}
+
+// CREATE TAG
+type StoreTagKeys = "name";
+export type StoreTagError = HttpError<StoreTagKeys>;
+export type StoreTagData = Record<StoreTagKeys, string>;
+
+// UPDATE TAG
+type UpdateTagKeys = "name";
+export type UpdateTagData = Record<StoreTagKeys, string>;
+export type UpdateTagError = HttpError<UpdateTagKeys>;
+
+// CREATE CATEGORY
+type CreateCategoryKeys = "name";
+export type CreateCategoryData = Record<CreateCategoryKeys, string>;
+export type CreateCategoryError = HttpError<CreateCategoryKeys>;
+
+// UPDATE CATEGORY
+type UpdateCategoryKeys = "name";
+export type UpdateCategoryData = Record<UpdateCategoryKeys, string>;
+export type UpdateCategoryError = HttpError<UpdateCategoryKeys>;
+
+// CREATE UNIT
+type CreateUnitKeys = "name";
+export type CreateUnitData = Record<CreateUnitKeys, string>;
+export type CreateUnitError = HttpError<CreateUnitKeys>;
+
+// UPDATE UNIT
+type UpdateUnitKeys = "name";
+export type UpdateUnitData = Record<UpdateUnitKeys, string>;
+export type UpdateUnitError = HttpError<UpdateUnitKeys>;
