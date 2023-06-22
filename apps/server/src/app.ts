@@ -28,8 +28,6 @@ const makeApp = (env: "prod" | "dev" | "test" = "dev") => {
   //  app.use("/storage", express.static(ROOT_DIR));
   app.use("/api", router);
 
-  app.get("/test", () => console.log("test"));
-
   // error handler
   app.use(errorHandler);
 
