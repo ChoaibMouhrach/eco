@@ -1,7 +1,12 @@
 import db from "@src/config/db";
 import validateQuery from "@src/lib/query-validator.lib";
 import { Request, Response } from "express";
-import { DeleteOrderRequest, ShowOrderRequest, StoreOrderRequest, UpdateOrderRequest } from "@src/requests";
+import {
+  DeleteOrderRequest,
+  ShowOrderRequest,
+  StoreOrderRequest,
+  UpdateOrderRequest,
+} from "@src/requests";
 
 const index = async (request: Request, response: Response) => {
   const { search, sort, page } = validateQuery(request.query);
@@ -84,25 +89,20 @@ const show = async (request: ShowOrderRequest, response: Response) => {
   return response.json(order);
 };
 
-
 const store = async (request: StoreOrderRequest, response: Response) => {
-
-  const {
-    products,
-    userId
-  } = request.body;
+  const { products, userId } = request.body;
 
   const productsPrices = await db.product.findMany({
     where: {
       OR: products.map(({ id }) => ({
-        id
-      }))
+        id,
+      })),
     },
     select: {
       id: true,
-      price: true
-    }
-  })
+      price: true,
+    },
+  });
 
   const order = await db.order.create({
     data: {
@@ -111,64 +111,60 @@ const store = async (request: StoreOrderRequest, response: Response) => {
         createMany: {
           data: products.map(({ id, quantity }) => ({
             productId: id,
-            price: productsPrices.find(product => product.id === id)!.price,
-            quantity
-          }))
-        }
-      }
-    }
-  })
+            price: productsPrices.find((product) => product.id === id)!.price,
+            quantity,
+          })),
+        },
+      },
+    },
+  });
 
   return response.status(201).json(order);
-}
+};
 
 const update = async (request: UpdateOrderRequest, response: Response) => {
-
   const { xId: id, userId, products } = request.body;
 
   await db.order.update({
     where: {
-      id
+      id,
     },
     data: {
       userId,
       items: {
         connectOrCreate: products?.map((product) => ({
           where: {
-            id: product.id
+            id: product.id,
           },
           create: {
             productId: product.id,
             price: 10,
-            quantity: product.quantity
-          }
-        }))
-      }
-    }
-  })
+            quantity: product.quantity,
+          },
+        })),
+      },
+    },
+  });
 
-  return response.sendStatus(204)
-}
+  return response.sendStatus(204);
+};
 
 const destroy = async (request: DeleteOrderRequest, response: Response) => {
-
-  const {
-    xId: id
-  } = request.body;
+  const { xId: id } = request.body;
 
   await db.order.delete({
     where: {
-      id
-    }
-  })
+      id,
+    },
+  });
 
-  return response.sendStatus(204)
-}
+  return response.sendStatus(204);
+};
 
 export const orderController = {
   index,
   show,
   store,
   update,
-  destroy
+  destroy,
 };
