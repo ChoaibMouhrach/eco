@@ -15,8 +15,6 @@ const main = async () => {
   await db.tag.createMany({
     data: tags,
   });
-
-  console.log("Done");
 };
 
 main();

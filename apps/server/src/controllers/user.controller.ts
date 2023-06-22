@@ -39,6 +39,11 @@ const index = async (request: Request, response: Response) => {
             contains: search,
           },
         },
+        {
+          firstName: {
+            contains: "",
+          },
+        },
       ],
     },
     orderBy: sort,

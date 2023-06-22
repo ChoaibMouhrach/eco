@@ -2,6 +2,7 @@ import db from "@src/config/db";
 import validateQuery from "@src/lib/query-validator.lib";
 import {
   DeleteUnitRequest,
+  ShowUnitRequest,
   StoreUnitRequest,
   UpdateUnitRequest,
 } from "@src/requests";
@@ -24,9 +25,21 @@ const index = async (request: Request, response: Response) => {
   return response.json({
     data: units,
     page: page ?? 1,
-    count: await db.tag.count(),
+    count: await db.unit.count(),
     limit: 8,
   });
+};
+
+const show = async (request: ShowUnitRequest, response: Response) => {
+  const { xId } = request.body;
+
+  const unit = await db.unit.findUnique({
+    where: {
+      id: xId,
+    },
+  });
+
+  return response.json(unit);
 };
 
 const store = async (request: StoreUnitRequest, response: Response) => {
@@ -73,4 +86,5 @@ export const unitController = {
   store,
   update,
   destroy,
+  show,
 };
