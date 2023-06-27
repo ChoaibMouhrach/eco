@@ -117,6 +117,14 @@ const store = async (request: StoreOrderRequest, response: Response) => {
         },
       },
     },
+    include: {
+      user: true,
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
   });
 
   return response.status(201).json(order);
@@ -131,18 +139,24 @@ const update = async (request: UpdateOrderRequest, response: Response) => {
     },
     data: {
       userId,
-      items: {
-        connectOrCreate: products?.map((product) => ({
-          where: {
-            id: product.id,
-          },
-          create: {
-            productId: product.id,
-            price: 10,
-            quantity: product.quantity,
-          },
-        })),
-      },
+      items: products
+        ? {
+            deleteMany: {},
+            createMany: {
+              data: (
+                await db.product.findMany({
+                  where: {
+                    OR: products.map((product) => ({ id: product.id })),
+                  },
+                })
+              ).map((product) => ({
+                productId: product.id,
+                price: product.price,
+                quantity: products.find((p) => product.id === p.id)!.quantity,
+              })),
+            },
+          }
+        : undefined,
     },
   });
 
