@@ -20,7 +20,7 @@ export const authRefresh = async (
   const refreshToken = await findRefreshTokenOrThrow({ token });
 
   if (!refreshToken) {
-    throw new UnauthorizedException();
+    throw new UnauthorizedException("Refresh Token required");
   }
 
   const user = await findUserOrThrow({ id });

@@ -14,9 +14,18 @@ import {
   MdOutlineKeyboardArrowRight,
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
+  MdOutlineMoreVert,
 } from "react-icons/md";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Button } from "../Button";
 import { Input } from "../Input";
+import {
+  DropDown,
+  DropDownItem,
+  DropDownItemsWrapper,
+  DropDownSeparator,
+  DropDownTrigger,
+} from "../DropDown";
 
 interface ActionsProps {
   id: number;
@@ -35,23 +44,48 @@ function Actions({ id, handleDelete, handleEdit }: ActionsProps) {
 
   return (
     <div className="flex items-center gap-2">
-      {handleEdit && (
-        <Button onClick={() => handleEdit(id)} color="success">
-          Edit
-        </Button>
-      )}
-      {handleDelete && (
-        <Button
-          isLoading={isDeletingLoading}
-          onClick={() => handleDeleteWrapper()}
-          color="danger"
-        >
-          Delete
-        </Button>
-      )}
+      <DropDown>
+        <DropDownTrigger>
+          <Button variant="outlined">
+            <MdOutlineMoreVert />
+          </Button>
+        </DropDownTrigger>
+        <DropDownItemsWrapper>
+          {handleEdit && (
+            <DropDownItem>
+              <button
+                type="button"
+                onClick={() => handleEdit(id)}
+                className="px-3 py-1 text-start pr-16"
+              >
+                Edit
+              </button>
+            </DropDownItem>
+          )}
+
+          {handleDelete && handleEdit && <DropDownSeparator />}
+
+          {handleDelete && (
+            <DropDownItem>
+              <button
+                type="button"
+                onClick={() => handleDeleteWrapper()}
+                className="px-3 py-1 text-start pr-16 text-red-700"
+              >
+                Delete
+                {isDeletingLoading && (
+                  <AiOutlineLoading3Quarters className="animate-spin" />
+                )}
+              </button>
+            </DropDownItem>
+          )}
+        </DropDownItemsWrapper>
+      </DropDown>
     </div>
   );
 }
+
+export interface Pagination extends PaginationState {}
 
 interface TableProps<T> {
   data: T[];
@@ -105,10 +139,10 @@ export function Table<T extends {}>({
   return (
     <div className="flex flex-col gap-4">
       <Input placeholder="Search..." onChange={handleSearch} />
-      <div className="w-full overflow-x-scroll">
+      <div className="w-full custom-scrollbar overflow-x-scroll">
         <div
           className={`border rounded-md ${
-            data.length ? "w-fit" : ""
+            data.length ? "w-fit lg:w-full" : ""
           } lg:w-full`}
         >
           <table className="w-full table-auto">
@@ -167,7 +201,7 @@ export function Table<T extends {}>({
               ) : null}
               {!isLoading &&
                 table.getRowModel().rows.map((row) => (
-                  <tr className="odd:bg-stone-100" key={row.id}>
+                  <tr className="odd:bg-gray-50" key={row.id}>
                     {row.getVisibleCells().map((cell) => (
                       <td className="p-3 tracking-wide" key={cell.id}>
                         {flexRender(

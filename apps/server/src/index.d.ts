@@ -8,15 +8,8 @@ export interface AuthRequest extends Request {
   };
 }
 
-type AuthorizeResponse = {
-  authorized: boolean;
-  reason?: string;
-};
-
 export type Validate = (
-  body: any
+  request: Request
 ) => SafeParseReturnType<any, any> | Promise<SafeParseReturnType<any, any>>;
 
-export type Authorize = (
-  request: AuthRequest
-) => Promise<AuthorizeResponse> | AuthorizeResponse;
+export type Authorize = (request: AuthRequest) => Promise<boolean> | boolean;
