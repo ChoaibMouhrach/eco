@@ -1,10 +1,11 @@
-import { HttpException } from "@src/exceptions/http.exception";
+import { HttpException } from "@src/exceptions";
 import { NextFunction, Request, Response } from "express";
 
 export const errorHandler = (
   error: any,
   _request: Request,
   response: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
   if (error instanceof HttpException) {
@@ -12,6 +13,8 @@ export const errorHandler = (
   }
 
   const statusCode = 500;
+
+  console.log(error);
 
   return response.status(statusCode).json({
     statusCode,

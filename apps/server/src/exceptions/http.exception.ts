@@ -22,7 +22,10 @@ export abstract class HttpException extends Error {
   public getBody() {
     return {
       statusCode: this.statusCode,
-      content: this.content,
+      content:
+        typeof this.content === "string"
+          ? { message: this.content }
+          : this.content,
       error: this.error,
     };
   }
