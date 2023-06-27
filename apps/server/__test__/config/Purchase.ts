@@ -1,8 +1,8 @@
-import { Order as TOrder } from "@prisma/client";
+import { Purchase as TPurchase } from "@prisma/client";
 import db from "@src/config/db";
 import { Resource } from "./Resource";
 
-interface OrderData {
+interface PurchaseData {
   userId: number;
   products: {
     id: number;
@@ -10,8 +10,8 @@ interface OrderData {
   }[];
 }
 
-export default class Order extends Resource<OrderData, TOrder> {
-  public constructor(data: OrderData) {
+export default class Purchase extends Resource<PurchaseData, TPurchase> {
+  public constructor(data: PurchaseData) {
     super(data);
   }
 
@@ -24,7 +24,7 @@ export default class Order extends Resource<OrderData, TOrder> {
       },
     });
 
-    const order = await db.order.create({
+    const purchase = await db.purchase.create({
       data: {
         userId: this.data.userId,
         items: {
@@ -40,13 +40,13 @@ export default class Order extends Resource<OrderData, TOrder> {
       },
     });
 
-    this.instance = order;
+    this.instance = purchase;
 
-    return order;
+    return purchase;
   }
 
   public async checkDB() {
-    return await db.order.findUnique({
+    return await db.purchase.findUnique({
       where: {
         id: this.instance!.id,
       },
@@ -54,7 +54,7 @@ export default class Order extends Resource<OrderData, TOrder> {
   }
 
   public async destroy() {
-    await db.order.delete({
+    await db.purchase.delete({
       where: {
         id: this.instance!.id,
       },

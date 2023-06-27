@@ -22,15 +22,17 @@ const makeApp = (env: "prod" | "dev" | "test" = "dev") => {
 
   app.use(helmet());
   if (env !== "test") app.use(morgan("combined"));
-  app.use(express.json({
-    verify(_req: Request, _r: Response, buf) {
-      try {
-        return JSON.parse(buf.toString())
-      } catch (err) {
-        throw new BadRequestException("Invalid JSON")
-      }
-    }
-  }));
+  app.use(
+    express.json({
+      verify(_req: Request, _r: Response, buf) {
+        try {
+          return JSON.parse(buf.toString());
+        } catch (err) {
+          throw new BadRequestException("Invalid JSON");
+        }
+      },
+    })
+  );
   app.use(cookieParser());
 
   // routes
