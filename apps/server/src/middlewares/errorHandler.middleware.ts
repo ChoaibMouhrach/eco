@@ -14,9 +14,7 @@ export const errorHandler = (
 
   const statusCode = 500;
 
-  console.log(
-    error
-  )
+  console.log(error);
 
   return response.status(statusCode).json({
     statusCode,
