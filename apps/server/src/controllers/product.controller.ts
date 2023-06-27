@@ -150,8 +150,8 @@ const update = async (request: UpdateProductRequest, response: Response) => {
         create:
           request.files && request.files instanceof Array
             ? request.files.map((file) => ({
-                path: storeFile(file.originalname, file.buffer),
-              }))
+              path: storeFile(file.originalname, file.buffer),
+            }))
             : undefined,
       },
       tags: {

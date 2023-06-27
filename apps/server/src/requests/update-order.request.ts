@@ -49,7 +49,7 @@ const validate: Validate = (request: Request) => {
         .optional(),
     })
     .refine((data) => Object.keys(data).length > 1, {
-      message: "At least one field is required",
+      message: "Change something first",
     });
 
   return schema.safeParseAsync({
