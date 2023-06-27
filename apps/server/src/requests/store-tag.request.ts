@@ -15,7 +15,7 @@ const validate: Validate = (request: AuthRequest) => {
       .min(1)
       .max(60)
       .refine(async (name) => !(await db.tag.findUnique({ where: { name } })), {
-        message: "Tag already exists",
+        message: "Name already exists",
       }),
   });
 

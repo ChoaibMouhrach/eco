@@ -11,7 +11,7 @@ const validate: Validate = (request: Request) => {
       .max(60)
       .refine(
         async (name) => !(await db.category.findUnique({ where: { name } })),
-        { message: "Category already exists" }
+        { message: "Name already exists" }
       ),
   });
 
