@@ -13,38 +13,35 @@ const index = async (request: Request, response: Response) => {
 
   const users = await db.user.findMany({
     where: {
-      OR: [
-        {
-          firstName: {
-            contains: search,
-          },
-        },
-        {
-          lastName: {
-            contains: search,
-          },
-        },
-        {
-          email: {
-            contains: search,
-          },
-        },
-        {
-          phone: {
-            contains: search,
-          },
-        },
-        {
-          address: {
-            contains: search,
-          },
-        },
-        {
-          firstName: {
-            contains: "",
-          },
-        },
-      ],
+      OR: search
+        ? [
+            {
+              firstName: {
+                contains: search,
+              },
+            },
+            {
+              lastName: {
+                contains: search,
+              },
+            },
+            {
+              email: {
+                contains: search,
+              },
+            },
+            {
+              phone: {
+                contains: search,
+              },
+            },
+            {
+              address: {
+                contains: search,
+              },
+            },
+          ]
+        : undefined,
     },
     orderBy: sort,
     skip: page ? (page - 1) * 8 : 0,

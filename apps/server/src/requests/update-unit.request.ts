@@ -18,7 +18,7 @@ const validate: Validate = (request: AuthRequest) => {
       .refine(
         async (name) => !(await db.unit.findUnique({ where: { name } })),
         {
-          message: "Unit already exists",
+          message: "Name already exists",
         }
       ),
     xId: z
