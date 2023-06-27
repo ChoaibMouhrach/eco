@@ -127,14 +127,14 @@ model Product {
   price       Float
   quantity    Int
 
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId  Int
 
-  unit   Unit @relation(fields: [unitId], references: [id])
-  unitId Int
+  unit        Unit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId      Int
 
-  images Image[]
-  tags   Tag[]
+  images      Image[]
+  tags        Tag[]
 
   OrderProduct    OrderProduct[]
   PurchaseProduct PurchaseProduct[]

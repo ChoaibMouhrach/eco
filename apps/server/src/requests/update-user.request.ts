@@ -5,45 +5,49 @@ import db from "@src/config/db";
 import { AuthRequest, Authorize, Validate } from "..";
 
 const validate: Validate = (request: Request) => {
-  const schema = z.object({
-    xId: z
-      .string()
-      .regex(/^\d+$/gi)
-      .pipe(
-        z
-          .string()
-          .transform((v) => Number(v))
-          .refine(async (id) => await db.user.findUnique({ where: { id } }), {
-            message: "User not found",
-          })
-      ),
-    firstName: z.string().min(3).max(60).optional(),
-    lastName: z.string().min(3).max(60).optional(),
-    email: z
-      .string()
-      .email()
-      .refine(
-        async (email) => !(await db.user.findUnique({ where: { email } })),
-        { message: "Email Address already exists" }
-      )
-      .optional(),
-    phone: z
-      .string()
-      .regex(/^\+[1-9]\d{1,14}$/)
-      .refine(
-        async (phone) => !(await db.user.findUnique({ where: { phone } })),
-        { message: "Phone already exists" }
-      )
-      .optional(),
-    address: z.string().min(3).max(255).optional(),
-    roleId: z
-      .number()
-      .refine(
-        async (id) => await db.role.findUnique({ where: { id } }),
-        "Role not found"
-      )
-      .optional(),
-  });
+  const schema = z
+    .object({
+      xId: z
+        .string()
+        .regex(/^\d+$/gi)
+        .pipe(
+          z
+            .string()
+            .transform((v) => Number(v))
+            .refine(async (id) => await db.user.findUnique({ where: { id } }), {
+              message: "User not found",
+            })
+        ),
+      firstName: z.string().min(3).max(60).optional(),
+      lastName: z.string().min(3).max(60).optional(),
+      email: z
+        .string()
+        .email()
+        .refine(
+          async (email) => !(await db.user.findUnique({ where: { email } })),
+          { message: "Email Address already exists" }
+        )
+        .optional(),
+      phone: z
+        .string()
+        .regex(/^\+[1-9]\d{1,14}$/)
+        .refine(
+          async (phone) => !(await db.user.findUnique({ where: { phone } })),
+          { message: "Phone already exists" }
+        )
+        .optional(),
+      address: z.string().min(3).max(255).optional(),
+      roleId: z
+        .number()
+        .refine(
+          async (id) => await db.role.findUnique({ where: { id } }),
+          "Role not found"
+        )
+        .optional(),
+    })
+    .refine((data) => Object.keys(data).length > 1, {
+      message: "Change something first",
+    });
 
   return schema.safeParseAsync({
     ...request.body,
