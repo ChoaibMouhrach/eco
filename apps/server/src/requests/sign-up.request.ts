@@ -10,7 +10,7 @@ const validate: Validate = (request: Request) => {
       .email()
       .refine(
         async (email) => !(await db.user.findUnique({ where: { email } })),
-        { message: "Email address already exists" }
+        { message: "Email Address is taken" }
       ),
     firstName: z.string().min(3).max(60),
     lastName: z.string().min(3).max(60),
