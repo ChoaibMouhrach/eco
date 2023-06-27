@@ -1,15 +1,16 @@
 import z from "zod";
 import db from "@src/config/db";
+import { Request } from "express";
 import { Validate } from "..";
 
-const validate: Validate = (body: any) => {
+const validate: Validate = (request: Request) => {
   const schema = z.object({
     email: z
       .string()
       .email()
       .refine(
         async (email) => !(await db.user.findUnique({ where: { email } })),
-        { message: "Email address already exists" }
+        { message: "Email Address is taken" }
       ),
     firstName: z.string().min(3).max(60),
     lastName: z.string().min(3).max(60),
@@ -23,7 +24,7 @@ const validate: Validate = (body: any) => {
     address: z.string().min(3).max(255),
   });
 
-  return schema.safeParseAsync(body);
+  return schema.safeParseAsync(request.body);
 };
 
 export interface SignUpRequest {
