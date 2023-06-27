@@ -12,6 +12,6 @@ export abstract class Resource<TCreate, TModel> {
   }
 
   public abstract createDB(): Promise<TModel>;
-  public abstract checkDB(): Promise<null | TCreate>;
+  public abstract checkDB(): Promise<null | TModel>;
   public abstract destroy(): Promise<void>;
 }

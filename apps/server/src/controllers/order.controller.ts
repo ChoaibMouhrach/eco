@@ -117,6 +117,14 @@ const store = async (request: StoreOrderRequest, response: Response) => {
         },
       },
     },
+    include: {
+      user: true,
+      items: {
+        include: {
+          product: true
+        }
+      }
+    }
   });
 
   return response.status(201).json(order);
@@ -131,18 +139,17 @@ const update = async (request: UpdateOrderRequest, response: Response) => {
     },
     data: {
       userId,
-      items: {
-        connectOrCreate: products?.map((product) => ({
-          where: {
-            id: product.id,
-          },
-          create: {
+      items: products ? {
+        deleteMany: {
+        },
+        createMany: {
+          data: products?.map((product) => ({
             productId: product.id,
             price: 10,
             quantity: product.quantity,
-          },
-        })),
-      },
+          }))
+        }
+      } : undefined,
     },
   });
 
