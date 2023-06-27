@@ -52,5 +52,5 @@ export interface StoreOrderRequest {
 
 export const storeOrderRequest = {
   authorize,
-  validate
+  validate,
 };

@@ -121,10 +121,10 @@ const store = async (request: StoreOrderRequest, response: Response) => {
       user: true,
       items: {
         include: {
-          product: true
-        }
-      }
-    }
+          product: true,
+        },
+      },
+    },
   });
 
   return response.status(201).json(order);
@@ -139,17 +139,24 @@ const update = async (request: UpdateOrderRequest, response: Response) => {
     },
     data: {
       userId,
-      items: products ? {
-        deleteMany: {
-        },
-        createMany: {
-          data: products?.map((product) => ({
-            productId: product.id,
-            price: 10,
-            quantity: product.quantity,
-          }))
-        }
-      } : undefined,
+      items: products
+        ? {
+            deleteMany: {},
+            createMany: {
+              data: (
+                await db.product.findMany({
+                  where: {
+                    OR: products.map((product) => ({ id: product.id })),
+                  },
+                })
+              ).map((product) => ({
+                productId: product.id,
+                price: product.price,
+                quantity: products.find((p) => product.id === p.id)!.quantity,
+              })),
+            },
+          }
+        : undefined,
     },
   });
 
