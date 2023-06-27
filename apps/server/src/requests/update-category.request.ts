@@ -17,12 +17,20 @@ const validate: Validate = (request: Request) => {
       .max(60)
       .refine(
         async (name) => !(await db.category.findUnique({ where: { name } })),
-        { message: "Category already exists" }
+        { message: "Name already exists" }
       ),
     xId: z
       .string()
       .regex(/^\d+$/gi)
-      .transform((v) => Number(v)),
+      .pipe(
+        z
+          .string()
+          .transform((v) => Number(v))
+          .refine(
+            async (id) => await db.category.findUnique({ where: { id } }),
+            { message: "Category not found" }
+          )
+      ),
   });
 
   return schema.safeParseAsync({
