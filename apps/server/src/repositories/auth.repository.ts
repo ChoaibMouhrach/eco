@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import config from "@src/config/config";
 import db from "@src/config/db";
-import { NotFoundException, UnauthorizedException } from "@src/exceptions";
+import { UnauthorizedException } from "@src/exceptions";
 import jwt from "jsonwebtoken";
 
 export const createToken = (id: number, secret: string, duration: string) => {
@@ -54,7 +54,7 @@ export const findRefreshTokenOrThrow = async (
   });
 
   if (!refreshToken) {
-    throw new NotFoundException(`User not found`);
+    throw new UnauthorizedException(`User not found`);
   }
 
   return refreshToken;
