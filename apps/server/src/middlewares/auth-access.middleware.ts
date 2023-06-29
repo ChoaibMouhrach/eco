@@ -1,5 +1,6 @@
 import { findUserOrThrow, verifyAccessToken } from "@src/repositories";
 import { NextFunction, Response } from "express";
+import { UnauthorizedException } from "@src/exceptions";
 import { AuthRequest } from "..";
 
 export const authAccess = async (
@@ -11,11 +12,15 @@ export const authAccess = async (
     res: { id },
   } = verifyAccessToken<{ id: number }>(request.cookies.accessToken);
 
-  const user = await findUserOrThrow({ id });
+  try {
+    const user = await findUserOrThrow({ id });
 
-  request.auth = {
-    user,
-  };
+    request.auth = {
+      user,
+    };
 
-  next();
+    next();
+  } catch (err) {
+    throw new UnauthorizedException("User not found");
+  }
 };

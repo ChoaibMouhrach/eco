@@ -1,44 +1,27 @@
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import HomePage from "@/Components/Pages/HomePage";
-import { User } from "..";
-import api from "@/lib/api";
+import { GetServerSideProps } from "next";
+import Hero from "@/components/custom/Home/Hero";
+import Features from "@/components/custom/Home/Features";
+import Exclusives from "@/components/custom/Home/Exclusives";
+import Brands from "@/components/custom/Home/Brands";
+import LatestProducts from "@/components/custom/Home/LatestProducts";
+import { PublicLayout } from "@/components/layouts";
+import { withUser } from "@/middlewares";
+import { IUser } from "@/interfaces/User";
 
 interface HomeProps {
-  user?: User;
+  user?: IUser;
 }
 
 export default function Home({ user }: HomeProps) {
-  return <HomePage user={user} />;
+  return (
+    <PublicLayout user={user}>
+      <Hero />
+      <Features />
+      <Exclusives />
+      <Brands />
+      <LatestProducts />
+    </PublicLayout>
+  );
 }
 
-export const getServerSideProps: GetServerSideProps = async (
-  ctx: GetServerSidePropsContext
-) => {
-  const { accessToken, refreshToken } = ctx.req.cookies;
-
-  if (!accessToken || !refreshToken) {
-    return {
-      props: {},
-    };
-  }
-
-  try {
-    const response = await api(
-      {
-        url: "/me",
-        method: "GET",
-      },
-      ctx
-    );
-
-    return {
-      props: {
-        user: response.data,
-      },
-    };
-  } catch (err) {
-    return {
-      props: {},
-    };
-  }
-};
+export const getServerSideProps: GetServerSideProps = withUser();
