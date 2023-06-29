@@ -1,4 +1,4 @@
-import { HttpException } from "@src/exceptions";
+import { HttpException, UnauthorizedException } from "@src/exceptions";
 import { NextFunction, Request, Response } from "express";
 
 export const errorHandler = (
@@ -9,6 +9,20 @@ export const errorHandler = (
   _next: NextFunction
 ) => {
   if (error instanceof HttpException) {
+    if (
+      error instanceof UnauthorizedException &&
+      error.content !== "jwt expired"
+    ) {
+      response.cookie("refreshToken", "", {
+        maxAge: 0,
+        path: "/",
+      });
+      response.cookie("accessToken", "", {
+        maxAge: 0,
+        path: "/",
+      });
+    }
+
     return response.status(error.statusCode).json(error.getBody());
   }
 

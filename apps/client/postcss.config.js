@@ -1,1 +1,6 @@
-module.exports = require("eco-config/postcss.config");
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
