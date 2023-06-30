@@ -1,13 +1,8 @@
-import DashboardPage from "@/Components/Pages/dashboard";
-import { User } from "@/index";
-import withAuth from "@/middlewares/withAuth";
+import { GetServerSideProps } from "next";
+import { withAuth } from "@/middlewares";
 
-interface DashboardProps {
-  user: User;
+export default function Dashboard() {
+  return <div>Dashboard</div>;
 }
 
-export default function Dashboard({ user }: DashboardProps) {
-  return <DashboardPage user={user} />;
-}
-
-export const getServerSideProps = withAuth();
+export const getServerSideProps: GetServerSideProps = withAuth();

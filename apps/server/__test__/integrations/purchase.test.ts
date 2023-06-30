@@ -133,8 +133,6 @@ describe("PATCH /purchases/:id", () => {
       })
       .set("Cookie", `accessToken=${admin.tokens.access.token}`);
 
-    console.log(response.body);
-
     expect(response.status).toBe(204);
 
     await product.destroy();

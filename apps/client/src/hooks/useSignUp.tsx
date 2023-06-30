@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
-import api from "@/lib/api";
-import { SignUpData, SignUpDataError } from "..";
+import api from "@/api";
+import { SignUpData, SignUpError } from "@/interfaces/User";
 
-const useSignUp = () =>
-  useMutation<AxiosResponse, SignUpDataError, SignUpData>({
+export const useSignUp = () =>
+  useMutation<AxiosResponse, SignUpError, SignUpData>({
     mutationFn: (data: SignUpData) =>
       api({
         url: "/sign-up",
@@ -12,5 +12,3 @@ const useSignUp = () =>
         data,
       }),
   });
-
-export default useSignUp;

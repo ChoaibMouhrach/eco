@@ -1,44 +1,37 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import api from "@/lib/api";
+import api from "@/api";
+import { withGuest } from "@/middlewares";
 
 export default function Auth() {
-  return <div>AUTH</div>;
+  return <div />;
 }
 
-export const getServerSideProps: GetServerSideProps = async (
-  ctx: GetServerSidePropsContext
-) => {
-  const token = ctx.params?.token;
+export const getServerSideProps: GetServerSideProps = withGuest(
+  async (ctx: GetServerSidePropsContext) => {
+    const token = ctx.params?.token;
 
-  if (typeof token !== "string") {
-    return {
-      redirect: {
-        destination: "/sign-in",
-        permanent: true,
-      },
-    };
+    try {
+      await api(
+        {
+          url: `auth/${token}`,
+          method: "POST",
+        },
+        ctx
+      );
+
+      return {
+        redirect: {
+          destination: "/",
+          permanent: true,
+        },
+      };
+    } catch (err) {
+      return {
+        redirect: {
+          destination: "/sign-in",
+          permanent: true,
+        },
+      };
+    }
   }
-
-  try {
-    const response = await api({
-      url: `/auth/${token}`,
-      method: "POST",
-    });
-
-    ctx.res.setHeader("set-cookie", response.headers["set-cookie"] ?? []);
-
-    return {
-      redirect: {
-        destination: "/",
-        permanent: true,
-      },
-    };
-  } catch (err) {
-    return {
-      redirect: {
-        destination: "/sign-in",
-        permanent: true,
-      },
-    };
-  }
-};
+);

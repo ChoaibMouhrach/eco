@@ -1,40 +1,22 @@
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import api from "@/lib/api";
+import { GetServerSideProps } from "next";
+import api from "@/api";
+import { AuthGetServerSidePropsContext } from "@/interfaces/User";
 
-const withUser = (
+export const withUser = (
   getServerSideProps?: GetServerSideProps
 ): GetServerSideProps => {
-  return async (ctx: GetServerSidePropsContext) => {
-    const { accessToken, refreshToken } = ctx.req.cookies;
-
-    if (!accessToken || !refreshToken) {
-      return {
-        props: {},
-      };
-    }
-
+  return async (ctx: AuthGetServerSidePropsContext) => {
     try {
       const response = await api(
         {
           url: "/me",
-          method: "GET",
         },
         ctx
       );
 
       if (getServerSideProps) {
-        const getServerSidePropsResult = await getServerSideProps(ctx);
-
-        if ("props" in getServerSidePropsResult) {
-          return {
-            props: {
-              user: response.data,
-              ...getServerSidePropsResult.props,
-            },
-          };
-        }
-
-        return getServerSidePropsResult;
+        ctx.auth = response.data;
+        return await getServerSideProps(ctx);
       }
 
       return {
@@ -49,5 +31,3 @@ const withUser = (
     }
   };
 };
-
-export default withUser;

@@ -280,31 +280,31 @@ describe("AUTHORIZATION", () => {
       .get("/api/users")
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     response = await request()
       .get(`/api/users/${user.instance!.id}`)
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     response = await request()
       .post("/api/users")
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     response = await request()
       .patch(`/api/users/${user.instance!.id}`)
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     response = await request()
       .delete(`/api/users/${user.instance!.id}`)
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     await user.destroy();
   });
