@@ -11,7 +11,6 @@ const schema = z.object({
     .string()
     .min(1)
     .transform((value) => Number(value)),
-  APP_URL: z.string().url(),
 
   // CLIENT
   APP_CLIENT_URL: z.string().min(1),
