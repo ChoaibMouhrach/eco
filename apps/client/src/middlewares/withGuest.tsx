@@ -1,22 +1,22 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 
-const withGuest = (): GetServerSideProps => {
+export const withGuest = (
+  getServerSideProps?: GetServerSideProps
+): GetServerSideProps => {
   return async (ctx: GetServerSidePropsContext) => {
-    const { accessToken, refreshToken } = ctx.req.cookies;
-
-    if (accessToken || refreshToken) {
+    if (ctx.req.cookies.accessToken) {
       return {
         redirect: {
-          destination: "/dashboard/profile",
+          destination: "/",
           permanent: true,
         },
       };
     }
+
+    if (getServerSideProps) return await getServerSideProps(ctx);
 
     return {
       props: {},
     };
   };
 };
-
-export default withGuest;

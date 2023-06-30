@@ -1,4 +1,4 @@
-import { BadRequestException, UnauthorizedException } from "@src/exceptions";
+import { BadRequestException, ForbiddenException } from "@src/exceptions";
 import { NextFunction, Request, Response } from "express";
 import { Authorize, Validate } from "..";
 
@@ -12,7 +12,7 @@ export const validator = ({ validate, authorize }: ValidatorParams) => {
     if (authorize) {
       const authorized = await authorize(request);
       if (!authorized) {
-        throw new UnauthorizedException("Permission denied");
+        throw new ForbiddenException("Permission denied");
       }
     }
 

@@ -59,7 +59,7 @@ const auth = async (request: Request, response: Response) => {
   response.cookie("refreshToken", refreshToken, { httpOnly: true });
   response.cookie("accessToken", accessToken, { httpOnly: true });
 
-  return response.json(user);
+  return response.sendStatus(204);
 };
 
 const signUp = async (request: SignUpRequest, response: Response) => {
