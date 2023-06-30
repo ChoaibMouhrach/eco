@@ -268,19 +268,19 @@ describe("AUTHORIZATION", () => {
       .post("/api/products")
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     response = await request()
       .patch(`/api/products/99999`)
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     response = await request()
       .delete(`/api/products/99999`)
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     await user.destroy();
   });

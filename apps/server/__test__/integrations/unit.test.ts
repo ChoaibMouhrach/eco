@@ -248,19 +248,19 @@ describe("AUTHORIZATION", () => {
       .post("/api/units")
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     response = await request()
       .patch("/api/units/56654")
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     response = await request()
       .delete("/api/units/2435")
       .set("Cookie", `accessToken=${user.tokens.access.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
 
     await user.destroy();
   });

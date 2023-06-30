@@ -26,7 +26,6 @@ const api = async (
     });
 
     if (ctx && response.headers["set-cookie"]) {
-      console.log(response.headers["set-cookie"]);
       ctx.res.setHeader("set-cookie", response.headers["set-cookie"] ?? []);
     }
 
