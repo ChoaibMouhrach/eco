@@ -124,9 +124,8 @@ describe("POST /auth/:token", () => {
     const response = await request().post(
       `/api/auth/${user.tokens.email.token}`
     );
-    expect(response.status).toBe(200);
-    expect(response.body.id).toBe(user.instance!.id);
-    expect(response.body.email).toBe(user.instance!.email);
+
+    expect(response.status).toBe(204);
     expect(response.headers["set-cookie"]).toBeDefined();
 
     await user.destroy();
