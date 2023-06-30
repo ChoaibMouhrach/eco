@@ -1,6 +1,5 @@
 import { authController } from "@src/controllers";
-import { authRefresh, validator } from "@src/middlewares";
-import { authAccess } from "@src/middlewares/auth-access.middleware";
+import { authRefresh, authAccess, validator } from "@src/middlewares";
 import {
   updateProfileRequest,
   signInRequest,
