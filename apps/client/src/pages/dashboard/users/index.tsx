@@ -27,10 +27,6 @@ const columns: ColumnDef<IUser>[] = [
     accessorKey: "email",
   },
   {
-    header: "Phone number",
-    accessorKey: "phone",
-  },
-  {
     header: "Role",
     accessorKey: "role",
     cell: ({ row }) => <span>{row.original.role?.name}</span>,

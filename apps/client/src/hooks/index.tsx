@@ -18,10 +18,14 @@ export * from "./useUpdateCategory";
 // tags
 export * from "./useGetTags";
 export * from "./useDeleteTag";
+export * from "./useStoreTag";
+export * from "./useUpdateTag";
 
 // users
 export * from "./useGetUsers";
 export * from "./useDeleteUser";
+export * from "./useStoreUser";
+export * from "./useUpdateUser";
 
 // products
 export * from "./useGetProducts";
