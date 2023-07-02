@@ -6,6 +6,8 @@ export * from "./useSignOut";
 // units
 export * from "./useGetUnits";
 export * from "./useDeleteUnit";
+export * from "./useStoreUnit";
+export * from "./useUpdateUnit";
 
 // categories
 export * from "./useGetCategories";
