@@ -51,6 +51,12 @@ const index = async (request: Request, response: Response) => {
         },
       ],
     },
+    include: {
+      images: true,
+      tags: true,
+      category: true,
+      unit: true,
+    },
     orderBy: sort,
     skip: page ? (page - 1) * 8 : 1,
     take: 8,

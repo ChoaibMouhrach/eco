@@ -43,6 +43,9 @@ const index = async (request: Request, response: Response) => {
           ]
         : undefined,
     },
+    include: {
+      role: true,
+    },
     orderBy: sort,
     skip: page ? (page - 1) * 8 : 0,
     take: 8,

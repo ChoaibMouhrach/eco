@@ -1,12 +1,17 @@
-import { MdOutlineAdd, MdOutlineDashboard } from "react-icons/md";
-import { IconType } from "react-icons";
-
-interface SideBarNavigation {
-  name: string;
-  href?: string;
-  icon: IconType;
-  children?: Omit<SideBarNavigation, "children">[];
-}
+import {
+  MdOutlineAdd,
+  MdOutlineCategory,
+  MdOutlineCollectionsBookmark,
+  MdOutlineDashboard,
+  MdOutlineGasMeter,
+  MdOutlineListAlt,
+  MdOutlinePeopleOutline,
+  MdOutlinePersonOutline,
+  MdOutlineShoppingBasket,
+  MdOutlineShoppingCart,
+  MdOutlineTag,
+} from "react-icons/md";
+import { SideBarNavigation } from "@/interfaces/Common";
 
 export const sideBarNavigation: SideBarNavigation[] = [
   {
@@ -16,12 +21,12 @@ export const sideBarNavigation: SideBarNavigation[] = [
   },
   {
     name: "Orders",
-    icon: MdOutlineDashboard,
+    icon: MdOutlineShoppingBasket,
     children: [
       {
         name: "List",
         href: "/dashboard/orders",
-        icon: MdOutlineAdd,
+        icon: MdOutlineListAlt,
       },
       {
         name: "Create",
@@ -32,12 +37,12 @@ export const sideBarNavigation: SideBarNavigation[] = [
   },
   {
     name: "Purchases",
-    icon: MdOutlineDashboard,
+    icon: MdOutlineCollectionsBookmark,
     children: [
       {
         name: "List",
         href: "/dashboard/purchases",
-        icon: MdOutlineAdd,
+        icon: MdOutlineListAlt,
       },
       {
         name: "Create",
@@ -48,12 +53,12 @@ export const sideBarNavigation: SideBarNavigation[] = [
   },
   {
     name: "Products",
-    icon: MdOutlineDashboard,
+    icon: MdOutlineShoppingCart,
     children: [
       {
         name: "List",
-        href: "/dashboard/products/create",
-        icon: MdOutlineAdd,
+        href: "/dashboard/products",
+        icon: MdOutlineListAlt,
       },
       {
         name: "Create",
@@ -64,12 +69,12 @@ export const sideBarNavigation: SideBarNavigation[] = [
   },
   {
     name: "Categories",
-    icon: MdOutlineDashboard,
+    icon: MdOutlineCategory,
     children: [
       {
         name: "List",
-        href: "/dashboard/categories/create",
-        icon: MdOutlineAdd,
+        href: "/dashboard/categories",
+        icon: MdOutlineListAlt,
       },
       {
         name: "Create",
@@ -80,12 +85,12 @@ export const sideBarNavigation: SideBarNavigation[] = [
   },
   {
     name: "Units",
-    icon: MdOutlineDashboard,
+    icon: MdOutlineGasMeter,
     children: [
       {
         name: "List",
-        href: "/dashboard/units/create",
-        icon: MdOutlineAdd,
+        href: "/dashboard/units",
+        icon: MdOutlineListAlt,
       },
       {
         name: "Create",
@@ -96,12 +101,12 @@ export const sideBarNavigation: SideBarNavigation[] = [
   },
   {
     name: "Tags",
-    icon: MdOutlineDashboard,
+    icon: MdOutlineTag,
     children: [
       {
         name: "List",
-        href: "/dashboard/tags/create",
-        icon: MdOutlineAdd,
+        href: "/dashboard/tags",
+        icon: MdOutlineListAlt,
       },
       {
         name: "Create",
@@ -111,8 +116,24 @@ export const sideBarNavigation: SideBarNavigation[] = [
     ],
   },
   {
+    name: "Users",
+    icon: MdOutlinePeopleOutline,
+    children: [
+      {
+        name: "List",
+        href: "/dashboard/users",
+        icon: MdOutlineListAlt,
+      },
+      {
+        name: "Create",
+        href: "/dashboard/users/create",
+        icon: MdOutlineAdd,
+      },
+    ],
+  },
+  {
     name: "Profile",
     href: "/dashboard/profile",
-    icon: MdOutlineDashboard,
+    icon: MdOutlinePersonOutline,
   },
 ];

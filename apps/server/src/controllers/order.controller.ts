@@ -56,6 +56,14 @@ const index = async (request: Request, response: Response) => {
         },
       ],
     },
+    include: {
+      user: true,
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
     orderBy: sort,
     skip: page ? (page - 1) * 8 : 0,
     take: 8,
