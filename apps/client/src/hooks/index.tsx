@@ -12,6 +12,8 @@ export * from "./useUpdateUnit";
 // categories
 export * from "./useGetCategories";
 export * from "./useDeleteCategory";
+export * from "./useStoreCategory";
+export * from "./useUpdateCategory";
 
 // tags
 export * from "./useGetTags";

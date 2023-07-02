@@ -1,32 +1,19 @@
-import { AxiosError } from "axios";
+import { HttpError } from "./Common";
 
 export interface IUnit extends ITimeStamp {
   name: string;
 }
 
 // create
-export interface HttpError<TKeys> {
-  statusCode: number;
-  error: string;
-  content: { message: string } | { message: string; path: TKeys[] }[];
-}
-
 export interface IUnitUpdate {
   name: string;
 }
 
-export interface IUnitUpdateError extends AxiosError {
-  response: {
-    data: HttpError<keyof IUnitUpdate>;
-  };
-}
+export type IUnitUpdateError = HttpError<keyof IUnitUpdate>;
 
+// update
 export interface IUnitCreate {
   name: string;
 }
 
-export interface IUnitCreateError extends AxiosError {
-  response: {
-    data: HttpError<keyof IUnitCreate>;
-  };
-}
+export type IUnitCreateError = HttpError<keyof IUnitCreate>;
