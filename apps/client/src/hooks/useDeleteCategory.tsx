@@ -7,6 +7,7 @@ export const useDeleteCategory = () => {
     mutationFn: (id: number) =>
       api({
         url: `/categories/${id}`,
+        method: "DELETE",
       }),
   });
 };
