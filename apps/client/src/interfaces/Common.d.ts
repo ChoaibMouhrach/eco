@@ -24,3 +24,17 @@ export interface NavigationData {
     description: string;
   }[];
 }
+
+export interface SideBarNavigation {
+  name: string;
+  href?: string;
+  icon: IconType;
+  children?: Omit<SideBarNavigation, "children">[];
+}
+
+export interface IPaginate<TData> {
+  data: TData[];
+  limit: number;
+  count: number;
+  page: number;
+}

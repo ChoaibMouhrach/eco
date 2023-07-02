@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import { join } from "path";
 import router from "./routes";
 import { errorHandler } from "./middlewares";
 import config from "./config/config";
@@ -36,7 +37,7 @@ const makeApp = (env: "prod" | "dev" | "test" = "dev") => {
   app.use(cookieParser());
 
   // routes
-  //  app.use("/storage", express.static(ROOT_DIR));
+  app.use("/storage", express.static(join(config.ROOT_DIR, "storage")));
   app.use("/api", router);
 
   // error handler

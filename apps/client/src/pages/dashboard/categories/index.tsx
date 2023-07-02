@@ -1,19 +1,19 @@
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { DashboardLayout } from "@/components/layouts";
-import { IUnit } from "@/interfaces/Unit";
-import { IUser } from "@/interfaces/User";
-import { withAuth } from "@/middlewares";
+import { useEffect, useState } from "react";
 import DataTable from "@/components/custom/DataTable";
-import { useDeleteUnit, useGetUnits } from "@/hooks";
+import { DashboardLayout } from "@/components/layouts";
+import { useDeleteCategory, useGetCategories } from "@/hooks";
+import { ICategory } from "@/interfaces/Category";
+import { IUser } from "@/interfaces/User";
 import debounce from "@/lib/debounce";
+import { withAuth } from "@/middlewares";
 
-interface UnitsProps {
+interface CategoriesProps {
   user: IUser;
 }
 
-const columns: ColumnDef<IUnit>[] = [
+const columns: ColumnDef<ICategory>[] = [
   {
     header: "#",
     accessorKey: "id",
@@ -28,8 +28,8 @@ const columns: ColumnDef<IUnit>[] = [
   },
 ];
 
-export default function Units({ user }: UnitsProps) {
-  // HOOKS
+export default function Categories({ user }: CategoriesProps) {
+  // hooks
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
 
@@ -38,48 +38,51 @@ export default function Units({ user }: UnitsProps) {
     pageIndex: 0,
   });
 
-  const { data: units, refetch } = useGetUnits({
-    page: pagination.pageIndex + 1,
+  const { data: categories, refetch } = useGetCategories({
     search,
+    page: pagination.pageIndex + 1,
   });
 
-  const { mutate: deleteUnit } = useDeleteUnit();
+  const { mutate: deleteCategory } = useDeleteCategory();
 
-  // USEEFFECTS
+  // useeffects
   useEffect(() => {
     refetch();
   }, [pagination, search]);
 
-  // HANDLERS
+  // handlers
   const handleEdit = (id: number) => {
-    router.push(`/dashboard/units/edit/${id}`);
+    router.push(`/dashboard/categories/edit/${id}`);
   };
 
   const handleDelete = (id: number) =>
-    deleteUnit(id, { onSuccess: () => refetch() });
+    deleteCategory(id, { onSuccess: () => refetch() });
 
-  const changePage = debounce((value: string) => {
+  const changeSearch = debounce((value: string) => {
     setSearch(value);
-    refetch();
   });
 
   const handleSearch = (value: string) => {
-    changePage(value);
+    changeSearch(value);
   };
 
   return (
     <DashboardLayout
       user={user}
-      title="Units"
-      description="You can manage your units from here"
+      title="Categories"
+      description="You can manage your categories from here"
     >
-      <DataTable<IUnit>
-        handleSearch={handleSearch}
-        pageCount={units ? Math.ceil(units.data.count / units.data.limit) : 0}
+      <DataTable<ICategory>
+        pageCount={
+          categories
+            ? Math.ceil(categories.data.count / categories.data.limit)
+            : 0
+        }
         columns={columns}
-        data={units?.data.data ?? []}
+        data={categories?.data.data ?? []}
         pagination={pagination}
         setPagination={setPagination}
+        handleSearch={handleSearch}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

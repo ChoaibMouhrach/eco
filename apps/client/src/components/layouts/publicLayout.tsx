@@ -52,25 +52,26 @@ function MobileNagiationBar() {
 interface PublicLayoutProps {
   children: React.ReactNode;
   user?: IUser;
+  footer?: boolean;
 }
 
-export function PublicLayout({ children, user }: PublicLayoutProps) {
+export function PublicLayout({ children, footer, user }: PublicLayoutProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <main className={inter.className}>
       <Heading />
       <NavigationBar user={user} open={open} setOpen={setOpen} />
-      <section className="flex flex-col gap-16 h-[calc(100vh_-_112px)] overflow-y-scroll">
+      <main className="flex flex-col gap-16 h-[calc(100vh_-_112px)] overflow-y-scroll">
         {open ? (
           <MobileNagiationBar />
         ) : (
           <>
             {children}
-            <Footer />
+            {footer !== false && <Footer />}
           </>
         )}
-      </section>
+      </main>
     </main>
   );
 }

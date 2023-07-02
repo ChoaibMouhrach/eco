@@ -1,5 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import { HttpError } from "./Common";
+import { IRole } from "./Role";
 
 export interface IUser extends ITimeStamp {
   firstName: string;
@@ -8,7 +9,7 @@ export interface IUser extends ITimeStamp {
   phone: string;
   address: string;
   roleId: number;
-  Role?: Role;
+  role?: IRole;
 }
 
 export type SignInData = {

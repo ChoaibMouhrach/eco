@@ -2,18 +2,14 @@ import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { DashboardLayout } from "@/components/layouts";
-import { IUnit } from "@/interfaces/Unit";
-import { IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
+import { IUser } from "@/interfaces/User";
 import DataTable from "@/components/custom/DataTable";
-import { useDeleteUnit, useGetUnits } from "@/hooks";
+import { ITag } from "@/interfaces/Tag";
 import debounce from "@/lib/debounce";
+import { useDeleteTag, useGetTags } from "@/hooks";
 
-interface UnitsProps {
-  user: IUser;
-}
-
-const columns: ColumnDef<IUnit>[] = [
+const columns: ColumnDef<ITag>[] = [
   {
     header: "#",
     accessorKey: "id",
@@ -28,8 +24,12 @@ const columns: ColumnDef<IUnit>[] = [
   },
 ];
 
-export default function Units({ user }: UnitsProps) {
-  // HOOKS
+interface TagsProps {
+  user: IUser;
+}
+
+export default function Tags({ user }: TagsProps) {
+  // hooks
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
 
@@ -38,50 +38,49 @@ export default function Units({ user }: UnitsProps) {
     pageIndex: 0,
   });
 
-  const { data: units, refetch } = useGetUnits({
-    page: pagination.pageIndex + 1,
+  const { data: tags, refetch } = useGetTags({
     search,
+    page: pagination.pageIndex + 1,
   });
 
-  const { mutate: deleteUnit } = useDeleteUnit();
+  const { mutate: deleteTag } = useDeleteTag();
 
-  // USEEFFECTS
+  // useEffects
   useEffect(() => {
     refetch();
   }, [pagination, search]);
 
-  // HANDLERS
-  const handleEdit = (id: number) => {
-    router.push(`/dashboard/units/edit/${id}`);
-  };
-
-  const handleDelete = (id: number) =>
-    deleteUnit(id, { onSuccess: () => refetch() });
-
-  const changePage = debounce((value: string) => {
+  // handlers
+  const changeSearch = debounce((value: string) => {
     setSearch(value);
-    refetch();
   });
 
   const handleSearch = (value: string) => {
-    changePage(value);
+    changeSearch(value);
   };
+
+  const handleEdit = (id: number) => {
+    router.push(`/dashboard/tags/edit/${id}`);
+  };
+
+  const handleDelete = (id: number) =>
+    deleteTag(id, { onSuccess: () => refetch() });
 
   return (
     <DashboardLayout
       user={user}
-      title="Units"
-      description="You can manage your units from here"
+      title="Tags"
+      description="You can manage your tags from here."
     >
-      <DataTable<IUnit>
-        handleSearch={handleSearch}
-        pageCount={units ? Math.ceil(units.data.count / units.data.limit) : 0}
+      <DataTable<ITag>
         columns={columns}
-        data={units?.data.data ?? []}
+        data={tags?.data.data ?? []}
+        pageCount={tags ? Math.ceil(tags.data.count / tags.data.limit) : 0}
+        handleSearch={handleSearch}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
         pagination={pagination}
         setPagination={setPagination}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
       />
     </DashboardLayout>
   );
