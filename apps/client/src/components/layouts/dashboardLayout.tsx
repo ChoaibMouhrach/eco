@@ -28,7 +28,7 @@ export function DashboardLayout({
             <MdOutlineMenu />
           </Button>
         </div>
-        <section className="container h-[calc(100vh_-_112px)] lg:h-[calc(100vh_-_176px)] grid lg:grid-cols-5 py-4 gap-4">
+        <section className="container h-[calc(100vh_-_176px)] lg:h-[calc(100vh_-_112px)] grid lg:grid-cols-5 py-4 gap-4">
           {open ? (
             <div className="overflow-y-scroll lg:pr-4">
               <DashboardSideBar />
@@ -38,7 +38,7 @@ export function DashboardLayout({
               <div className="overflow-y-scroll pr-4 hidden lg:block">
                 <DashboardSideBar />
               </div>
-              <div className="lg:col-start-2 lg:col-end-6">
+              <div className="lg:col-start-2 lg:col-end-6 overflow-y-scroll pr-4">
                 <div className="flex flex-col gap-8">
                   <div className="flex flex-col gap-2">
                     <h1 className="text-4xl font-bold tracking-wide">

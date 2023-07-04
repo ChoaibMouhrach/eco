@@ -7,10 +7,14 @@ import indexRequestHelper from "@/lib/hookHelper";
 
 type Response = AxiosResponse<IPaginate<IUnit>>;
 
-export const useGetUnits = indexRequestHelper<Response>((query) => {
-  return useQuery<Response>(["units"], () => {
-    return api({
-      url: `/units?${new URLSearchParams(query).toString()}`,
-    });
+export const useGetUnits = indexRequestHelper<Response>((query, options) => {
+  return useQuery<Response>({
+    queryKey: ["units"],
+    queryFn: () => {
+      return api({
+        url: `/units?${new URLSearchParams(query).toString()}`,
+      });
+    },
+    ...options,
   });
 });
