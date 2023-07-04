@@ -30,6 +30,8 @@ export * from "./useUpdateUser";
 // products
 export * from "./useGetProducts";
 export * from "./useDeleteProduct";
+export * from "./useStoreProduct";
+export * from "./useUpdateProduct";
 
 // orders
 export * from "./useGetOrders";

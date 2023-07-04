@@ -33,7 +33,9 @@ const schema = z.object({
   SMTP_USER: z.string().min(1),
   SMTP_PASS: z.string().min(1),
 
-  // INTERNALS
+  /**
+   * The root directory of the project
+   * */
   ROOT_DIR: z.string().min(1),
 });
 

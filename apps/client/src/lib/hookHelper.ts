@@ -1,14 +1,21 @@
-import { UseQueryResult } from "@tanstack/react-query";
+import { UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
 
 interface IndexRequestHelper {
   page?: number;
   search?: string;
+  enabled?: boolean;
 }
 
 const indexRequestHelper = <T>(
-  func: (query: Record<string, string>) => UseQueryResult<T, any>
+  func: (
+    query: Record<string, string>,
+    options?: Omit<UseQueryOptions<T, unknown, T>, "initialData">
+  ) => UseQueryResult<T, any>
 ) => {
-  const useIndexHook = ({ page, search }: IndexRequestHelper) => {
+  const useIndexHook = (
+    { page, search }: IndexRequestHelper,
+    options?: Omit<UseQueryOptions<T>, "initialData">
+  ) => {
     const query: Record<string, string> = {};
 
     if (page) {
@@ -19,7 +26,7 @@ const indexRequestHelper = <T>(
       query.search = String(search);
     }
 
-    return func(query);
+    return func(query, options);
   };
 
   return useIndexHook;

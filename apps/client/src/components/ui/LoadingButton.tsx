@@ -7,7 +7,7 @@ interface LoadingButtonProps {
 
 export default function LoadingButton({ children }: LoadingButtonProps) {
   return (
-    <Button>
+    <Button disabled className="flex items-center gap-4">
       <BiLoaderAlt className="animate-spin" /> {children}
     </Button>
   );

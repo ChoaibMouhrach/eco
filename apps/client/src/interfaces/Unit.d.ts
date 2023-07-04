@@ -1,4 +1,4 @@
-import { HttpError } from "./Common";
+import { HttpError, ITimeStamp } from "./Common";
 
 export interface IUnit extends ITimeStamp {
   name: string;

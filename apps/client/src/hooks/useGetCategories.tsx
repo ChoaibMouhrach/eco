@@ -7,10 +7,16 @@ import indexRequestHelper from "@/lib/hookHelper";
 
 type Response = AxiosResponse<IPaginate<ICategory>>;
 
-export const useGetCategories = indexRequestHelper<Response>((query) => {
-  return useQuery<Response>(["categories"], () => {
-    return api({
-      url: `/categories?${new URLSearchParams(query).toString()}`,
+export const useGetCategories = indexRequestHelper<Response>(
+  (query, options) => {
+    return useQuery<Response>({
+      queryKey: ["categories"],
+      queryFn: () => {
+        return api({
+          url: `/categories?${new URLSearchParams(query).toString()}`,
+        });
+      },
+      ...options,
     });
-  });
-});
+  }
+);
