@@ -2,7 +2,7 @@ import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import DataTable from "@/components/custom/DataTable";
+import moment from "moment";
 import { DashboardLayout } from "@/components/layouts";
 import { useDeletePurchase, useGetPurchases } from "@/hooks";
 import { IPurchase } from "@/interfaces/Purchase";
@@ -10,6 +10,7 @@ import { IItem } from "@/interfaces/Order";
 import { IUser } from "@/interfaces/User";
 import debounce from "@/lib/debounce";
 import { withAuth } from "@/middlewares";
+import DataTable from "@/components/custom/data/table";
 
 interface PurchasesProps {
   user: IUser;
@@ -59,6 +60,7 @@ const columns: ColumnDef<IPurchase>[] = [
   {
     header: "Created At",
     accessorKey: "createdAt",
+    cell: ({ row }) => moment(row.original.createdAt).fromNow(),
   },
 ];
 

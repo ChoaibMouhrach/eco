@@ -1,12 +1,12 @@
 import { GetServerSideProps } from "next";
 import api from "@/api";
-import UpdateProduct from "@/components/custom/Products/update";
 import { DashboardLayout } from "@/components/layouts";
 import { ICategory } from "@/interfaces/Category";
 import { IProduct } from "@/interfaces/Product";
 import { IUnit } from "@/interfaces/Unit";
 import { AuthGetServerSidePropsContext, IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
+import DashboardUpdateProduct from "@/components/pages/dashboard/products/update";
 
 interface UpdateProps {
   user: IUser;
@@ -27,7 +27,11 @@ export default function Update({
       title="Update Product"
       description="You can update your product from here."
     >
-      <UpdateProduct product={product} units={units} categories={categories} />
+      <DashboardUpdateProduct
+        product={product}
+        units={units}
+        categories={categories}
+      />
     </DashboardLayout>
   );
 }

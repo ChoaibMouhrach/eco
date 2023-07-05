@@ -1,23 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import api from "@/api";
 import { DashboardLayout } from "@/components/layouts";
-import LoadingButton from "@/components/ui/LoadingButton";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useUpdateUnit } from "@/hooks";
-import { IUnit, IUnitUpdate, IUnitUpdateError } from "@/interfaces/Unit";
+import DashboardUpdateUnitPage from "@/components/pages/dashboard/units/update";
+import { IUnit } from "@/interfaces/Unit";
 import { AuthGetServerSidePropsContext, IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
 
@@ -27,80 +11,13 @@ interface EditProps {
 }
 
 export default function Edit({ user, unit }: EditProps) {
-  const schema = z.object({
-    name: z.string().min(1).max(255),
-  });
-
-  const { id } = useRouter().query;
-
-  const form = useForm<IUnitUpdate>({
-    resolver: zodResolver(schema),
-  });
-
-  const { mutate: updateUnit, isLoading } = useUpdateUnit();
-
-  const handleError = (error: IUnitUpdateError) => {
-    if (error.response.data.content instanceof Array) {
-      const issues = error.response.data.content;
-      issues.forEach((issue) => {
-        form.setError(issue.path[0], {
-          message: issue.message,
-        });
-      });
-    }
-  };
-
-  const handleSuccess = () => {
-    form.reset();
-  };
-
-  const onSubmit = (data: IUnitUpdate) =>
-    updateUnit(
-      { id: Number(id), data },
-      {
-        onError: handleError,
-        onSuccess: handleSuccess,
-      }
-    );
-
   return (
     <DashboardLayout
       user={user}
       title="Edit Unit"
       description="You can edit your units from here."
     >
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unit Name</FormLabel>
-                <FormControl>
-                  <Input
-                    defaultValue={unit.name}
-                    {...field}
-                    placeholder="Meter"
-                  />
-                </FormControl>
-                <FormDescription>Update your unit name.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div>
-            {isLoading ? (
-              <LoadingButton>Update Unit</LoadingButton>
-            ) : (
-              <Button>Update Unit</Button>
-            )}
-          </div>
-        </form>
-      </Form>
+      <DashboardUpdateUnitPage unit={unit} />
     </DashboardLayout>
   );
 }
@@ -110,9 +27,12 @@ export const getServerSideProps = withAuth(
     try {
       const { id } = ctx.query;
 
-      const response = await api({
-        url: `/units/${id}`,
-      });
+      const response = await api(
+        {
+          url: `/units/${id}`,
+        },
+        ctx
+      );
 
       return {
         props: {

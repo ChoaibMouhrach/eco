@@ -17,43 +17,45 @@ const index = async (request: Request, response: Response) => {
   const { search, sort, page } = validateQuery(request.query);
 
   const products = await db.product.findMany({
-    where: {
-      OR: [
-        {
-          name: {
-            contains: search,
-          },
-        },
-        {
-          description: {
-            contains: search,
-          },
-        },
-        {
-          category: {
-            name: {
-              contains: search,
-            },
-          },
-        },
-        {
-          tags: {
-            some: {
+    where: search
+      ? {
+          OR: [
+            {
               name: {
                 contains: search,
               },
             },
-          },
-        },
-        {
-          unit: {
-            name: {
-              contains: search,
+            {
+              description: {
+                contains: search,
+              },
             },
-          },
-        },
-      ],
-    },
+            {
+              category: {
+                name: {
+                  contains: search,
+                },
+              },
+            },
+            {
+              tags: {
+                some: {
+                  name: {
+                    contains: search,
+                  },
+                },
+              },
+            },
+            {
+              unit: {
+                name: {
+                  contains: search,
+                },
+              },
+            },
+          ],
+        }
+      : undefined,
     include: {
       images: true,
       tags: true,
@@ -61,7 +63,7 @@ const index = async (request: Request, response: Response) => {
       unit: true,
     },
     orderBy: sort,
-    skip: page ? (page - 1) * 8 : 1,
+    skip: page ? (page - 1) * 8 : 0,
     take: 8,
   });
 

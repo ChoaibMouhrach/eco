@@ -1,3 +1,3 @@
-export * from "./dashboardLayout";
-export * from "./authLayout";
-export * from "./publicLayout";
+export * from "./dashboard";
+export * from "./auth";
+export * from "./public";
