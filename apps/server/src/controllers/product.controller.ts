@@ -1,3 +1,4 @@
+import config from "@src/config/config";
 import db from "@src/config/db";
 import { BadRequestException } from "@src/exceptions";
 import validateQuery from "@src/lib/query-validator.lib";
@@ -9,50 +10,60 @@ import {
   UpdateProductRequest,
 } from "@src/requests";
 import { Request, Response } from "express";
+import { unlinkSync } from "fs";
+import { join } from "path";
 
 const index = async (request: Request, response: Response) => {
   const { search, sort, page } = validateQuery(request.query);
 
   const products = await db.product.findMany({
-    where: {
-      OR: [
-        {
-          name: {
-            contains: search,
-          },
-        },
-        {
-          description: {
-            contains: search,
-          },
-        },
-        {
-          category: {
-            name: {
-              contains: search,
-            },
-          },
-        },
-        {
-          tags: {
-            some: {
+    where: search
+      ? {
+          OR: [
+            {
               name: {
                 contains: search,
               },
             },
-          },
-        },
-        {
-          unit: {
-            name: {
-              contains: search,
+            {
+              description: {
+                contains: search,
+              },
             },
-          },
-        },
-      ],
+            {
+              category: {
+                name: {
+                  contains: search,
+                },
+              },
+            },
+            {
+              tags: {
+                some: {
+                  name: {
+                    contains: search,
+                  },
+                },
+              },
+            },
+            {
+              unit: {
+                name: {
+                  contains: search,
+                },
+              },
+            },
+          ],
+        }
+      : undefined,
+    include: {
+      images: true,
+      tags: true,
+      category: true,
+      unit: true,
     },
     orderBy: sort,
-    skip: page ? (page - 1) * 8 : 1,
+    skip: page ? (page - 1) * 8 : 0,
     take: 8,
   });
 
@@ -75,6 +86,7 @@ const show = async (request: ShowProductRequest, response: Response) => {
       tags: true,
       category: true,
       unit: true,
+      images: true,
     },
   });
 
@@ -135,6 +147,21 @@ const update = async (request: UpdateProductRequest, response: Response) => {
   const { xId, name, description, price, quantity, unitId, categoryId, tags } =
     request.body;
 
+  if (request.files && request.files instanceof Array && request.files.length) {
+    const product = (await db.product.findUnique({
+      where: {
+        id: xId,
+      },
+      include: {
+        images: true,
+      },
+    }))!;
+
+    product?.images.forEach((image) => {
+      unlinkSync(join(config.ROOT_DIR, image.path));
+    });
+  }
+
   await db.product.update({
     where: {
       id: xId,
@@ -146,14 +173,6 @@ const update = async (request: UpdateProductRequest, response: Response) => {
       quantity,
       unitId,
       categoryId,
-      images: {
-        create:
-          request.files && request.files instanceof Array
-            ? request.files.map((file) => ({
-                path: storeFile(file.originalname, file.buffer),
-              }))
-            : undefined,
-      },
       tags: {
         set: [],
         connectOrCreate: tags?.map((tag) => ({
@@ -165,6 +184,17 @@ const update = async (request: UpdateProductRequest, response: Response) => {
           },
         })),
       },
+      images:
+        request.files && request.files instanceof Array && request.files.length
+          ? {
+              deleteMany: {},
+              createMany: {
+                data: request.files.map((file) => ({
+                  path: storeFile(file.originalname, file.buffer),
+                })),
+              },
+            }
+          : undefined,
     },
   });
 

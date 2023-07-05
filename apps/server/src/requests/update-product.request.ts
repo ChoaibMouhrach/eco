@@ -70,6 +70,10 @@ const validate: Validate = (request: Request) => {
         )
         .transform((v) => v.split(",").map((value) => value.trim()))
         .optional(),
+      images: z
+        .array(z.any())
+        .optional()
+        .refine((v) => (v ? v.length > 0 : true)),
     })
     .refine((data) => Object.keys(data).length > 1, {
       message: "Change something first",
@@ -78,6 +82,7 @@ const validate: Validate = (request: Request) => {
   return schema.safeParseAsync({
     ...request.body,
     xId: request.params.id,
+    images: request.files && request.files.length ? request.files : undefined,
   });
 };
 

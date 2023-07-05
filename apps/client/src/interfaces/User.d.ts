@@ -1,5 +1,6 @@
 import { GetServerSidePropsContext } from "next";
-import { HttpError } from "./Common";
+import { HttpError, ITimeStamp } from "./Common";
+import { IRole } from "./Role";
 
 export interface IUser extends ITimeStamp {
   firstName: string;
@@ -8,7 +9,7 @@ export interface IUser extends ITimeStamp {
   phone: string;
   address: string;
   roleId: number;
-  Role?: Role;
+  role?: IRole;
 }
 
 export type SignInData = {
@@ -31,3 +32,27 @@ export interface AuthGetServerSidePropsContext
   extends GetServerSidePropsContext {
   auth?: IUser;
 }
+
+// create
+interface IUserCreate {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  roleId: string;
+}
+
+type IUserCreateError = HttpError<keyof IUserCreate>;
+
+// update
+interface IUserUpdate {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  roleId?: string;
+}
+
+type IUserUpdateError = HttpError<keyof IUserUpdate>;
