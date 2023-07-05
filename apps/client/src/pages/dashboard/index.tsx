@@ -8,7 +8,15 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ user }: DashboardProps) {
-  return <DashboardLayout user={user}>Dashboard</DashboardLayout>;
+  return (
+    <DashboardLayout
+      user={user}
+      title="Dashboard"
+      description="You can manage your dashboard from here."
+    >
+      Dashboard
+    </DashboardLayout>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps = withAuth();

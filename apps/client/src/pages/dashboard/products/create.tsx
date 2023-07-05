@@ -3,8 +3,8 @@ import { AuthGetServerSidePropsContext, IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
 import api from "@/api";
 import { ICategory } from "@/interfaces/Category";
-import CreateProduct from "@/components/custom/Products/Create";
 import { IUnit } from "@/interfaces/Unit";
+import DashboardCreateProduct from "@/components/pages/dashboard/products/create";
 
 interface CreateProps {
   user: IUser;
@@ -20,7 +20,7 @@ export default function Create({ user, units, categories }: CreateProps) {
       title="Create Product"
       description="You can create new products from here."
     >
-      <CreateProduct units={units} categories={categories} />
+      <DashboardCreateProduct units={units} categories={categories} />
     </DashboardLayout>
   );
 }
