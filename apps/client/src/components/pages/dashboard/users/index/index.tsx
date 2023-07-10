@@ -49,7 +49,7 @@ export default function DashboardUsersPage() {
     page: pagination.pageIndex + 1,
   });
 
-  const { mutate: deleteUser } = useDeleteUser();
+  const { mutateAsync: deleteUser } = useDeleteUser();
 
   // useeffect
   useEffect(() => {

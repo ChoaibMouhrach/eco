@@ -3,6 +3,16 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Image from "next/image";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import Combox, { ComboxItem } from "@/components/ui/Combox";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,6 +70,7 @@ export default function DashboardUpdateProduct({
   units: defaultUnits,
   categories: defaultCategories,
 }: UpdateProps) {
+  const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [images, setImages] = useState<File[]>([]);
   const [units, setUnits] = useState<IUnit[]>(defaultUnits);
   const [categories, setCategories] = useState<ICategory[]>(defaultCategories);
@@ -108,9 +119,15 @@ export default function DashboardUpdateProduct({
   // handlers
   const onSubmit = (data: IProductUpdate) => {
     updateProduct(
-      { id: product.id, data },
+      {
+        id: product.id,
+        data,
+      },
       {
         onError: handleError,
+        onSettled: () => {
+          setAlertOpen(false);
+        },
       }
     );
   };
@@ -361,13 +378,37 @@ export default function DashboardUpdateProduct({
               ))}
         </div>
 
-        <div>
-          {isLoading ? (
-            <LoadingButton>Update</LoadingButton>
-          ) : (
-            <Button type="submit">Update</Button>
-          )}
-        </div>
+        <Button
+          className="w-fit"
+          type="button"
+          onClick={() => setAlertOpen(true)}
+        >
+          Update
+        </Button>
+
+        <AlertDialog open={alertOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently update this
+                product.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setAlertOpen(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction asChild>
+                {isLoading ? (
+                  <LoadingButton>Updating</LoadingButton>
+                ) : (
+                  <Button onClick={form.handleSubmit(onSubmit)}>Update</Button>
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
     </Form>
   );

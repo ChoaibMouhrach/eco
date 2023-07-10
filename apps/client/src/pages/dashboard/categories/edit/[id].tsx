@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import api from "@/api";
 import { DashboardLayout } from "@/components/layouts";
 import { ICategory } from "@/interfaces/Category";
@@ -13,13 +14,18 @@ interface EditProps {
 
 export default function Edit({ user, category }: EditProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Update category"
-      description="You can manage your categories from here."
-    >
-      <DashboardUpdateCategoryPage category={category} />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Edit Category</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Update category"
+        description="You can manage your categories from here."
+      >
+        <DashboardUpdateCategoryPage category={category} />
+      </DashboardLayout>
+    </>
   );
 }
 

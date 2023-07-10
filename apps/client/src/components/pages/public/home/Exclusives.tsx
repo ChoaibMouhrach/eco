@@ -1,14 +1,20 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { IProduct } from "@/interfaces/Product";
 
-export function Exclusives() {
+interface ExclusivesProps {
+  products: IProduct[];
+}
+
+export function Exclusives({ products }: ExclusivesProps) {
   return (
-    <div className="container mx-auto lg:h-96 grid gap-4 lg:grid-cols-3 grid-rows-2">
-      <div className="bg-gray-50 grid lg:grid-cols-2 p-4 lg:col-start-1 lg:col-end-3 row-start-1 row-end-3 gap-4">
+    <div className="container mx-auto grid gap-4 lg:grid-cols-4 grid-rows-2">
+      <div className="border shadow-lg border-gray-100 rounded-md grid lg:h-[400px] lg:grid-cols-2 p-4 lg:col-start-1 lg:col-end-4 row-start-1 row-end-3 gap-4">
         <div className="flex items-center justify-center">
           <Image
-            className=""
-            src="https://cdn.shopify.com/s/files/1/0222/7290/1216/products/AC340BL_01C_1920x1080.jpg?v=1636366206"
+            className="object-contain rounded-md"
+            src={`${process.env.API_STORAGE_URL}/${products[0].images[0].path}`}
             width="300"
             height="300"
             alt=""
@@ -16,54 +22,66 @@ export function Exclusives() {
         </div>
         <div className="flex flex-col justify-center gap-4">
           <div className="flex flex-col gap-2">
-            <span className="text-xl font-semibold tracking-wide">
-              Corrapol-BT Corrugated Bitumen Fixings 100 Pack - All Colours
-            </span>
+            <Link
+              href={`/products/${products[0].id}`}
+              className="text-2xl font-semibold tracking-wide hover:underline"
+            >
+              {products[0].name}
+            </Link>
             <p className="text-neutral-500 text-sm">
-              CORRAPOL® Bitumen roof sheet fixings are designed to be used with
-              the Corrapol Corrugated Bitumen Roof Sheets when fitting to
-              timber.Each Corrugated Roof Sheet requires 20 fixings.{" "}
+              {products[0].description.slice(0, 150)}
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-red-700 text-lg font-semibold">$ 1500</span>
+            <span className="text-red-700 text-xl">$ {products[0].price}</span>
             <span className="text-neutral-500 line-through">$ 1800</span>
           </div>
-          <Button className="w-fit">Shop now</Button>
+          <Button className="w-fit">
+            <Link href={`/products/${products[0].id}`}>Shop</Link>
+          </Button>
         </div>
       </div>
-      <div className="bg-gray-50 p-4 grid grid-cols-2">
+      <Link
+        href={`/products/${products[1].id}`}
+        className="bg-gray-50 rounded-md p-8 grid grid-cols-2"
+      >
         <div className="flex flex-col gap-4 justify-center">
           <span className="font-semibold tracking-wide">
-            Corrapol-BT Corrugated Bitumen Fixings 100 Pack - All Colours
+            {products[1].name}
           </span>
           <div className="flex items-center gap-4">
-            <span className="text-red-700 text-lg font-semibold">$ 1500</span>
+            <span className="text-red-700 text-lg font-semibold">
+              $ {products[1].price}
+            </span>
             <span className="text-neutral-500 line-through">$ 1800</span>
           </div>
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-end">
           <Image
-            src="https://cdn.shopify.com/s/files/1/0222/7290/1216/products/AC340BL_01C_1920x1080.jpg?v=1636366206"
+            className="object-contain"
+            src={`${process.env.API_STORAGE_URL}/${products[1].images[0].path}`}
             width="100"
             height="100"
             alt=""
           />
         </div>
-      </div>
-      <div className="bg-gray-50 p-4 grid grid-cols-2">
+      </Link>
+      <div className="bg-gray-50 rounded-md p-4 grid grid-cols-2">
         <div className="flex flex-col gap-4 justify-center">
           <span className="font-semibold tracking-wide">
-            Corrapol-BT Corrugated Bitumen Fixings 100 Pack - All Colours
+            {products[2].name}
           </span>
           <div className="flex items-center gap-4">
-            <span className="text-red-700 text-lg font-semibold">$ 1500</span>
+            <span className="text-red-700 text-lg font-semibold">
+              $ {products[2].price}
+            </span>
             <span className="text-neutral-500 line-through">$ 1800</span>
           </div>
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-end">
           <Image
-            src="https://cdn.shopify.com/s/files/1/0222/7290/1216/products/AC340BL_01C_1920x1080.jpg?v=1636366206"
+            className="object-contain"
+            src={`${process.env.API_STORAGE_URL}/${products[2].images[0].path}`}
             width="100"
             height="100"
             alt=""

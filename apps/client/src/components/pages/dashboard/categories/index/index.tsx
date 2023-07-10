@@ -38,7 +38,7 @@ export default function DashboardCategoriesPage() {
     page: pagination.pageIndex + 1,
   });
 
-  const { mutate: deleteCategory } = useDeleteCategory();
+  const { mutateAsync: deleteCategory } = useDeleteCategory();
 
   // useeffects
   useEffect(() => {

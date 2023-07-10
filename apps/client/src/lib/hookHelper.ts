@@ -3,7 +3,10 @@ import { UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
 interface IndexRequestHelper {
   page?: number;
   search?: string;
-  enabled?: boolean;
+  price?: {
+    min: number;
+    max: number;
+  };
 }
 
 const indexRequestHelper = <T>(
@@ -13,7 +16,7 @@ const indexRequestHelper = <T>(
   ) => UseQueryResult<T, any>
 ) => {
   const useIndexHook = (
-    { page, search }: IndexRequestHelper,
+    { page, search, price }: IndexRequestHelper,
     options?: Omit<UseQueryOptions<T>, "initialData">
   ) => {
     const query: Record<string, string> = {};
@@ -24,6 +27,10 @@ const indexRequestHelper = <T>(
 
     if (search) {
       query.search = String(search);
+    }
+
+    if (price) {
+      query.price = `${price.min}-${price.max}`;
     }
 
     return func(query, options);

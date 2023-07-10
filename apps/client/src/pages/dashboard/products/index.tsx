@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { DashboardLayout } from "@/components/layouts";
 import DashboardProductsPage from "@/components/pages/dashboard/products/index";
 import { IUser } from "@/interfaces/User";
@@ -9,13 +10,16 @@ interface ProductsProps {
 
 export default function Products({ user }: ProductsProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Products"
-      description="You can manage your products from here."
-    >
-      <DashboardProductsPage />
-    </DashboardLayout>
+    <>
+      <Head>Products</Head>
+      <DashboardLayout
+        user={user}
+        title="Products"
+        description="You can manage your products from here."
+      >
+        <DashboardProductsPage />
+      </DashboardLayout>
+    </>
   );
 }
 

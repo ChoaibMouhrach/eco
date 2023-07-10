@@ -1,3 +1,4 @@
+import Head from "next/head";
 import api from "@/api";
 import { DashboardLayout } from "@/components/layouts";
 import DashboardUpdateUnitPage from "@/components/pages/dashboard/units/update";
@@ -12,13 +13,18 @@ interface EditProps {
 
 export default function Edit({ user, unit }: EditProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Edit Unit"
-      description="You can edit your units from here."
-    >
-      <DashboardUpdateUnitPage unit={unit} />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Edit Unit</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Edit Unit"
+        description="You can edit your units from here."
+      >
+        <DashboardUpdateUnitPage unit={unit} />
+      </DashboardLayout>
+    </>
   );
 }
 

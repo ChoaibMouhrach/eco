@@ -17,3 +17,6 @@ export interface IUnitCreate {
 }
 
 export type IUnitCreateError = HttpError<keyof IUnitCreate>;
+
+// deletea
+export type IUnitDeleteError = HttpError<any>;

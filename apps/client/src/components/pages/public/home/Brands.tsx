@@ -9,13 +9,16 @@ const data = [
 
 export function Brands() {
   return (
-    <div className="container mx-auto grid lg:grid-cols-4 gap-4">
+    <div className="container mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-4">
       {data.map((link) => (
-        <div className="bg-gray-50 p-4 flex items-center justify-center">
+        <div
+          key={link}
+          className="bg-gray-50 rounded-md px-4 py-6 flex items-center justify-center"
+        >
           <Image
-            width="400"
-            height="400"
-            className="w-28 object-fit h-16"
+            width="120"
+            height="120"
+            className="object-contain"
             src={link}
             alt=""
           />

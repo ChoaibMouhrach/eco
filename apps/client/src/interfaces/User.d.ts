@@ -34,7 +34,7 @@ export interface AuthGetServerSidePropsContext
 }
 
 // create
-interface IUserCreate {
+export interface IUserCreate {
   firstName: string;
   lastName: string;
   email: string;
@@ -43,10 +43,10 @@ interface IUserCreate {
   roleId: string;
 }
 
-type IUserCreateError = HttpError<keyof IUserCreate>;
+export type IUserCreateError = HttpError<keyof IUserCreate>;
 
 // update
-interface IUserUpdate {
+export interface IUserUpdate {
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -55,4 +55,10 @@ interface IUserUpdate {
   roleId?: string;
 }
 
-type IUserUpdateError = HttpError<keyof IUserUpdate>;
+export type IUserUpdateError = HttpError<keyof IUserUpdate>;
+
+// delete
+export type IUserDeleteError = HttpError<any>;
+
+// sign out
+export type ISignOutError = HttpError<any>;

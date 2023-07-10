@@ -16,14 +16,10 @@ export interface HttpError<TKeys> extends AxiosError {
   };
 }
 
-export interface NavigationData {
-  trigger: string;
-  elements: {
-    name: string;
-    href: string;
-    description: string;
-  }[];
-}
+export type NavigationData = {
+  name: string;
+  href: string;
+};
 
 export interface SideBarNavigation {
   name: string;

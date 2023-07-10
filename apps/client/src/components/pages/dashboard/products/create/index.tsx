@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Form,
@@ -48,17 +48,16 @@ export default function DashboardCreateProduct({
 
   const [units, setUnits] = useState<ICategory[]>(defaultUnits);
 
-  const { data: refetchedCategories, refetch: refetchCategories } =
-    useGetCategories(
-      {
-        search: categorySearch.value,
-      },
-      {
-        enabled: false,
-      }
-    );
+  const { data: newCategories, refetch: refetchCategories } = useGetCategories(
+    {
+      search: categorySearch.value,
+    },
+    {
+      enabled: false,
+    }
+  );
 
-  const { data: refetchedUnits, refetch: refetchUnits } = useGetUnits(
+  const { data: newUnits, refetch: refetchUnits } = useGetUnits(
     {
       search: unitSearch.value,
     },
@@ -68,8 +67,18 @@ export default function DashboardCreateProduct({
   );
 
   // functions
-  const changeCategorySearch = debounce(() => refetchCategories());
-  const changeUnitSearch = debounce(() => refetchUnits());
+  const changeCategorySearch = useCallback(
+    debounce(() => {
+      refetchCategories();
+    }),
+    []
+  );
+  const changeUnitSearch = useCallback(
+    debounce(() => {
+      refetchUnits();
+    }),
+    []
+  );
 
   // useEffects
   useEffect(() => {
@@ -85,16 +94,16 @@ export default function DashboardCreateProduct({
   }, [categorySearch]);
 
   useEffect(() => {
-    if (refetchedCategories) {
-      setCategories(refetchedCategories.data.data);
+    if (newCategories) {
+      setCategories(newCategories.data.data);
     }
-  }, [refetchCategories]);
+  }, [newCategories]);
 
   useEffect(() => {
-    if (refetchedUnits) {
-      setUnits(refetchedUnits.data.data);
+    if (newUnits) {
+      setUnits(newUnits.data.data);
     }
-  }, [refetchedUnits]);
+  }, [newUnits]);
 
   const form = useForm<IProductCreate>({
     resolver: zodResolver(schema),

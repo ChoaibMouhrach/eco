@@ -24,6 +24,11 @@ const schema = z.object({
     .regex(/^\d+$/gi)
     .transform((v) => Number(v))
     .optional(),
+  price: z
+    .string()
+    .regex(/^\d+-\d+$/gi)
+    .transform((v) => v.split("-").map((price) => Number(price)))
+    .optional(),
 });
 
 const validateQuery = (data: any) => {

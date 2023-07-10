@@ -38,7 +38,7 @@ export default function DashboardTagsPage() {
     page: pagination.pageIndex + 1,
   });
 
-  const { mutate: deleteTag } = useDeleteTag();
+  const { mutateAsync: deleteTag } = useDeleteTag();
 
   // useEffects
   useEffect(() => {

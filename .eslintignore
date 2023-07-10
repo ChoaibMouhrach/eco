@@ -2,3 +2,4 @@
 **/dist
 **/turbo
 **/.next
+apps/client/src/components/ui

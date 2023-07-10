@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { DashboardLayout } from "@/components/layouts";
 import { AuthGetServerSidePropsContext, IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
@@ -15,13 +16,18 @@ interface CreateProps {
 export default function Create({ user, units, categories }: CreateProps) {
   console.log({ units, categories });
   return (
-    <DashboardLayout
-      user={user}
-      title="Create Product"
-      description="You can create new products from here."
-    >
-      <DashboardCreateProduct units={units} categories={categories} />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Create Product</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Create Product"
+        description="You can create new products from here."
+      >
+        <DashboardCreateProduct units={units} categories={categories} />
+      </DashboardLayout>
+    </>
   );
 }
 

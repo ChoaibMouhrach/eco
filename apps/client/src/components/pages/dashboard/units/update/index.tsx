@@ -2,6 +2,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import LoadingButton from "@/components/ui/LoadingButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +33,8 @@ interface UpdateUnitPageProps {
 }
 
 export default function DashboardUpdateUnitPage({ unit }: UpdateUnitPageProps) {
+  const [alrtOpen, setAlrtOpen] = useState<boolean>(false);
+
   const schema = z.object({
     name: z.string().min(1).max(255),
   });
@@ -49,15 +62,19 @@ export default function DashboardUpdateUnitPage({ unit }: UpdateUnitPageProps) {
     form.reset();
   };
 
-  const onSubmit = (data: IUnitUpdate) =>
-    updateUnit(
-      { id: Number(id), data },
+  const onSubmit = (data: IUnitUpdate) => {
+    return updateUnit(
+      {
+        id: Number(id),
+        data,
+      },
       {
         onError: handleError,
         onSuccess: handleSuccess,
+        onSettled: () => setAlrtOpen(false),
       }
     );
-
+  };
   return (
     <Form {...form}>
       <form
@@ -82,13 +99,38 @@ export default function DashboardUpdateUnitPage({ unit }: UpdateUnitPageProps) {
             </FormItem>
           )}
         />
-        <div>
-          {isLoading ? (
-            <LoadingButton>Update Unit</LoadingButton>
-          ) : (
-            <Button>Update Unit</Button>
-          )}
-        </div>
+
+        <Button
+          className="w-fit"
+          type="button"
+          onClick={() => setAlrtOpen(true)}
+        >
+          Update Unit
+        </Button>
+
+        <AlertDialog open={alrtOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently update this
+                unit.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setAlrtOpen(false)}>
+                Cancel
+              </AlertDialogCancel>
+              {isLoading ? (
+                <LoadingButton>Updating</LoadingButton>
+              ) : (
+                <AlertDialogAction onClick={form.handleSubmit(onSubmit)}>
+                  Update
+                </AlertDialogAction>
+              )}
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
     </Form>
   );

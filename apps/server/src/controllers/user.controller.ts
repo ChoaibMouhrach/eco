@@ -103,6 +103,12 @@ const update = async (request: UpdateUserRequest, response: Response) => {
 const destroy = async (request: DeleteUserRequest, response: Response) => {
   const { xId } = request.body;
 
+  await new Promise((res) => {
+    setTimeout(() => {
+      res("");
+    }, 5000);
+  });
+
   await db.user.delete({
     where: {
       id: xId,

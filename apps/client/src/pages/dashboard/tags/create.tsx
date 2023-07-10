@@ -1,8 +1,9 @@
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { DashboardLayout } from "@/components/layouts";
 import { IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
-import DashboardTagsPage from "@/components/pages/dashboard/tags/index";
+import DashboardCreateTagPage from "@/components/pages/dashboard/tags/create";
 
 interface TagsProps {
   user: IUser;
@@ -10,13 +11,18 @@ interface TagsProps {
 
 export default function Tags({ user }: TagsProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Create Tag"
-      description="You can create new tags from here."
-    >
-      <DashboardTagsPage />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Create Tag</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Create Tag"
+        description="You can create new tags from here."
+      >
+        <DashboardCreateTagPage />
+      </DashboardLayout>
+    </>
   );
 }
 

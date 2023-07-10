@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { DashboardLayout } from "@/components/layouts";
 import DashboardUsersPage from "@/components/pages/dashboard/users/index";
 import { IUser } from "@/interfaces/User";
@@ -9,9 +10,14 @@ interface UsersProps {
 
 export default function Index({ user }: UsersProps) {
   return (
-    <DashboardLayout user={user} title="" description="">
-      <DashboardUsersPage />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Users</title>
+      </Head>
+      <DashboardLayout user={user} title="" description="">
+        <DashboardUsersPage />
+      </DashboardLayout>
+    </>
   );
 }
 

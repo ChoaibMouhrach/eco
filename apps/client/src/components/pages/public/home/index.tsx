@@ -1,17 +1,22 @@
+import { IProduct } from "@/interfaces/Product";
 import { Brands } from "./Brands";
 import { Exclusives } from "./Exclusives";
 import { Features } from "./Features";
 import { Hero } from "./Hero";
 import { LatestProducts } from "./LatestProducts";
 
-export default function Home() {
+interface HomeProps {
+  products: IProduct[];
+}
+
+export default function Home({ products }: HomeProps) {
   return (
     <>
       <Hero />
       <Features />
-      <Exclusives />
+      <Exclusives products={products} />
       <Brands />
-      <LatestProducts />
+      <LatestProducts products={products} />
     </>
   );
 }

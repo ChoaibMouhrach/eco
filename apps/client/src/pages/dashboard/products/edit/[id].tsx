@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import api from "@/api";
 import { DashboardLayout } from "@/components/layouts";
 import { ICategory } from "@/interfaces/Category";
@@ -22,17 +23,22 @@ export default function Update({
   user,
 }: UpdateProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Update Product"
-      description="You can update your product from here."
-    >
-      <DashboardUpdateProduct
-        product={product}
-        units={units}
-        categories={categories}
-      />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Update Product</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Update Product"
+        description="You can update your product from here."
+      >
+        <DashboardUpdateProduct
+          product={product}
+          units={units}
+          categories={categories}
+        />
+      </DashboardLayout>
+    </>
   );
 }
 

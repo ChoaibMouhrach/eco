@@ -61,7 +61,7 @@ export default function DashboardProductsPage() {
     page: pagination.pageIndex + 1,
   });
 
-  const { mutate: deleteProduct } = useDeleteProduct();
+  const { mutateAsync: deleteProduct } = useDeleteProduct();
 
   useEffect(() => {
     refetch();
@@ -80,8 +80,13 @@ export default function DashboardProductsPage() {
     router.push(`/dashboard/products/edit/${id}`);
   };
 
-  const handleDelete = (id: number) =>
-    deleteProduct(id, { onSuccess: () => refetch() });
+  const handleDelete = (id: number) => {
+    return deleteProduct(id, {
+      onSuccess: () => {
+        refetch();
+      },
+    });
+  };
 
   return (
     <DataTable<IProduct>

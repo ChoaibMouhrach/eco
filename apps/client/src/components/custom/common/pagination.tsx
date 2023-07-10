@@ -1,14 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+interface Paginate {
+  pageIndex: number;
+  pageSize: number;
+  changed: boolean;
+}
+
 interface PaginatioProps {
-  pagination: {
-    pageIndex: number;
-    pageSize: number;
-  };
-  setPagination: React.Dispatch<
-    React.SetStateAction<{ pageIndex: number; pageSize: number }>
-  >;
+  pagination: Paginate;
+  setPagination: React.Dispatch<React.SetStateAction<Paginate>>;
   pagesCount: number;
 }
 
@@ -20,7 +21,11 @@ export function Pagination({
   const handlePaginationInputChnage = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setPagination({ ...pagination, pageIndex: Number(e.target.value) });
+    setPagination({
+      ...pagination,
+      changed: true,
+      pageIndex: Number(e.target.value),
+    });
   };
 
   return (
@@ -38,7 +43,9 @@ export function Pagination({
       </div>
       <div className="flex items-center gap-2">
         <Button
-          onClick={() => setPagination({ ...pagination, pageIndex: 1 })}
+          onClick={() =>
+            setPagination({ ...pagination, changed: true, pageIndex: 1 })
+          }
           disabled={pagination.pageIndex === 1}
         >
           <svg
@@ -60,6 +67,7 @@ export function Pagination({
           onClick={() =>
             setPagination({
               ...pagination,
+              changed: true,
               pageIndex: pagination.pageIndex - 1,
             })
           }
@@ -84,6 +92,7 @@ export function Pagination({
           onClick={() =>
             setPagination({
               ...pagination,
+              changed: true,
               pageIndex: pagination.pageIndex + 1,
             })
           }
@@ -108,6 +117,7 @@ export function Pagination({
           onClick={() =>
             setPagination({
               ...pagination,
+              changed: true,
               pageIndex: pagination.pageIndex + 1,
             })
           }

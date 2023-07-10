@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { withAuth } from "@/middlewares";
 import { DashboardLayout } from "@/components/layouts";
 import { IUser } from "@/interfaces/User";
@@ -9,13 +10,18 @@ interface DashboardProps {
 
 export default function Dashboard({ user }: DashboardProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Dashboard"
-      description="You can manage your dashboard from here."
-    >
-      Dashboard
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Dashboard</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Dashboard"
+        description="You can manage your dashboard from here."
+      >
+        Dashboard
+      </DashboardLayout>
+    </>
   );
 }
 

@@ -68,7 +68,7 @@ export default function DashboardOrdersPage() {
     page: pagination.pageIndex + 1,
   });
 
-  const { mutate: deleteOrder } = useDeleteOrder();
+  const { mutateAsync: deleteOrder } = useDeleteOrder();
 
   // useEffect
   useEffect(() => {

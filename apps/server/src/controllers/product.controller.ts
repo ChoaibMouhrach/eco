@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import config from "@src/config/config";
 import db from "@src/config/db";
 import { BadRequestException } from "@src/exceptions";
@@ -14,48 +15,56 @@ import { unlinkSync } from "fs";
 import { join } from "path";
 
 const index = async (request: Request, response: Response) => {
-  const { search, sort, page } = validateQuery(request.query);
+  const { search, sort, price, page } = validateQuery(request.query);
 
-  const products = await db.product.findMany({
-    where: search
-      ? {
-          OR: [
-            {
+  const where: Prisma.ProductWhereInput = {
+    OR: search
+      ? [
+          {
+            name: {
+              contains: search,
+            },
+          },
+          {
+            description: {
+              contains: search,
+            },
+          },
+          {
+            category: {
               name: {
                 contains: search,
               },
             },
-            {
-              description: {
+          },
+          {
+            tags: {
+              some: {
+                name: {
+                  contains: search,
+                },
+              },
+            },
+          },
+          {
+            unit: {
+              name: {
                 contains: search,
               },
             },
-            {
-              category: {
-                name: {
-                  contains: search,
-                },
-              },
-            },
-            {
-              tags: {
-                some: {
-                  name: {
-                    contains: search,
-                  },
-                },
-              },
-            },
-            {
-              unit: {
-                name: {
-                  contains: search,
-                },
-              },
-            },
-          ],
+          },
+        ]
+      : undefined,
+    price: price
+      ? {
+          gte: price[0],
+          lte: price[1],
         }
       : undefined,
+  };
+
+  const products = await db.product.findMany({
+    where,
     include: {
       images: true,
       tags: true,
@@ -69,7 +78,7 @@ const index = async (request: Request, response: Response) => {
 
   return response.json({
     data: products,
-    count: await db.product.count(),
+    count: await db.product.count({ where }),
     page: page ?? 1,
     limit: 8,
   });

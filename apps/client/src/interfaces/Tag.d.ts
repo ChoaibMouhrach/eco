@@ -17,3 +17,6 @@ export interface ITagUpdate {
 }
 
 export type ITagUpdateError = HttpError<keyof ITagUpdate>;
+
+// delete
+export type ITagDeleteError = HttpError<any>;

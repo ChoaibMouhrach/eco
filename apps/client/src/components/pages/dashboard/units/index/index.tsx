@@ -38,7 +38,7 @@ export default function DashboardUnitsPage() {
     search,
   });
 
-  const { mutate: deleteUnit } = useDeleteUnit();
+  const { mutateAsync: deleteUnit } = useDeleteUnit();
 
   // USEEFFECTS
   useEffect(() => {

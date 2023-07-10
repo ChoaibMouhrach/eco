@@ -32,7 +32,7 @@ export function Features() {
   return (
     <div className="container mx-auto grid lg:grid-cols-4 gap-4">
       {data.map(({ icon, name, description }) => (
-        <div className="grid grid-cols-3">
+        <div key={name} className="grid grid-cols-3">
           <div className="flex items-center justify-center">
             <div className="bg-gray-50 p-4 rounded-full">{icon}</div>
           </div>

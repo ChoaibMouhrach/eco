@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { DashboardLayout } from "@/components/layouts";
 import { IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
@@ -9,13 +10,18 @@ interface UnitsProps {
 
 export default function Units({ user }: UnitsProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Units"
-      description="You can manage your units from here"
-    >
-      <DashboardUnitsPage />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Units</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Units"
+        description="You can manage your units from here"
+      >
+        <DashboardUnitsPage />
+      </DashboardLayout>
+    </>
   );
 }
 

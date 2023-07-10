@@ -1,3 +1,4 @@
+import Head from "next/head";
 import api from "@/api";
 import { DashboardLayout } from "@/components/layouts";
 import DashboardUpdateTagPage from "@/components/pages/dashboard/tags/update";
@@ -12,13 +13,18 @@ interface EditProps {
 
 export default function Edit({ user, tag }: EditProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Update Tag"
-      description="You can update certain tags just from here."
-    >
-      <DashboardUpdateTagPage tag={tag} />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Edit Tag</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Update Tag"
+        description="You can update certain tags just from here."
+      >
+        <DashboardUpdateTagPage tag={tag} />
+      </DashboardLayout>
+    </>
   );
 }
 

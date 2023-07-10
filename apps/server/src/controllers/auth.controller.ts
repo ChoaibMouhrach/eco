@@ -74,7 +74,7 @@ const signUp = async (request: SignUpRequest, response: Response) => {
 
   const emailToken = createConfirmEmailToken(user.id);
 
-  mailer.sendMail({
+  await mailer.sendMail({
     from: config.SMTP_USER,
     to: user.email,
     subject: "Sign up request",

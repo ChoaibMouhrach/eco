@@ -40,3 +40,6 @@ export type IProductCreateError = HttpError<keyof IProductCreate>;
 export type IProductUpdate = Partial<IProductCreate>;
 
 export type IProductUpdateError = HttpError<keyof IProductUpdate>;
+
+// delete
+export type IProductDeleteError = HttpError<keyof {}>;

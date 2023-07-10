@@ -21,5 +21,5 @@ export const schema = z.object({
   unitId: z.number().int().positive(),
   categoryId: z.number().int().positive(),
   tags: z.string().min(1),
-  images: z.array(z.any()).refine((v) => v.length > 1),
+  images: z.array(z.any()),
 });

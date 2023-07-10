@@ -1,49 +1,15 @@
 import { ProductCard } from "@/components/custom";
 import { IProduct } from "@/interfaces/Product";
 
-const data = [
-  {
-    name: "Square And Round Downpipe Rain Diverter - All Colours",
-    image:
-      "https://build4less.co.uk/cdn/shop/products/RVS1W-0_1920x1080@2x.jpg?v=1634802767",
-    price: 120,
-    category: "Rainwater Diverter",
-  },
-  {
-    name: "Square And Round Downpipe Rain Diverter - All Colours",
-    image:
-      "https://build4less.co.uk/cdn/shop/products/RVS1W-0_1920x1080@2x.jpg?v=1634802767",
-    price: 120,
-    category: "Rainwater Diverter",
-  },
-  {
-    name: "Square And Round Downpipe Rain Diverter - All Colours",
-    image:
-      "https://build4less.co.uk/cdn/shop/products/RVS1W-0_1920x1080@2x.jpg?v=1634802767",
-    price: 120,
-    category: "Rainwater Diverter",
-  },
-  {
-    name: "Square And Round Downpipe Rain Diverter - All Colours",
-    image:
-      "https://build4less.co.uk/cdn/shop/products/RVS1W-0_1920x1080@2x.jpg?v=1634802767",
-    price: 120,
-    category: "Rainwater Diverter",
-  },
-  {
-    name: "Square And Round Downpipe Rain Diverter - All Colours",
-    image:
-      "https://build4less.co.uk/cdn/shop/products/RVS1W-0_1920x1080@2x.jpg?v=1634802767",
-    price: 120,
-    category: "Rainwater Diverter",
-  },
-];
+interface LatestProductsProps {
+  products: IProduct[];
+}
 
-export function LatestProducts() {
+export function LatestProducts({ products }: LatestProductsProps) {
   return (
-    <div className="container mx-auto grid lg:grid-cols-5 gap-4">
-      {data.map((product) => (
-        <ProductCard key={product.name} product={product} />
+    <div className="container mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
       ))}
     </div>
   );

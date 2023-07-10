@@ -7,7 +7,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ChangeEvent, useEffect } from "react";
-import { MdOutlineMoreVert } from "react-icons/md";
 import {
   Table,
   TableBody,
@@ -16,16 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Actions } from "./Actions";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -35,8 +27,8 @@ interface DataTableProps<TData> {
   pageCount: number;
   onPaginationChange?: (pagination: PaginationState) => Promise<void> | void;
   onEdit?: (id: number) => void | Promise<void>;
-  onDelete?: (id: number) => void | Promise<void>;
-  handleSearch: (value: string) => void | Promise<void>;
+  onDelete?: (id: number) => any | Promise<any>;
+  handleSearch?: (value: string) => any | Promise<any>;
 }
 
 export default function DataTable<TData>({
@@ -73,12 +65,14 @@ export default function DataTable<TData>({
 
   return (
     <div className="flex flex-col gap-4">
-      <Input
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          handleSearch(e.target.value)
-        }
-        placeholder="Search..."
-      />
+      {handleSearch && (
+        <Input
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            handleSearch(e.target.value)
+          }
+          placeholder="Search..."
+        />
+      )}
       <div className="rounded-md border">
         <Table className="table-fixed">
           <TableHeader>
@@ -115,34 +109,11 @@ export default function DataTable<TData>({
                   ))}
                   {(onEdit || onDelete) && (
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MdOutlineMoreVert className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          {onEdit && (
-                            <DropdownMenuItem
-                              onClick={() => onEdit(Number(row.getValue("id")))}
-                            >
-                              Edit
-                            </DropdownMenuItem>
-                          )}
-                          {onEdit && onDelete && <DropdownMenuSeparator />}
-                          {onDelete && (
-                            <DropdownMenuItem
-                              onClick={() =>
-                                onDelete(Number(row.getValue("id")))
-                              }
-                            >
-                              Delete
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Actions
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                        id={Number(row.getValue("id"))}
+                      />
                     </TableCell>
                   )}
                 </TableRow>

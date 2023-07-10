@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import api from "@/api";
 import { DashboardLayout } from "@/components/layouts";
 import { IProduct } from "@/interfaces/Product";
@@ -14,16 +15,21 @@ interface CreateProps {
 
 export default function Create({ user: auth, users, products }: CreateProps) {
   return (
-    <DashboardLayout
-      user={auth}
-      title="Create Order"
-      description="You can create new orders from here."
-    >
-      <DashboardCreateOrderPage
-        defaultUsers={users}
-        defaultProducts={products}
-      />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Create order</title>
+      </Head>
+      <DashboardLayout
+        user={auth}
+        title="Create Order"
+        description="You can create new orders from here."
+      >
+        <DashboardCreateOrderPage
+          defaultUsers={users}
+          defaultProducts={products}
+        />
+      </DashboardLayout>
+    </>
   );
 }
 

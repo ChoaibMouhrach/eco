@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { DashboardLayout } from "@/components/layouts";
 import { IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
@@ -10,13 +11,18 @@ interface CreateProps {
 
 export default function Create({ user }: CreateProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Create User"
-      description="You can create new users from here."
-    >
-      <DashboardCreateUserPage />
-    </DashboardLayout>
+    <>
+      <Head>
+        <title>Create User</title>
+      </Head>
+      <DashboardLayout
+        user={user}
+        title="Create User"
+        description="You can create new users from here."
+      >
+        <DashboardCreateUserPage />
+      </DashboardLayout>
+    </>
   );
 }
 

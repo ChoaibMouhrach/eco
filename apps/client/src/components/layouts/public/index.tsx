@@ -4,12 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { navigationData } from "@/constants";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { IUser } from "@/interfaces/User";
 import { Button } from "@/components/ui/button";
 import { Footer, Heading, NavigationBar } from "@/components/custom";
@@ -27,22 +21,17 @@ function MobileNagiationBar() {
           <MdOutlineShoppingCart className="!h-4 !w-4" />
         </Button>
       </div>
-      <Accordion type="single" collapsible>
-        {navigationData.map(({ trigger, elements }) => (
-          <AccordionItem key={trigger} value={trigger}>
-            <AccordionTrigger>{trigger}</AccordionTrigger>
-            <AccordionContent>
-              <div className="flex flex-col gap-2">
-                {elements.map((element) => (
-                  <Link className="p-3" href={element.href} key={element.name}>
-                    {element.name}
-                  </Link>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+      <div className="flex flex-col gap-4">
+        {navigationData.map((link) => (
+          <Link
+            className="text-sm text-neutral-600"
+            key={link.name}
+            href={link.href}
+          >
+            {link.name}
+          </Link>
         ))}
-      </Accordion>
+      </div>
     </div>
   );
 }

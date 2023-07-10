@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import api from "@/api";
 import { AuthGetServerSidePropsContext, IUser } from "@/interfaces/User";
 import { withAuth } from "@/middlewares";
@@ -12,13 +13,16 @@ interface UpdateProps {
 
 export default function Update({ user, slug }: UpdateProps) {
   return (
-    <DashboardLayout
-      user={user}
-      title="Create User"
-      description="You can create new users from here."
-    >
-      <DashboardUpdateUserPage slug={slug} />
-    </DashboardLayout>
+    <>
+      <Head>Update User</Head>
+      <DashboardLayout
+        user={user}
+        title="Create User"
+        description="You can create new users from here."
+      >
+        <DashboardUpdateUserPage slug={slug} />
+      </DashboardLayout>
+    </>
   );
 }
 

@@ -25,7 +25,7 @@ export default function DashboardCreateUnitPage() {
     resolver: zodResolver(schema),
   });
 
-  const { mutate: storeUnit, isLoading } = useStoreUnit();
+  const { mutateAsync: storeUnit, isLoading } = useStoreUnit();
 
   const handleError = (err: IUnitCreateError) => {
     if (err.response.data.content instanceof Array) {

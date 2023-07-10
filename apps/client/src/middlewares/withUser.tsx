@@ -14,20 +14,19 @@ export const withUser = (
         ctx
       );
 
-      if (getServerSideProps) {
-        ctx.auth = response.data;
-        return await getServerSideProps(ctx);
-      }
-
-      return {
-        props: {
-          user: response.data,
-        },
-      };
+      ctx.auth = response.data;
     } catch (err) {
-      return {
-        props: {},
-      };
+      // nothing
     }
+
+    if (getServerSideProps) {
+      return await getServerSideProps(ctx);
+    }
+
+    return {
+      props: {
+        user: ctx.auth ?? null,
+      },
+    };
   };
 };

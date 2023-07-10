@@ -17,3 +17,6 @@ export interface ICategoryStore {
 }
 
 export type ICategoryStoreError = HttpError<keyof ICategoryStore>;
+
+// delete
+export type ICategoryDeleteError = HttpError<any>;

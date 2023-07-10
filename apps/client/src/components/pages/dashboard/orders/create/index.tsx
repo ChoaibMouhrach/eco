@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { IProduct } from "@/interfaces/Product";
 import { IUser } from "@/interfaces/User";
-import { IOrderCreate } from "@/interfaces/Order";
-import { useGetProducts, useGetUsers } from "@/hooks";
+import { IOrderCreate, IOrderCreateError } from "@/interfaces/Order";
+import { useGetProducts, useGetUsers, useStoreOrder } from "@/hooks";
 import debounce from "@/lib/debounce";
 import {
   Form,
@@ -17,6 +17,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Combox, { ComboxItem } from "@/components/ui/Combox";
+import { ProductsTable } from "./productsTable";
+import LoadingButton from "@/components/ui/LoadingButton";
+import { Button } from "@/components/ui/button";
 
 interface CreateOrderPageProps {
   defaultUsers: IUser[];
@@ -28,7 +31,7 @@ const schema = z.object({
   products: z.array(
     z.object({
       id: z.number().int().positive(),
-      quantity: z.number().int().positive().gt(0),
+      orderQuantity: z.number().int().positive().gt(0),
     })
   ),
 });
@@ -63,18 +66,69 @@ export default function DashboardCreateOrderPage({
 
   const { data: newProducts, refetch: refetchNewProducts } = useGetProducts(
     {
-      search: usersSearch.value,
+      search: productsSearch.value,
     },
     { enabled: false }
   );
 
+  const { mutate: createOrder, isLoading } = useStoreOrder();
+
   // handlers
-  const onSubmit = (data: IOrderCreate) => {
-    console.log(data);
+
+  const handleError = (err: IOrderCreateError) => {
+    if (err.response.data.content instanceof Array) {
+      err.response.data.content.forEach((error) => {
+        form.setError(error.path[0], {
+          message: error.message,
+        });
+      });
+    }
   };
 
-  const replaceUsers = debounce(() => refetchNewUsers());
-  const replaceProducts = debounce(() => refetchNewProducts());
+  const onSubmit = (data: IOrderCreate) =>
+    createOrder(data, {
+      onError: handleError,
+    });
+
+  const replaceUsers = useCallback(
+    debounce(() => {
+      refetchNewUsers();
+    }),
+    []
+  );
+
+  const replaceProducts = useCallback(
+    debounce(() => {
+      refetchNewProducts();
+    }),
+    []
+  );
+
+  const handleAddProduct = (product: IProduct) => {
+    const formProducts = form.getValues("products") ?? [];
+
+    if (formProducts.find((p) => p.id === product.id)) {
+      const newFormProducts = formProducts.map((p) => {
+        if (p.id === product.id) {
+          return {
+            ...p,
+            orderQuantity: p.orderQuantity + 1,
+          };
+        }
+
+        return p;
+      });
+
+      form.setValue("products", newFormProducts);
+
+      return;
+    }
+
+    form.setValue("products", [
+      ...(form.getValues("products") ?? []),
+      { ...product, orderQuantity: 1 },
+    ]);
+  };
 
   // useEffects
   useEffect(() => {
@@ -127,7 +181,13 @@ export default function DashboardCreateOrderPage({
                   {users.map((user) => (
                     <ComboxItem
                       key={user.id}
-                      onClick={() => form.setValue("userId", user.id)}
+                      onClick={() => {
+                        setUsersSearch({
+                          value: `${user.firstName} ${user.lastName}`,
+                          changed: true,
+                        });
+                        form.setValue("userId", user.id);
+                      }}
                     >
                       <div className="flex items-center gao-2">
                         <span>{user.firstName}</span>
@@ -143,37 +203,51 @@ export default function DashboardCreateOrderPage({
           )}
         />
 
-        <FormItem>
-          <FormLabel>Products</FormLabel>
-          <FormControl>
-            <Combox
-              onValueChange={(value: string) => {
-                setProductsSearch({
-                  value,
-                  changed: true,
-                });
-              }}
-              value={productsSearch.value}
-              itemCount={products.length}
-            >
-              {products.map((product) => (
-                <ComboxItem
-                  key={product.id}
-                  onClick={() =>
-                    form.setValue("products", [
-                      { ...product, orderQuantity: 1 },
-                    ])
-                  }
+        <FormField
+          name="products"
+          control={form.control}
+          render={() => (
+            <FormItem>
+              <FormLabel>Products</FormLabel>
+              <FormControl>
+                <Combox
+                  onValueChange={(value: string) => {
+                    setProductsSearch({
+                      value,
+                      changed: true,
+                    });
+                  }}
+                  value={productsSearch.value}
+                  itemCount={products.length}
                 >
-                  <div className="flex items-center gao-2">{product.name}</div>
-                </ComboxItem>
-              ))}
-            </Combox>
-          </FormControl>
-          <FormDescription>Choose order products.</FormDescription>
-          <FormMessage />
-        </FormItem>
+                  {products.map((product) => (
+                    <ComboxItem
+                      key={product.id}
+                      onClick={() => handleAddProduct(product)}
+                    >
+                      <div className="flex items-center gao-2">
+                        {product.name}
+                      </div>
+                    </ComboxItem>
+                  ))}
+                </Combox>
+              </FormControl>
+              <FormDescription>Choose order products.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div>
+          {isLoading ? (
+            <LoadingButton>Create Order</LoadingButton>
+          ) : (
+            <Button>Create Order</Button>
+          )}
+        </div>
       </form>
+
+      <ProductsTable products={form.watch().products ?? []} form={form} />
     </Form>
   );
 }

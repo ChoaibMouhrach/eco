@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
 import { IUser, IUserUpdate, IUserUpdateError } from "@/interfaces/User";
 import { useUpdateUser } from "@/hooks";
 import {
@@ -23,6 +24,16 @@ import {
 import { ROLES } from "@/constants";
 import LoadingButton from "@/components/ui/LoadingButton";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const schema = z.object({
   firstName: z.string().min(3).max(60).optional(),
@@ -44,6 +55,8 @@ interface UpdateUserPageProps {
 }
 
 export default function DashboardUpdateUserPage({ slug }: UpdateUserPageProps) {
+  const [open, setOpen] = useState<boolean>(false);
+
   const form = useForm<IUserUpdate>({
     resolver: zodResolver(schema),
   });
@@ -66,6 +79,7 @@ export default function DashboardUpdateUserPage({ slug }: UpdateUserPageProps) {
       { id: slug.id, data },
       {
         onError: handleError,
+        onSettled: () => setOpen(false),
       }
     );
 
@@ -194,13 +208,33 @@ export default function DashboardUpdateUserPage({ slug }: UpdateUserPageProps) {
           )}
         />
 
-        <div>
-          {isLoading ? (
-            <LoadingButton>Update User</LoadingButton>
-          ) : (
-            <Button>Update User</Button>
-          )}
-        </div>
+        <Button type="button" className="w-fit" onClick={() => setOpen(true)}>
+          Update User
+        </Button>
+
+        <AlertDialog open={open}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently update this
+                user.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setOpen(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction asChild>
+                {isLoading ? (
+                  <LoadingButton>Updating</LoadingButton>
+                ) : (
+                  <Button onClick={form.handleSubmit(onSubmit)}>Update</Button>
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
     </Form>
   );
