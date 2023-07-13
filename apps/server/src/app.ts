@@ -17,7 +17,7 @@ const makeApp = (env: "prod" | "dev" | "test" = "dev") => {
   app.use(
     cors({
       credentials: true,
-      origin: [config.APP_CLIENT_URL],
+      origin: [config.APP_CLIENT_URL, "http://localhost:5173"],
     })
   );
 

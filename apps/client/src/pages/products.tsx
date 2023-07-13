@@ -29,7 +29,6 @@ export default function Products({ user, products }: ProductsProps) {
               },
             ]}
           />
-
           <ProductsPage products={products} />
         </div>
       </PublicLayout>
@@ -39,9 +38,40 @@ export default function Products({ user, products }: ProductsProps) {
 
 export const getServerSideProps = withUser(
   async (ctx: AuthGetServerSidePropsContext) => {
+    const params: Record<string, string> = {};
+
+    if (ctx.query.search) {
+      params.search =
+        ctx.query.search instanceof Array
+          ? ctx.query.search[0]
+          : ctx.query.search ?? "";
+    }
+
+    if (ctx.query.page) {
+      const page =
+        ctx.query.page instanceof Array
+          ? ctx.query.page[0]
+          : ctx.query.page ?? "";
+
+      if (page && /^\d+$/gi.test(page)) {
+        params.page = page;
+      }
+    }
+
+    if (ctx.query.price) {
+      const price =
+        ctx.query.price instanceof Array
+          ? ctx.query.price[0]
+          : ctx.query.price ?? "";
+
+      if (price && /^\d+-\d+$/gi.test(price)) {
+        params.price = price;
+      }
+    }
+
     const { data: products } = await api(
       {
-        url: "/products",
+        url: `/products?${new URLSearchParams(params).toString()}`,
       },
       ctx
     );

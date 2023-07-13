@@ -31,9 +31,12 @@ export default function Edit({ user, tag }: EditProps) {
 export const getServerSideProps = withAuth(
   async (ctx: AuthGetServerSidePropsContext) => {
     try {
-      const response = await api({
-        url: `/tags/${ctx.params?.id}`,
-      });
+      const response = await api(
+        {
+          url: `/tags/${ctx.params?.id}`,
+        },
+        ctx
+      );
 
       return {
         props: {

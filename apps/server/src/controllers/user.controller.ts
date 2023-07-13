@@ -7,54 +7,65 @@ import {
   StoreUserRequest,
   UpdateUserRequest,
 } from "@src/requests";
+import { Prisma } from "@prisma/client";
 
 const index = async (request: Request, response: Response) => {
-  const { search, page, sort } = validateQuery(request.query);
+  const query = validateQuery(request.query);
+
+  if (query.search) {
+    query.search = query.search.trim();
+  }
+
+  const where: Prisma.UserWhereInput | undefined = query.search
+    ? {
+        OR: [
+          {
+            firstName: {
+              contains: query.search,
+            },
+          },
+          {
+            lastName: {
+              contains: query.search,
+            },
+          },
+          {
+            email: {
+              contains: query.search,
+            },
+          },
+          {
+            phone: {
+              contains: query.search,
+            },
+          },
+          {
+            address: {
+              contains: query.search,
+            },
+          },
+        ],
+      }
+    : undefined;
 
   const users = await db.user.findMany({
-    where: {
-      OR: search
-        ? [
-            {
-              firstName: {
-                contains: search,
-              },
-            },
-            {
-              lastName: {
-                contains: search,
-              },
-            },
-            {
-              email: {
-                contains: search,
-              },
-            },
-            {
-              phone: {
-                contains: search,
-              },
-            },
-            {
-              address: {
-                contains: search,
-              },
-            },
-          ]
-        : undefined,
-    },
+    where,
     include: {
       role: true,
     },
-    orderBy: sort,
-    skip: page ? (page - 1) * 8 : 0,
+    orderBy: query.sort,
+    skip: query.page ? (query.page - 1) * 8 : 0,
     take: 8,
+  });
+
+  const count = await db.user.count({
+    where,
   });
 
   return response.json({
     data: users,
-    count: await db.user.count(),
-    page: page ?? 1,
+    count,
+    page: query.page ?? 1,
     limit: 8,
   });
 };

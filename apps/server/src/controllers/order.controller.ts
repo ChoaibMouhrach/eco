@@ -7,55 +7,58 @@ import {
   StoreOrderRequest,
   UpdateOrderRequest,
 } from "@src/requests";
+import { Prisma } from "@prisma/client";
 
 const index = async (request: Request, response: Response) => {
   const { search, sort, page } = validateQuery(request.query);
 
-  const orders = await db.order.findMany({
-    where: {
-      OR: [
-        {
-          user: {
-            OR: [
-              {
-                firstName: {
-                  contains: search,
-                },
+  const where: Prisma.OrderWhereInput = {
+    OR: [
+      {
+        user: {
+          OR: [
+            {
+              firstName: {
+                contains: search,
               },
-              {
-                lastName: {
-                  contains: search,
-                },
+            },
+            {
+              lastName: {
+                contains: search,
               },
-              {
-                email: {
-                  contains: search,
-                },
+            },
+            {
+              email: {
+                contains: search,
               },
-              {
-                address: {
-                  contains: search,
-                },
+            },
+            {
+              address: {
+                contains: search,
               },
-            ],
-          },
+            },
+          ],
         },
-        {
-          items: {
-            some: {
-              product: {
-                name: {
-                  contains: search,
-                },
-                description: {
-                  contains: search,
-                },
+      },
+      {
+        items: {
+          some: {
+            product: {
+              name: {
+                contains: search,
+              },
+              description: {
+                contains: search,
               },
             },
           },
         },
-      ],
-    },
+      },
+    ],
+  };
+
+  const orders = await db.order.findMany({
+    where,
     include: {
       user: true,
       items: {
@@ -69,9 +72,13 @@ const index = async (request: Request, response: Response) => {
     take: 8,
   });
 
+  const count = await db.order.count({
+    where,
+  });
+
   return response.json({
     data: orders,
-    count: await db.order.count(),
+    count,
     page: page ?? 1,
     limit: 8,
   });

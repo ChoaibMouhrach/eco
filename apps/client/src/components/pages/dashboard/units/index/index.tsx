@@ -1,7 +1,7 @@
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DataTable from "@/components/custom/data/table";
 import { useDeleteUnit, useGetUnits } from "@/hooks";
 import { IUnit } from "@/interfaces/Unit";
@@ -33,17 +33,15 @@ export default function DashboardUnitsPage() {
     pageIndex: 0,
   });
 
-  const { data: units, refetch } = useGetUnits({
-    page: pagination.pageIndex + 1,
-    search,
-  });
+  const { data: units, refetch } = useGetUnits(
+    {
+      page: pagination.pageIndex + 1,
+      search,
+    },
+    { cacheTime: 600000 }
+  );
 
   const { mutateAsync: deleteUnit } = useDeleteUnit();
-
-  // USEEFFECTS
-  useEffect(() => {
-    refetch();
-  }, [pagination, search]);
 
   // HANDLERS
   const handleEdit = (id: number) => {
@@ -53,13 +51,12 @@ export default function DashboardUnitsPage() {
   const handleDelete = (id: number) =>
     deleteUnit(id, { onSuccess: () => refetch() });
 
-  const changePage = debounce((value: string) => {
+  const changeSearch = debounce((value: string) => {
     setSearch(value);
-    refetch();
   });
 
   const handleSearch = (value: string) => {
-    changePage(value);
+    changeSearch(value);
   };
 
   return (

@@ -8,28 +8,28 @@ interface PriceFilterProp {
 }
 
 interface FilterProps {
-  prices: PriceFilterProp;
-  setPrices: React.Dispatch<React.SetStateAction<PriceFilterProp>>;
+  price: PriceFilterProp;
+  setPrice: React.Dispatch<React.SetStateAction<PriceFilterProp>>;
 }
 
-export function Filter({ prices, setPrices }: FilterProps) {
+export function Filter({ price, setPrice }: FilterProps) {
   return (
     <div className="grid grid-cols-2 gap-4">
       <Input
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setPrices({ ...prices, changed: true, min: Number(e.target.value) })
+          setPrice({ ...price, changed: true, min: Number(e.target.value) })
         }
         type="number"
         min="1"
-        value={prices.min}
+        value={price.min}
       />
       <Input
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setPrices({ ...prices, changed: true, max: Number(e.target.value) })
+          setPrice({ ...price, changed: true, max: Number(e.target.value) })
         }
         type="number"
         min="1"
-        value={prices.max}
+        value={price.max}
       />
     </div>
   );

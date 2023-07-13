@@ -54,13 +54,19 @@ export const getServerSideProps: GetServerSideProps = withAuth(
         ctx
       );
 
-      let categories: any = api({
-        url: `/categories`,
-      });
+      let categories: any = api(
+        {
+          url: `/categories`,
+        },
+        ctx
+      );
 
-      let units: any = api({
-        url: "/units",
-      });
+      let units: any = api(
+        {
+          url: "/units",
+        },
+        ctx
+      );
 
       const promises = await Promise.all([categories, units]);
 

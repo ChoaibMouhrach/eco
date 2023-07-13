@@ -36,6 +36,7 @@ import { IUnit } from "@/interfaces/Unit";
 import debounce from "@/lib/debounce";
 import { Textarea } from "@/components/ui/textarea";
 import LoadingButton from "@/components/ui/LoadingButton";
+import { useToast } from "@/components/ui/use-toast";
 
 interface UpdateProps {
   product: IProduct;
@@ -70,6 +71,7 @@ export default function DashboardUpdateProduct({
   units: defaultUnits,
   categories: defaultCategories,
 }: UpdateProps) {
+  const { toast } = useToast();
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [images, setImages] = useState<File[]>([]);
   const [units, setUnits] = useState<IUnit[]>(defaultUnits);
@@ -89,14 +91,18 @@ export default function DashboardUpdateProduct({
     {
       search: unitsSearch.value,
     },
-    { enabled: false }
+    {
+      enabled: false,
+    }
   );
 
   const { data: newCategories, refetch: refetchCategories } = useGetCategories(
     {
       search: categoriesSearch.value,
     },
-    { enabled: false }
+    {
+      enabled: false,
+    }
   );
 
   const form = useForm<IProductUpdate>({
@@ -118,18 +124,28 @@ export default function DashboardUpdateProduct({
 
   // handlers
   const onSubmit = (data: IProductUpdate) => {
-    updateProduct(
-      {
-        id: product.id,
-        data,
-      },
-      {
-        onError: handleError,
-        onSettled: () => {
-          setAlertOpen(false);
+    if (Object.values(data).filter((v) => v !== undefined).length) {
+      updateProduct(
+        {
+          id: product.id,
+          data,
         },
-      }
-    );
+        {
+          onError: handleError,
+          onSettled: () => {
+            setAlertOpen(false);
+          },
+        }
+      );
+      return;
+    }
+
+    setAlertOpen(false);
+    toast({
+      title: "Oops!",
+      description: "Change something first.",
+      variant: "destructive",
+    });
   };
 
   const updateUnit = debounce(() => refetchUnits());
@@ -149,11 +165,15 @@ export default function DashboardUpdateProduct({
   }, [categoriesSearch]);
 
   useEffect(() => {
-    if (newUnits) setUnits(newUnits.data.data ?? []);
+    if (newUnits) {
+      setUnits(newUnits.data.data ?? []);
+    }
   }, [newUnits]);
 
   useEffect(() => {
-    if (newCategories) setCategories(newCategories.data.data ?? []);
+    if (newCategories) {
+      setCategories(newCategories.data.data ?? []);
+    }
   }, [newCategories]);
 
   return (
@@ -241,11 +261,11 @@ export default function DashboardUpdateProduct({
                 >
                   {units.map((unit) => (
                     <ComboxItem
+                      key={unit.id}
                       onClick={() => {
                         form.setValue("unitId", unit.id);
                         setUnitsSearch({ value: unit.name, changed: true });
                       }}
-                      key={unit.id}
                     >
                       {unit.name}
                     </ComboxItem>
@@ -301,6 +321,7 @@ export default function DashboardUpdateProduct({
               <FormLabel>Product description</FormLabel>
               <FormControl>
                 <Textarea
+                  rows={10}
                   defaultValue={product.description}
                   {...field}
                   placeholder="Description"
@@ -360,6 +381,7 @@ export default function DashboardUpdateProduct({
           {images.length
             ? images.map((image) => (
                 <Image
+                  key={image.name}
                   src={URL.createObjectURL(image)}
                   alt=""
                   width="1920"
@@ -369,6 +391,7 @@ export default function DashboardUpdateProduct({
               ))
             : product.images.map((image) => (
                 <Image
+                  key={image.id}
                   src={`${process.env.API_STORAGE_URL}/${image.path}`}
                   alt=""
                   width="1920"

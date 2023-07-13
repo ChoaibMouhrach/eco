@@ -34,9 +34,12 @@ export const getServerSideProps: GetServerSideProps = withAuth(
     const id = ctx.params?.id;
 
     try {
-      const response = await api({
-        url: `/categories/${id}`,
-      });
+      const response = await api(
+        {
+          url: `/categories/${id}`,
+        },
+        ctx
+      );
 
       return {
         props: {

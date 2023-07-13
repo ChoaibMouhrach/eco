@@ -9,7 +9,7 @@ type Response = AxiosResponse<IPaginate<IUnit>>;
 
 export const useGetUnits = indexRequestHelper<Response>((query, options) => {
   return useQuery<Response>({
-    queryKey: ["units"],
+    queryKey: ["units", query],
     queryFn: () => {
       return api({
         url: `/units?${new URLSearchParams(query).toString()}`,

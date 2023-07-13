@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import db from "@src/config/db";
 import validateQuery from "@src/lib/query-validator.lib";
 import {
@@ -11,20 +12,26 @@ import { Request, Response } from "express";
 const index = async (request: Request, response: Response) => {
   const { search, sort, page } = validateQuery(request.query);
 
-  const categories = await db.category.findMany({
-    where: {
-      name: {
-        contains: search,
-      },
+  const where: Prisma.CategoryWhereInput = {
+    name: {
+      contains: search,
     },
+  };
+
+  const categories = await db.category.findMany({
+    where,
     orderBy: sort,
     skip: page ? (page - 1) * 8 : 0,
     take: 8,
   });
 
+  const count = await db.category.count({
+    where,
+  });
+
   return response.json({
     data: categories,
-    count: await db.category.count(),
+    count,
     page: page ?? 1,
     limit: 8,
   });

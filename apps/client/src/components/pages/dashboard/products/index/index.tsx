@@ -17,7 +17,7 @@ const columns: ColumnDef<IProduct>[] = [
     header: "Image",
     cell: ({ row }) => (
       <Image
-        className="rounded-md w-16 h-16"
+        className="rounded-md w-16 h-16 object-contain"
         width="100"
         height="100"
         src={`${process.env.API_STORAGE_URL}/${row.original.images[0]?.path}`}
@@ -88,18 +88,27 @@ export default function DashboardProductsPage() {
     });
   };
 
+  const handleView = (id: number) => {
+    window.open(`/products/${id}`, "_blank");
+  };
+
   return (
     <DataTable<IProduct>
+      // data
       columns={columns}
       data={products?.data.data ?? []}
       pageCount={
         products ? Math.ceil(products.data.count / products.data.limit) : 0
       }
+      // pagination
       pagination={pagination}
       setPagination={setPagination}
+      // handlers
       handleSearch={handleSearch}
+      // events
       onEdit={handleEdit}
       onDelete={handleDelete}
+      onView={handleView}
     />
   );
 }

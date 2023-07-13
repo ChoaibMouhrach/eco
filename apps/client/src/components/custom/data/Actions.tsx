@@ -22,12 +22,14 @@ import {
 import LoadingButton from "@/components/ui/LoadingButton";
 
 interface ActionsProps {
-  onEdit?: (id: number) => void | Promise<void>;
-  onDelete?: (id: number) => void | Promise<void>;
   id: number;
+
+  onEdit?: (id: number) => any | Promise<any>;
+  onDelete?: (id: number) => any | Promise<any>;
+  onView?: (id: number) => any | Promise<any>;
 }
 
-export function Actions({ onDelete, onEdit, id }: ActionsProps) {
+export function Actions({ onDelete, onView, onEdit, id }: ActionsProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -42,6 +44,9 @@ export function Actions({ onDelete, onEdit, id }: ActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          {onView && (
+            <DropdownMenuItem onClick={() => onView(id)}>View</DropdownMenuItem>
+          )}
           {onEdit && (
             <DropdownMenuItem onClick={() => onEdit(id)}>Edit</DropdownMenuItem>
           )}

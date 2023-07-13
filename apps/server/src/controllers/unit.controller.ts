@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import db from "@src/config/db";
 import validateQuery from "@src/lib/query-validator.lib";
 import {
@@ -11,21 +12,27 @@ import { Request, Response } from "express";
 const index = async (request: Request, response: Response) => {
   const { search, page, sort } = validateQuery(request.query);
 
-  const units = await db.unit.findMany({
-    where: {
-      name: {
-        contains: search,
-      },
+  const where: Prisma.UnitWhereInput = {
+    name: {
+      contains: search?.trim(),
     },
+  };
+
+  const units = await db.unit.findMany({
+    where,
     orderBy: sort,
     skip: page ? (page - 1) * 8 : 0,
     take: 8,
   });
 
+  const count = await db.unit.count({
+    where,
+  });
+
   return response.json({
     data: units,
     page: page ?? 1,
-    count: await db.unit.count(),
+    count,
     limit: 8,
   });
 };

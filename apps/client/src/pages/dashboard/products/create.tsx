@@ -14,7 +14,6 @@ interface CreateProps {
 }
 
 export default function Create({ user, units, categories }: CreateProps) {
-  console.log({ units, categories });
   return (
     <>
       <Head>
@@ -33,13 +32,19 @@ export default function Create({ user, units, categories }: CreateProps) {
 
 export const getServerSideProps = withAuth(
   async (ctx: AuthGetServerSidePropsContext) => {
-    const categories = await api({
-      url: "/categories",
-    });
+    const categories = await api(
+      {
+        url: "/categories",
+      },
+      ctx
+    );
 
-    const units = await api({
-      url: "/units",
-    });
+    const units = await api(
+      {
+        url: "/units",
+      },
+      ctx
+    );
 
     return {
       props: {

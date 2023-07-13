@@ -1,7 +1,7 @@
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DataTable from "@/components/custom/data/table";
 import { useDeleteTag, useGetTags } from "@/hooks";
 import { ITag } from "@/interfaces/Tag";
@@ -39,11 +39,6 @@ export default function DashboardTagsPage() {
   });
 
   const { mutateAsync: deleteTag } = useDeleteTag();
-
-  // useEffects
-  useEffect(() => {
-    refetch();
-  }, [pagination, search]);
 
   // handlers
   const changeSearch = debounce((value: string) => {

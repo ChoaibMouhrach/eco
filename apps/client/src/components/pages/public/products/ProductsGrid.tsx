@@ -14,6 +14,7 @@ interface ProductsGridProps {
   products: IPaginate<IProduct>;
   pagination: PaginationProps;
   setPagination: React.Dispatch<React.SetStateAction<PaginationProps>>;
+  search: { value: string; changed: boolean };
   setSearch: React.Dispatch<
     React.SetStateAction<{ value: string; changed: boolean }>
   >;
@@ -24,6 +25,7 @@ export function ProductsGrid({
   pagination,
   setPagination,
   setSearch,
+  search,
 }: ProductsGridProps) {
   return (
     <div className="flex flex-col gap-6">
@@ -31,6 +33,7 @@ export function ProductsGrid({
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           setSearch({ value: e.target.value, changed: true })
         }
+        value={search.value}
         placeholder="Search..."
       />
       <div className="grid lg:grid-cols-4 gap-4">

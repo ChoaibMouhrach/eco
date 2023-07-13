@@ -46,9 +46,12 @@ export const getServerSideProps = withUser(
     const id = ctx.params?.id;
 
     try {
-      const { data: product } = await api({
-        url: `/products/${id}`,
-      });
+      const { data: product } = await api(
+        {
+          url: `/products/${id}`,
+        },
+        ctx
+      );
 
       return {
         props: {

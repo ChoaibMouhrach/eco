@@ -15,25 +15,29 @@ import { unlinkSync } from "fs";
 import { join } from "path";
 
 const index = async (request: Request, response: Response) => {
-  const { search, sort, price, page } = validateQuery(request.query);
+  const query = validateQuery(request.query);
+
+  if (query.search) {
+    query.search = query.search.trim();
+  }
 
   const where: Prisma.ProductWhereInput = {
-    OR: search
+    OR: query.search
       ? [
           {
             name: {
-              contains: search,
+              contains: query.search,
             },
           },
           {
             description: {
-              contains: search,
+              contains: query.search,
             },
           },
           {
             category: {
               name: {
-                contains: search,
+                contains: query.search,
               },
             },
           },
@@ -41,7 +45,7 @@ const index = async (request: Request, response: Response) => {
             tags: {
               some: {
                 name: {
-                  contains: search,
+                  contains: query.search,
                 },
               },
             },
@@ -49,16 +53,16 @@ const index = async (request: Request, response: Response) => {
           {
             unit: {
               name: {
-                contains: search,
+                contains: query.search,
               },
             },
           },
         ]
       : undefined,
-    price: price
+    price: query.price
       ? {
-          gte: price[0],
-          lte: price[1],
+          gte: query.price[0],
+          lte: query.price[1],
         }
       : undefined,
   };
@@ -71,15 +75,15 @@ const index = async (request: Request, response: Response) => {
       category: true,
       unit: true,
     },
-    orderBy: sort,
-    skip: page ? (page - 1) * 8 : 0,
+    orderBy: query.sort,
+    skip: query.page ? (query.page - 1) * 8 : 0,
     take: 8,
   });
 
   return response.json({
     data: products,
     count: await db.product.count({ where }),
-    page: page ?? 1,
+    page: query.page ?? 1,
     limit: 8,
   });
 };
@@ -132,7 +136,7 @@ const store = async (request: StoreProductRequest, response: Response) => {
         })),
       },
       tags: {
-        connectOrCreate: tags.map((tag: string) => ({
+        connectOrCreate: tags.map((tag) => ({
           where: {
             name: tag,
           },
@@ -182,17 +186,19 @@ const update = async (request: UpdateProductRequest, response: Response) => {
       quantity,
       unitId,
       categoryId,
-      tags: {
-        set: [],
-        connectOrCreate: tags?.map((tag) => ({
-          where: {
-            name: tag,
-          },
-          create: {
-            name: tag,
-          },
-        })),
-      },
+      tags: tags
+        ? {
+            set: [],
+            connectOrCreate: tags?.map((tag) => ({
+              where: {
+                name: tag,
+              },
+              create: {
+                name: tag,
+              },
+            })),
+          }
+        : undefined,
       images:
         request.files && request.files instanceof Array && request.files.length
           ? {

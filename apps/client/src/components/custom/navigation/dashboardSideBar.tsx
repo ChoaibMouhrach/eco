@@ -76,7 +76,7 @@ export default function DashboardSideBar() {
             </Link>
           </li>
         ) : (
-          <SideBarDropDownItem link={link} />
+          <SideBarDropDownItem key={link.name} link={link} />
         )
       )}
     </ul>
