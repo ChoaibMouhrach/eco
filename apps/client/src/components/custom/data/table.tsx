@@ -6,7 +6,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -22,13 +22,13 @@ import { Actions } from "./Actions";
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
-  pagination: PaginationState;
-  setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
   pageCount: number;
+
+  onSearchChange?: (value: string) => any;
+
   onPaginationChange?: (pagination: PaginationState) => Promise<void> | void;
-  onEdit?: (id: number) => void | Promise<void>;
-  onDelete?: (id: number) => any | Promise<any>;
-  handleSearch?: (value: string) => any | Promise<any>;
+  onEdit?: (id: number) => any;
+  onDelete?: (id: number) => any;
 }
 
 export default function DataTable<TData>({
@@ -37,11 +37,21 @@ export default function DataTable<TData>({
   onDelete,
   columns,
   data,
-  pagination,
-  setPagination,
   pageCount,
-  handleSearch,
+  onSearchChange,
 }: DataTableProps<TData>) {
+  const [paginationChanged, setPaginationChanged] = useState(false);
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 8,
+  });
+
+  const [search, setSearch] = useState({
+    value: "",
+    changed: false,
+  });
+
   const table = useReactTable({
     columns,
     data,
@@ -52,24 +62,41 @@ export default function DataTable<TData>({
 
     pageCount,
 
-    onPaginationChange: setPagination,
     manualPagination: true,
+    onPaginationChange: (update: any) => {
+      const newPagination = update(pagination);
+      setPagination(newPagination);
+      setPaginationChanged(true);
+    },
 
     getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
   });
 
+  // useEffects
   useEffect(() => {
-    if (onPaginationChange) onPaginationChange(pagination);
-  }, [pagination]);
+    if (paginationChanged && onPaginationChange) {
+      onPaginationChange(pagination);
+    }
+  }, [paginationChanged, pagination]);
+
+  useEffect(() => {
+    if (search.changed && onSearchChange) {
+      onSearchChange(search.value);
+    }
+  }, [search]);
 
   return (
     <div className="flex flex-col gap-4">
-      {handleSearch && (
+      {onSearchChange && (
         <Input
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            handleSearch(e.target.value)
-          }
+          value={search.value}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            setSearch({
+              value: e.target.value,
+              changed: true,
+            });
+          }}
           placeholder="Search..."
         />
       )}

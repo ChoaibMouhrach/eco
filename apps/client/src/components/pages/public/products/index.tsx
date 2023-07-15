@@ -12,6 +12,7 @@ interface ProductsPageProps {
   products: IPaginate<IProduct>;
 }
 
+// handles price query param
 const handlePrice = (query: ParsedUrlQuery) => {
   const price: Record<"min" | "max", number> = {
     min: 0,
@@ -32,12 +33,14 @@ const handlePrice = (query: ParsedUrlQuery) => {
   return price;
 };
 
+// handle query search
 const handleSearch = (query: ParsedUrlQuery) => {
   return query?.search instanceof Array
     ? query?.search[0]
     : query?.search ?? "";
 };
 
+// handle query page
 const handlePage = (query: ParsedUrlQuery) => {
   const page = 1;
 

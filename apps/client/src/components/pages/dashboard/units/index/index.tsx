@@ -1,10 +1,11 @@
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DataTable from "@/components/custom/data/table";
-import { useDeleteUnit, useGetUnits } from "@/hooks";
 import { IUnit } from "@/interfaces/Unit";
+import { IPaginate } from "@/interfaces/Common";
+import { useDeleteUnit, useGetUnits } from "@/hooks";
 import debounce from "@/lib/debounce";
 
 const columns: ColumnDef<IUnit>[] = [
@@ -23,52 +24,92 @@ const columns: ColumnDef<IUnit>[] = [
   },
 ];
 
-export default function DashboardUnitsPage() {
-  // HOOKS
-  const router = useRouter();
-  const [search, setSearch] = useState<string>("");
+interface DashboardUnitsPageProps {
+  defaultUnits: IPaginate<IUnit>;
+}
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageSize: 8,
-    pageIndex: 0,
+export default function DashboardUnitsPage({
+  defaultUnits,
+}: DashboardUnitsPageProps) {
+  const router = useRouter();
+  const [units, setUnits] = useState<IPaginate<IUnit>>(defaultUnits);
+
+  const [page, setPage] = useState({
+    value: 1,
+    changed: false,
   });
 
-  const { data: units, refetch } = useGetUnits(
-    {
-      page: pagination.pageIndex + 1,
-      search,
-    },
-    { cacheTime: 600000 }
-  );
+  const [search, setSearch] = useState({
+    value: "",
+    changed: false,
+  });
 
   const { mutateAsync: deleteUnit } = useDeleteUnit();
 
-  // HANDLERS
-  const handleEdit = (id: number) => {
+  const { data: newUnits, refetch: refetchUnits } = useGetUnits(
+    { page: page.value, search: search.value },
+    { enabled: false }
+  );
+
+  const changeSearch = useCallback(
+    debounce(() => refetchUnits()),
+    []
+  );
+
+  const onPaginationChange = (pagination: PaginationState) => {
+    setPage({
+      value: pagination.pageIndex + 1,
+      changed: true,
+    });
+  };
+
+  const onSearchChange = (value: string) => {
+    setSearch({
+      value,
+      changed: true,
+    });
+  };
+
+  const onEdit = (id: number) => {
     router.push(`/dashboard/units/edit/${id}`);
   };
 
-  const handleDelete = (id: number) =>
-    deleteUnit(id, { onSuccess: () => refetch() });
+  const onDelete = (id: number) =>
+    deleteUnit(id, {
+      onSuccess: () => {
+        refetchUnits();
+      },
+    });
 
-  const changeSearch = debounce((value: string) => {
-    setSearch(value);
-  });
+  useEffect(() => {
+    if (newUnits) {
+      setUnits(newUnits.data);
+    }
+  }, [newUnits]);
 
-  const handleSearch = (value: string) => {
-    changeSearch(value);
-  };
+  useEffect(() => {
+    if (search.changed) {
+      changeSearch();
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (page.changed) {
+      refetchUnits();
+    }
+  }, [page]);
 
   return (
     <DataTable<IUnit>
-      handleSearch={handleSearch}
-      pageCount={units ? Math.ceil(units.data.count / units.data.limit) : 0}
+      // data
       columns={columns}
-      data={units?.data.data ?? []}
-      pagination={pagination}
-      setPagination={setPagination}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
+      data={units.data}
+      pageCount={Math.ceil(units.count / units.limit)}
+      // handlers
+      onPaginationChange={onPaginationChange}
+      onSearchChange={onSearchChange}
+      onEdit={onEdit}
+      onDelete={onDelete}
     />
   );
 }

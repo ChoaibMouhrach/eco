@@ -1,12 +1,15 @@
+// imports
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ICategory } from "@/interfaces/Category";
 import { useDeleteCategory, useGetCategories } from "@/hooks";
 import debounce from "@/lib/debounce";
 import DataTable from "@/components/custom/data/table";
+import { IPaginate } from "@/interfaces/Common";
 
+// table columns
 const columns: ColumnDef<ICategory>[] = [
   {
     header: "#",
@@ -19,62 +22,105 @@ const columns: ColumnDef<ICategory>[] = [
   {
     header: "Created At",
     accessorKey: "createdAt",
+    // x minutes ago
     cell: ({ row }) => moment(row.original.createdAt).fromNow(),
   },
 ];
 
-export default function DashboardCategoriesPage() {
-  // hooks
+interface DashboardCategoriesPageProps {
+  defaultCategories: IPaginate<ICategory>;
+}
+
+export default function DashboardCategoriesPage({
+  defaultCategories,
+}: DashboardCategoriesPageProps) {
   const router = useRouter();
-  const [search, setSearch] = useState<string>("");
+  const [categories, setCategories] =
+    useState<IPaginate<ICategory>>(defaultCategories);
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageSize: 8,
-    pageIndex: 0,
+  // query params
+  const [search, setSearch] = useState({
+    value: "",
+    changed: false,
   });
 
-  const { data: categories, refetch } = useGetCategories({
-    search,
-    page: pagination.pageIndex + 1,
+  const [page, setPage] = useState({
+    value: 1,
+    changed: false,
   });
 
-  const { mutateAsync: deleteCategory } = useDeleteCategory();
+  const { data: newCategories, refetch: refetchCategories } = useGetCategories(
+    {
+      page: page.value,
+      search: search.value,
+      // disabled on component mount
+    },
+    { enabled: false }
+  );
 
-  // useeffects
-  useEffect(() => {
-    refetch();
-  }, [pagination, search]);
+  const { mutate: deleteCategory } = useDeleteCategory();
 
   // handlers
+  const changeSearch = useCallback(
+    debounce(() => refetchCategories()),
+    []
+  );
+
+  const handlePage = (pagination: PaginationState) => {
+    setPage({
+      value: pagination.pageIndex + 1,
+      changed: true,
+    });
+  };
+
+  const handleSearch = (value: string) => {
+    setSearch({
+      value,
+      changed: true,
+    });
+  };
+
+  const handleDelete = (id: number) =>
+    deleteCategory(id, {
+      onSuccess: () => {
+        refetchCategories();
+      },
+    });
+
   const handleEdit = (id: number) => {
     router.push(`/dashboard/categories/edit/${id}`);
   };
 
-  const handleDelete = (id: number) =>
-    deleteCategory(id, { onSuccess: () => refetch() });
+  // useEffects
+  useEffect(() => {
+    if (newCategories) {
+      setCategories(newCategories.data);
+    }
+  }, [newCategories]);
 
-  const changeSearch = debounce((value: string) => {
-    setSearch(value);
-  });
+  useEffect(() => {
+    if (page.changed) {
+      refetchCategories();
+    }
+  }, [page]);
 
-  const handleSearch = (value: string) => {
-    changeSearch(value);
-  };
+  useEffect(() => {
+    if (search.changed) {
+      changeSearch();
+    }
+  }, [search]);
 
   return (
     <DataTable<ICategory>
-      pageCount={
-        categories
-          ? Math.ceil(categories.data.count / categories.data.limit)
-          : 0
-      }
+      // data
+      data={categories.data}
       columns={columns}
-      data={categories?.data.data ?? []}
-      pagination={pagination}
-      setPagination={setPagination}
-      handleSearch={handleSearch}
-      onEdit={handleEdit}
+      pageCount={Math.ceil(categories.count / categories.limit)}
+      // handlers
+      onPaginationChange={handlePage}
+      onSearchChange={handleSearch}
       onDelete={handleDelete}
+      onEdit={handleEdit}
     />
   );
 }

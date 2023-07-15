@@ -1,11 +1,12 @@
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DataTable from "@/components/custom/data/table";
 import { useDeleteUser, useGetUsers } from "@/hooks";
 import { IUser } from "@/interfaces/User";
 import debounce from "@/lib/debounce";
+import { IPaginate } from "@/interfaces/Common";
 
 const columns: ColumnDef<IUser>[] = [
   {
@@ -36,52 +37,91 @@ const columns: ColumnDef<IUser>[] = [
   },
 ];
 
-export default function DashboardUsersPage() {
+interface DashboardUsersPageProps {
+  defaultUsers: IPaginate<IUser>;
+}
+
+export default function DashboardUsersPage({
+  defaultUsers,
+}: DashboardUsersPageProps) {
   const router = useRouter();
-  const [search, setSearch] = useState<string>("");
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 8,
+  const [users, setUsers] = useState<IPaginate<IUser>>(defaultUsers);
+
+  const [page, setPage] = useState({
+    value: 1,
+    changed: false,
   });
 
-  const { data: users, refetch } = useGetUsers({
-    search,
-    page: pagination.pageIndex + 1,
+  const [search, setSearch] = useState({
+    value: "",
+    changed: false,
   });
 
   const { mutateAsync: deleteUser } = useDeleteUser();
 
-  // useeffect
-  useEffect(() => {
-    refetch();
-  }, [pagination, search]);
+  const { data: newUsers, refetch: refetchUsers } = useGetUsers(
+    { page: page.value, search: search.value },
+    { enabled: false }
+  );
 
-  // hooks
-  const changeSearch = debounce((value: string) => {
-    setSearch(value);
-  });
+  const changeSearch = useCallback(
+    debounce(() => refetchUsers()),
+    []
+  );
 
-  const handleSearch = (value: string) => {
-    changeSearch(value);
+  const onPaginationChange = (pagination: PaginationState) => {
+    setPage({
+      value: pagination.pageIndex + 1,
+      changed: true,
+    });
   };
 
-  const handleUpdate = (id: number) => {
+  const onSearchChange = (value: string) => {
+    setSearch({
+      value,
+      changed: true,
+    });
+  };
+
+  const onEdit = (id: number) => {
     router.push(`/dashboard/users/edit/${id}`);
   };
 
-  const handleDelete = (id: number) =>
-    deleteUser(id, { onSuccess: () => refetch() });
+  const onDelete = (id: number) =>
+    deleteUser(id, {
+      onSuccess: () => {
+        refetchUsers();
+      },
+    });
+
+  useEffect(() => {
+    if (newUsers) {
+      setUsers(newUsers.data);
+    }
+  }, [newUsers]);
+
+  useEffect(() => {
+    if (page.changed) {
+      refetchUsers();
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (search.changed) {
+      changeSearch();
+    }
+  }, [search]);
 
   return (
     <DataTable<IUser>
       columns={columns}
-      data={users?.data.data ?? []}
-      pageCount={users ? Math.ceil(users.data.count / users.data.limit) : 0}
-      pagination={pagination}
-      setPagination={setPagination}
-      handleSearch={handleSearch}
-      onEdit={handleUpdate}
-      onDelete={handleDelete}
+      data={users.data}
+      pageCount={Math.ceil(users.count / users.limit)}
+      // handlers
+      onPaginationChange={onPaginationChange}
+      onSearchChange={onSearchChange}
+      onEdit={onEdit}
+      onDelete={onDelete}
     />
   );
 }

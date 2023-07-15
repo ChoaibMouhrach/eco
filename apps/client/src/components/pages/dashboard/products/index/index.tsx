@@ -1,114 +1,94 @@
-import { ColumnDef, PaginationState } from "@tanstack/react-table";
-import Image from "next/image";
-import moment from "moment";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { PaginationState } from "@tanstack/react-table";
+import { useQuery } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 import { IProduct } from "@/interfaces/Product";
-import { useDeleteProduct, useGetProducts } from "@/hooks";
+import { ProductsTable } from "./Table";
+import { IPaginate } from "@/interfaces/Common";
+import api from "@/api";
 import debounce from "@/lib/debounce";
-import DataTable from "@/components/custom/data/table";
 
-const columns: ColumnDef<IProduct>[] = [
-  {
-    header: "#",
-    accessorKey: "id",
-  },
-  {
-    header: "Image",
-    cell: ({ row }) => (
-      <Image
-        className="rounded-md w-16 h-16 object-contain"
-        width="100"
-        height="100"
-        src={`${process.env.API_STORAGE_URL}/${row.original.images[0]?.path}`}
-        alt=""
-      />
-    ),
-  },
-  {
-    header: "Name",
-    cell: ({ row }) => <span>{row.original.name.slice(0, 20)}...</span>,
-  },
-  {
-    header: "Price",
-    accessorKey: "price",
-  },
-  {
-    header: "Quantity",
-    cell: ({ row }) => (
-      <span>
-        {row.original.quantity} ({row.original.unit.name})
-      </span>
-    ),
-  },
-  {
-    header: "Created At",
-    accessorKey: "createdAt",
-    cell: ({ row }) => moment(row.original.createdAt).fromNow(),
-  },
-];
+interface DashboardProductsPageProps {
+  defaultProducts: IPaginate<IProduct>;
+}
 
-export default function DashboardProductsPage() {
-  const router = useRouter();
-  const [search, setSearch] = useState<string>("");
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageSize: 8,
-    pageIndex: 0,
+export default function DashboardProductsPage({
+  defaultProducts,
+}: DashboardProductsPageProps) {
+  const [products, setProducts] =
+    useState<IPaginate<IProduct>>(defaultProducts);
+
+  const [page, setPage] = useState({
+    value: 0,
+    changed: false,
   });
 
-  const { data: products, refetch } = useGetProducts({
-    search,
-    page: pagination.pageIndex + 1,
+  const [search, setSearch] = useState({
+    value: "",
+    changed: false,
   });
 
-  const { mutateAsync: deleteProduct } = useDeleteProduct();
-
-  useEffect(() => {
-    refetch();
-  }, [pagination, search]);
-
-  // handlers
-  const changeSearch = debounce((value: string) => {
-    setSearch(value);
+  const { data: newProducts, refetch: refetchProducts } = useQuery<
+    AxiosResponse<IPaginate<IProduct>>
+  >({
+    queryKey: ["products"],
+    queryFn: ({ queryKey }) => {
+      console.log({ queryKey });
+      return api({
+        url: `/products?${new URLSearchParams({
+          search: search.value,
+          page: String(page.value),
+        }).toString()}`,
+      });
+    },
+    enabled: false,
+    keepPreviousData: true,
   });
 
-  const handleSearch = (value: string) => {
-    changeSearch(value);
-  };
+  const changeSearch = useCallback(
+    debounce(() => {
+      refetchProducts();
+    }),
+    []
+  );
 
-  const handleEdit = (id: number) => {
-    router.push(`/dashboard/products/edit/${id}`);
-  };
-
-  const handleDelete = (id: number) => {
-    return deleteProduct(id, {
-      onSuccess: () => {
-        refetch();
-      },
+  const onPaginationChange = async (pagination: PaginationState) => {
+    setPage({
+      value: pagination.pageIndex + 1,
+      changed: true,
     });
   };
 
-  const handleView = (id: number) => {
-    window.open(`/products/${id}`, "_blank");
+  const onSearchChange = (value: string) => {
+    setSearch({
+      value,
+      changed: true,
+    });
   };
 
+  useEffect(() => {
+    if (newProducts) {
+      setProducts(newProducts.data);
+    }
+  }, [newProducts]);
+
+  useEffect(() => {
+    if (search.changed) {
+      changeSearch();
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (page.changed) {
+      refetchProducts();
+    }
+  }, [page]);
+
   return (
-    <DataTable<IProduct>
-      // data
-      columns={columns}
-      data={products?.data.data ?? []}
-      pageCount={
-        products ? Math.ceil(products.data.count / products.data.limit) : 0
-      }
-      // pagination
-      pagination={pagination}
-      setPagination={setPagination}
-      // handlers
-      handleSearch={handleSearch}
-      // events
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-      onView={handleView}
+    <ProductsTable
+      onPaginationChange={onPaginationChange}
+      onSearchChange={onSearchChange}
+      products={products}
     />
   );
 }

@@ -7,10 +7,14 @@ import indexRequestHelper from "@/lib/hookHelper";
 
 type Response = AxiosResponse<IPaginate<ITag>>;
 
-export const useGetTags = indexRequestHelper<Response>((query) => {
-  return useQuery<Response>(["tags"], () => {
-    return api({
-      url: `/tags?${new URLSearchParams(query).toString()}`,
-    });
+export const useGetTags = indexRequestHelper<Response>((query, options) => {
+  return useQuery<Response>({
+    queryKey: ["tags"],
+    queryFn: () => {
+      return api({
+        url: `/tags?${new URLSearchParams(query).toString()}`,
+      });
+    },
+    ...options,
   });
 });

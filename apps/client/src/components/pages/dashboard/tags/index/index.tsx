@@ -1,11 +1,12 @@
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DataTable from "@/components/custom/data/table";
 import { useDeleteTag, useGetTags } from "@/hooks";
 import { ITag } from "@/interfaces/Tag";
 import debounce from "@/lib/debounce";
+import { IPaginate } from "@/interfaces/Common";
 
 const columns: ColumnDef<ITag>[] = [
   {
@@ -23,49 +24,90 @@ const columns: ColumnDef<ITag>[] = [
   },
 ];
 
-export default function DashboardTagsPage() {
-  // hooks
+interface DashboardTagsPageProps {
+  defaultTags: IPaginate<ITag>;
+}
+
+export default function DashboardTagsPage({
+  defaultTags,
+}: DashboardTagsPageProps) {
+  const [tags, setTags] = useState<IPaginate<ITag>>(defaultTags);
   const router = useRouter();
-  const [search, setSearch] = useState<string>("");
-
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageSize: 8,
-    pageIndex: 0,
+  const [page, setPage] = useState({
+    value: 1,
+    changed: false,
   });
 
-  const { data: tags, refetch } = useGetTags({
-    search,
-    page: pagination.pageIndex + 1,
+  const [search, setSearch] = useState({
+    value: "",
+    changed: false,
   });
+
+  const { data: newTags, refetch: refetchTags } = useGetTags(
+    { page: page.value, search: search.value },
+    { enabled: false }
+  );
 
   const { mutateAsync: deleteTag } = useDeleteTag();
 
-  // handlers
-  const changeSearch = debounce((value: string) => {
-    setSearch(value);
-  });
+  const changeTags = useCallback(
+    debounce(() => refetchTags()),
+    []
+  );
 
-  const handleSearch = (value: string) => {
-    changeSearch(value);
+  const onPaginationChange = (pagination: PaginationState) => {
+    setPage({
+      value: pagination.pageIndex + 1,
+      changed: true,
+    });
   };
 
-  const handleEdit = (id: number) => {
+  const onSearchChange = (value: string) => {
+    setSearch({
+      value,
+      changed: true,
+    });
+  };
+
+  const onDelete = (id: number) =>
+    deleteTag(id, {
+      onSuccess: () => {
+        refetchTags();
+      },
+    });
+
+  const onEdit = (id: number) => {
     router.push(`/dashboard/tags/edit/${id}`);
   };
 
-  const handleDelete = (id: number) =>
-    deleteTag(id, { onSuccess: () => refetch() });
+  useEffect(() => {
+    if (newTags) {
+      setTags(newTags.data);
+    }
+  }, [newTags]);
+
+  useEffect(() => {
+    if (page.changed) {
+      refetchTags();
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (search.changed) {
+      changeTags();
+    }
+  }, [search]);
 
   return (
     <DataTable<ITag>
       columns={columns}
-      data={tags?.data.data ?? []}
-      pageCount={tags ? Math.ceil(tags.data.count / tags.data.limit) : 0}
-      handleSearch={handleSearch}
-      onDelete={handleDelete}
-      onEdit={handleEdit}
-      pagination={pagination}
-      setPagination={setPagination}
+      data={tags.data}
+      pageCount={Math.ceil(tags.count / tags.limit)}
+      // handlers
+      onPaginationChange={onPaginationChange}
+      onSearchChange={onSearchChange}
+      onDelete={onDelete}
+      onEdit={onEdit}
     />
   );
 }
