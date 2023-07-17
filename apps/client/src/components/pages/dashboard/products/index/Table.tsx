@@ -1,11 +1,10 @@
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import Image from "next/image";
-import { MutateOptions } from "@tanstack/react-query";
 import { BiDotsVertical } from "react-icons/bi";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import DataTable from "@/components/custom/data/table";
 import { IProduct } from "@/interfaces/Product";
-import { IPaginate } from "@/interfaces/Common";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,34 +24,71 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useDeleteProduct } from "@/hooks";
+import { useDeleteProduct, useUpdateProduct } from "@/hooks";
+import LoadingButton from "@/components/ui/LoadingButton";
 
-interface ProductsTableProps {
-  products: IPaginate<IProduct>;
-  onPaginationChange?: (pagination: PaginationState) => void;
-  onSearchChange?: (value: string) => void;
+interface ActionsProps {
+  refetchProducts: () => any;
+  product: IProduct;
 }
 
-function Actions({ onDelete, id }: ActionsProps) {
-  const [open, setOpen] = useState(false);
+function Actions({ refetchProducts, product }: ActionsProps) {
+  const router = useRouter();
+
+  // state
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+  const [exclusiveAlertOpen, setExclusiveAlertOpen] = useState(false);
+
+  const { mutate: deleteProduct, isLoading: isDeletingProductLoading } =
+    useDeleteProduct();
+
+  const { mutate: makeExclusive, isLoading: isMakingProductExclusiveLoading } =
+    useUpdateProduct();
+
+  const handleExclusive = () =>
+    makeExclusive(
+      {
+        id: product.id,
+        data: {
+          isExclusive: !product.isExclusive,
+        },
+      },
+      {
+        onSuccess: () => refetchProducts(),
+        onSettled: () => setExclusiveAlertOpen(false),
+      }
+    );
+
+  const handleDelete = () =>
+    deleteProduct(product.id, { onSuccess: () => refetchProducts() });
+
+  const handleEdit = () => {
+    router.push(`/dashboard/products/edit/${product.id}`);
+  };
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="px-2">
+          <Button variant="secondary" className="px-2">
             <BiDotsVertical />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setExclusiveAlertOpen(true)}>
+            Toggle exclusive
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/products/${product.id}`)}
+          >
+            View as client
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              setOpen(true);
+              setDeleteAlertOpen(true);
             }}
           >
             Delete
@@ -60,31 +96,54 @@ function Actions({ onDelete, id }: ActionsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog open={open}>
+      {/* Exclusive */}
+      <AlertDialog open={exclusiveAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              This action cannot be undone. This will permanently make this
+              product {product.isExclusive ? "non exclusive" : "exclusive"}.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setOpen(false)}>
+            <AlertDialogCancel onClick={() => setExclusiveAlertOpen(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={async () => {
-                try {
-                  await onDelete(id, {
-                    onSettled: () => setOpen(false),
-                  });
-                } catch (err) {
-                  // do nothing
-                }
-              }}
-            >
-              Continue
+            <AlertDialogAction asChild>
+              {isMakingProductExclusiveLoading ? (
+                <LoadingButton>Making the product exclusive</LoadingButton>
+              ) : (
+                <Button onClick={handleExclusive}>
+                  Make product{" "}
+                  {product.isExclusive ? "non exclusive" : "exclusive"}
+                </Button>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* delete product */}
+      <AlertDialog open={deleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this
+              product.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteAlertOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              {isDeletingProductLoading ? (
+                <LoadingButton>Deleting product</LoadingButton>
+              ) : (
+                <Button onClick={handleDelete}>Delete Product</Button>
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -93,17 +152,21 @@ function Actions({ onDelete, id }: ActionsProps) {
   );
 }
 
+interface ProductsTableProps {
+  handlePagination: (pagination: PaginationState) => any;
+  handleSearch: (value: string) => any;
+  products: IProduct[];
+  pageCount: number;
+  refetchProducts: () => any;
+}
+
 export function ProductsTable({
+  handlePagination,
+  refetchProducts,
   products,
-  onSearchChange,
-  onPaginationChange,
+  handleSearch,
+  pageCount,
 }: ProductsTableProps) {
-  const { mutateAsync: deleteProduct } = useDeleteProduct();
-
-  const onDelete = (id: number, options?: MutateOptions<any, any, any>) => {
-    deleteProduct(id, options);
-  };
-
   const columns: ColumnDef<IProduct>[] = [
     {
       header: "#",
@@ -135,9 +198,15 @@ export function ProductsTable({
       accessorKey: "quantity",
     },
     {
+      header: "Exclusive",
+      cell: ({ row }) => (row.original.isExclusive ? "True" : "False"),
+    },
+    {
       header: "Actions",
       // eslint-disable-next-line react/no-unstable-nested-components
-      cell: ({ row }) => <Actions onDelete={onDelete} id={row.original.id} />,
+      cell: ({ row }) => (
+        <Actions refetchProducts={refetchProducts} product={row.original} />
+      ),
     },
   ];
 
@@ -145,16 +214,11 @@ export function ProductsTable({
     <DataTable<IProduct>
       // data
       columns={columns}
-      data={products.data}
-      pageCount={Math.ceil(products.count / products.limit)}
+      data={products}
+      pageCount={pageCount}
       // events
-      onSearchChange={onSearchChange}
-      onPaginationChange={onPaginationChange}
+      onSearchChange={handleSearch}
+      onPaginationChange={handlePagination}
     />
   );
-}
-
-interface ActionsProps {
-  onDelete: (id: number, options?: MutateOptions<any, any, any>) => any;
-  id: number;
 }

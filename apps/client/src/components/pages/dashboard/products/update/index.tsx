@@ -49,7 +49,7 @@ const schema = z.object({
   description: z.string().min(200).max(2000).optional(),
   price: z
     .string()
-    .regex(/^\d+$/gi)
+    .regex(/^[+-]?([0-9]*[.])?[0-9]+$/gi)
     .pipe(z.string().transform((v) => Number(v)))
     .optional(),
   quantity: z
@@ -390,14 +390,15 @@ export default function DashboardUpdateProduct({
                 />
               ))
             : product.images.map((image) => (
-                <Image
-                  key={image.id}
-                  src={`${process.env.API_STORAGE_URL}/${image.path}`}
-                  alt=""
-                  width="1920"
-                  height="1080"
-                  className="h-32 w-32 object-cover"
-                />
+                <div className="bg-gray-50 p-4 rounded-md" key={image.id}>
+                  <Image
+                    src={`${process.env.API_STORAGE_URL}/${image.path}`}
+                    alt=""
+                    width="150"
+                    height="150"
+                    className="w-32 h-32 object-contain"
+                  />
+                </div>
               ))}
         </div>
 

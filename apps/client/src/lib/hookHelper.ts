@@ -1,13 +1,6 @@
 import { UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
 
-interface IndexRequestHelper {
-  page?: number;
-  search?: string;
-  price?: {
-    min: number;
-    max: number;
-  };
-}
+
 
 const indexRequestHelper = <T>(
   func: (
@@ -16,22 +9,16 @@ const indexRequestHelper = <T>(
   ) => UseQueryResult<T, any>
 ) => {
   const useIndexHook = (
-    { page, search, price }: IndexRequestHelper,
+    indexQuery: Record<string, any>,
     options?: Omit<UseQueryOptions<T>, "initialData">
   ) => {
     const query: Record<string, string> = {};
 
-    if (page) {
-      query.page = String(page);
-    }
-
-    if (search) {
-      query.search = String(search);
-    }
-
-    if (price) {
-      query.price = `${price.min}-${price.max}`;
-    }
+    Object.entries(indexQuery).forEach(([key, value]) => {
+      if (value) {
+        query[key] = String(value);
+      }
+    });
 
     return func(query, options);
   };

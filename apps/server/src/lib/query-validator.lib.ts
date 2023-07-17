@@ -1,12 +1,22 @@
 import { BadRequestException } from "@src/exceptions";
 import { z } from "zod";
 
-const formatSorting = (value: string): Record<string, 1 | -1 | 0> => {
-  const result: Record<string, 1 | -1 | 0> = {};
+const formatSorting = (value: string): Record<string, "asc" | "desc"> => {
+  const result: Record<string, "asc" | "desc"> = {};
 
-  value.split(",").forEach((field) => {
-    const [key, order] = field.split(":");
-    result[key] = Number(order) as 1 | -1 | 0;
+  let fields = value.split(",");
+
+  if (fields[0] === "") {
+    fields.shift();
+  }
+
+  if (fields[fields.length - 1] === "") {
+    fields.pop();
+  }
+
+  fields.forEach((field) => {
+    const [key, order] = field.split("-");
+    result[key] = order as "asc" | "desc";
   });
 
   return result;
@@ -16,7 +26,7 @@ const schema = z.object({
   search: z.string().max(255).optional(),
   sort: z
     .string()
-    .regex(/^(\w+:(1|0|-1)(,)?)+$/gi)
+    .regex(/^(\w+\-(asc|desc),?)+$/gi)
     .transform(formatSorting)
     .optional(),
   page: z

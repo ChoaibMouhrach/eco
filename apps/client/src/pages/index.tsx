@@ -6,18 +6,29 @@ import { AuthGetServerSidePropsContext, IUser } from "@/interfaces/User";
 import Home from "@/components/pages/public/home";
 import { IProduct } from "@/interfaces/Product";
 import api from "@/api";
+import { IPaginate } from "@/interfaces/Common";
 
 interface HomeProps {
   user?: IUser;
-  products: IProduct[];
+  products: IPaginate<IProduct>;
+  exclusiveProducts: IPaginate<IProduct>;
 }
 
-export default function Index({ user, products }: HomeProps) {
+export default function Index({
+  user,
+  products,
+  exclusiveProducts,
+}: HomeProps) {
   return (
     <>
-      <Head>Home</Head>
+      <Head>
+        <title>Eco</title>
+      </Head>
       <PublicLayout user={user}>
-        <Home products={products} />
+        <Home
+          products={products.data}
+          exclusiveProducts={exclusiveProducts.data}
+        />
       </PublicLayout>
     </>
   );
@@ -25,9 +36,16 @@ export default function Index({ user, products }: HomeProps) {
 
 export const getServerSideProps: GetServerSideProps = withUser(
   async (ctx: AuthGetServerSidePropsContext) => {
-    const { data: products } = await api(
+    const products = await api(
       {
         url: "/products",
+      },
+      ctx
+    );
+
+    const exclusiveProducts = await api(
+      {
+        url: "/products?isExclusive=true",
       },
       ctx
     );
@@ -35,6 +53,7 @@ export const getServerSideProps: GetServerSideProps = withUser(
     return {
       props: {
         products: products.data,
+        exclusiveProducts: exclusiveProducts.data,
         user: ctx.auth ?? null,
       },
     };

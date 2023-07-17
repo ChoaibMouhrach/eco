@@ -23,7 +23,7 @@ const validate: Validate = (request: Request) => {
       description: z.string().min(200).max(2000).optional(),
       price: z
         .string()
-        .regex(/^\d+$/gi)
+        .regex(/^[+-]?([0-9]*[.])?[0-9]+$/gi)
         .pipe(z.string().transform((value) => Number(value)))
         .optional(),
       quantity: z
@@ -74,6 +74,10 @@ const validate: Validate = (request: Request) => {
         .array(z.any())
         .optional()
         .refine((v) => (v ? v.length > 0 : true)),
+      isExclusive: z
+        .enum(["true", "false"])
+        .transform((v) => v === "true")
+        .optional(),
     })
     .refine((data) => Object.keys(data).length > 1, {
       message: "Change something first",
@@ -101,6 +105,7 @@ export interface UpdateProductRequest extends Request {
     unitId?: number;
     categoryId?: number;
     tags?: string[];
+    isExclusive?: boolean;
   };
 }
 

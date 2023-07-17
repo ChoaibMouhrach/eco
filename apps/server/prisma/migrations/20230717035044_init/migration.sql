@@ -109,10 +109,11 @@ CREATE TABLE `images` (
 -- CreateTable
 CREATE TABLE `products` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
+    `name` MEDIUMTEXT NOT NULL,
     `description` LONGTEXT NOT NULL,
     `price` DOUBLE NOT NULL,
     `quantity` INTEGER NOT NULL,
+    `isExclusive` BOOLEAN NOT NULL DEFAULT false,
     `categoryId` INTEGER NOT NULL,
     `unitId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),

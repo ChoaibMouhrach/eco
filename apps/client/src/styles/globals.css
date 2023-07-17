@@ -4,6 +4,17 @@
 
 @layer base {
 
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
   /* Target the entire scroll bar */
   ::-webkit-scrollbar {
     @apply w-2;

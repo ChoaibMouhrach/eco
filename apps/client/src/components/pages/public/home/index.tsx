@@ -7,14 +7,15 @@ import { LatestProducts } from "./LatestProducts";
 
 interface HomeProps {
   products: IProduct[];
+  exclusiveProducts: IProduct[];
 }
 
-export default function Home({ products }: HomeProps) {
+export default function Home({ products, exclusiveProducts }: HomeProps) {
   return (
     <>
       <Hero />
       <Features />
-      <Exclusives products={products} />
+      <Exclusives products={exclusiveProducts} />
       <Brands />
       <LatestProducts products={products} />
     </>

@@ -10,7 +10,7 @@ export interface IProduct extends ITimeStamp {
 
   quantity: number;
   price: number;
-
+  isExclusive: boolean;
   images: IImage[];
 
   tags: ITag[];
@@ -28,6 +28,7 @@ export interface IProductCreate {
 
   unitId: number;
   categoryId: number;
+  isExclusive: boolean;
 
   tags: string;
 

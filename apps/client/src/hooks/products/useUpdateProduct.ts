@@ -40,7 +40,7 @@ export const useUpdateProduct = () => {
   return useMutation<AxiosResponse, IProductUpdateError, Payload>({
     mutationFn,
     onSuccess: () => {
-      toast(handleSuccess("Product update", "Product updated successfully"));
+      toast(handleSuccess("Product updated successfully"));
     },
     onError: (err: IProductUpdateError) => {
       toast(handleError(err));

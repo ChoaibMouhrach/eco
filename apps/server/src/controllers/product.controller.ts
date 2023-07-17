@@ -65,6 +65,9 @@ const index = async (request: Request, response: Response) => {
           lte: query.price[1],
         }
       : undefined,
+    isExclusive: request.query.isExclusive
+      ? request.query.isExclusive === "true"
+      : undefined,
   };
 
   const products = await db.product.findMany({
@@ -157,8 +160,17 @@ const store = async (request: StoreProductRequest, response: Response) => {
 };
 
 const update = async (request: UpdateProductRequest, response: Response) => {
-  const { xId, name, description, price, quantity, unitId, categoryId, tags } =
-    request.body;
+  const {
+    xId,
+    name,
+    description,
+    price,
+    quantity,
+    unitId,
+    categoryId,
+    tags,
+    isExclusive,
+  } = request.body;
 
   if (request.files && request.files instanceof Array && request.files.length) {
     const product = (await db.product.findUnique({
@@ -175,6 +187,20 @@ const update = async (request: UpdateProductRequest, response: Response) => {
     });
   }
 
+  if (isExclusive) {
+    const exclusiveProductsCount = await db.product.count({
+      where: {
+        isExclusive: true,
+      },
+    });
+
+    if (exclusiveProductsCount === 3) {
+      throw new BadRequestException({
+        message: "The maximum limit for exclusive products is three.",
+      });
+    }
+  }
+
   await db.product.update({
     where: {
       id: xId,
@@ -186,6 +212,7 @@ const update = async (request: UpdateProductRequest, response: Response) => {
       quantity,
       unitId,
       categoryId,
+      isExclusive,
       tags: tags
         ? {
             set: [],

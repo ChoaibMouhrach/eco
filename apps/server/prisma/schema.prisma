@@ -121,20 +121,21 @@ model Image {
 }
 
 model Product {
-  id          Int    @id @default(autoincrement())
-  name        String
-  description String @db.LongText
+  id          Int     @id @default(autoincrement())
+  name        String  @db.MediumText
+  description String  @db.LongText
   price       Float
   quantity    Int
+  isExclusive Boolean @default(false)
 
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId  Int
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId Int
 
-  unit        Unit @relation(fields: [unitId], references: [id], onDelete: Cascade)
-  unitId      Int
+  unit   Unit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId Int
 
-  images      Image[]
-  tags        Tag[]
+  images Image[]
+  tags   Tag[]
 
   OrderProduct    OrderProduct[]
   PurchaseProduct PurchaseProduct[]

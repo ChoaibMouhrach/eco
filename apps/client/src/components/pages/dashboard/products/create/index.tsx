@@ -73,6 +73,7 @@ export default function DashboardCreateProduct({
     }),
     []
   );
+
   const changeUnitSearch = useCallback(
     debounce(() => {
       refetchUnits();
@@ -123,10 +124,11 @@ export default function DashboardCreateProduct({
     }
   };
 
-  const onSubmit = (data: IProductCreate) =>
+  const onSubmit = (data: IProductCreate) => {
     storeProduct(data, {
       onError: handleError,
     });
+  };
 
   return (
     <Form {...form}>
@@ -312,6 +314,7 @@ export default function DashboardCreateProduct({
             </FormItem>
           )}
         />
+
         <div className="flex gap-4 items-center">
           {images.map((image) => (
             <div className="h-32 w-32 relative">
@@ -325,6 +328,7 @@ export default function DashboardCreateProduct({
             </div>
           ))}
         </div>
+
         <div>
           {isLoading ? (
             <LoadingButton>Create Product</LoadingButton>

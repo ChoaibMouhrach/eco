@@ -1,94 +1,79 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { PaginationState } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
-import { IProduct } from "@/interfaces/Product";
 import { ProductsTable } from "./Table";
-import { IPaginate } from "@/interfaces/Common";
+import { Filter, Query } from "./Filter";
 import api from "@/api";
-import debounce from "@/lib/debounce";
 
-interface DashboardProductsPageProps {
-  defaultProducts: IPaginate<IProduct>;
-}
+const clearQuery = (rawQuery: Record<string, any>) => {
+  const query: Record<string, string> = {};
 
-export default function DashboardProductsPage({
-  defaultProducts,
-}: DashboardProductsPageProps) {
-  const [products, setProducts] =
-    useState<IPaginate<IProduct>>(defaultProducts);
-
-  const [page, setPage] = useState({
-    value: 0,
-    changed: false,
+  Object.entries(rawQuery).forEach(([key, value]) => {
+    if (value) {
+      query[key] = String(value);
+    }
   });
 
-  const [search, setSearch] = useState({
-    value: "",
-    changed: false,
+  return query;
+};
+
+export default function DashboardProductsPage() {
+  const [query, setQuery] = useState<Query>({
+    price: undefined,
+    page: undefined,
+    search: undefined,
+    sort: "id",
+    order: undefined,
+    isExclusive: undefined,
   });
 
-  const { data: newProducts, refetch: refetchProducts } = useQuery<
-    AxiosResponse<IPaginate<IProduct>>
-  >({
-    queryKey: ["products"],
-    queryFn: ({ queryKey }) => {
-      console.log({ queryKey });
+  const { data: products, refetch: refetchProducts } = useQuery({
+    queryKey: ["products", query],
+    queryFn: () => {
       return api({
-        url: `/products?${new URLSearchParams({
-          search: search.value,
-          page: String(page.value),
-        }).toString()}`,
+        url: `/products?${new URLSearchParams(
+          clearQuery({
+            page: query.page,
+            search: query.search,
+            sort: query.sort
+              ? `${query.sort}-${query.order ?? "asc"}`
+              : undefined,
+            isExclusive: query.isExclusive,
+            price: query.price
+              ? `${query.price.min}-${query.price.max}`
+              : undefined,
+          })
+        ).toString()}`,
       });
     },
-    enabled: false,
     keepPreviousData: true,
   });
 
-  const changeSearch = useCallback(
-    debounce(() => {
-      refetchProducts();
-    }),
-    []
-  );
-
-  const onPaginationChange = async (pagination: PaginationState) => {
-    setPage({
-      value: pagination.pageIndex + 1,
-      changed: true,
+  const handleSearch = (value: string) =>
+    setQuery({
+      ...query,
+      search: value,
     });
-  };
 
-  const onSearchChange = (value: string) => {
-    setSearch({
-      value,
-      changed: true,
+  const handlePagination = (pagination: PaginationState) =>
+    setQuery({
+      ...query,
+      page: pagination.pageIndex + 1,
     });
-  };
-
-  useEffect(() => {
-    if (newProducts) {
-      setProducts(newProducts.data);
-    }
-  }, [newProducts]);
-
-  useEffect(() => {
-    if (search.changed) {
-      changeSearch();
-    }
-  }, [search]);
-
-  useEffect(() => {
-    if (page.changed) {
-      refetchProducts();
-    }
-  }, [page]);
 
   return (
-    <ProductsTable
-      onPaginationChange={onPaginationChange}
-      onSearchChange={onSearchChange}
-      products={products}
-    />
+    <div className="flex flex-col gap-4">
+      <Filter query={query} setQuery={setQuery} />
+      <ProductsTable
+        pageCount={
+          products ? Math.ceil(products.data.count / products.data.limit) : 1
+        }
+        products={products?.data.data ?? []}
+        // handlers
+        handlePagination={handlePagination}
+        handleSearch={handleSearch}
+        refetchProducts={refetchProducts}
+      />
+    </div>
   );
 }

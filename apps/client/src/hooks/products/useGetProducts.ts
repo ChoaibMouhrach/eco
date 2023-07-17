@@ -9,7 +9,7 @@ type Response = AxiosResponse<IPaginate<IProduct>>;
 
 export const useGetProducts = indexRequestHelper<Response>((query, options) => {
   return useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", query],
     queryFn: () => {
       return api({
         url: `/products?${new URLSearchParams(query).toString()}`,

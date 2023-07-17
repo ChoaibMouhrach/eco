@@ -21,6 +21,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         {product.tags.map((tag) => (
           <Link
             className="text-xs py-2 px-4 rounded-md bg-gray-100"
+            key={tag.id}
             href={`/products?search=${tag.name}`}
           >
             {tag.name}
