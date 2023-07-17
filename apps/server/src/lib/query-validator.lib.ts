@@ -4,7 +4,7 @@ import { z } from "zod";
 const formatSorting = (value: string): Record<string, "asc" | "desc"> => {
   const result: Record<string, "asc" | "desc"> = {};
 
-  let fields = value.split(",");
+  const fields = value.split(",");
 
   if (fields[0] === "") {
     fields.shift();
@@ -26,7 +26,7 @@ const schema = z.object({
   search: z.string().max(255).optional(),
   sort: z
     .string()
-    .regex(/^(\w+\-(asc|desc),?)+$/gi)
+    .regex(/^(\w+-(asc|desc),?)+$/gi)
     .transform(formatSorting)
     .optional(),
   page: z

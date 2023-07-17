@@ -1,7 +1,5 @@
 import { UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
 
-
-
 const indexRequestHelper = <T>(
   func: (
     query: Record<string, string>,
