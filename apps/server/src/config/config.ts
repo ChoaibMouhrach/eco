@@ -33,6 +33,10 @@ const schema = z.object({
   SMTP_USER: z.string().min(1),
   SMTP_PASS: z.string().min(1),
 
+  // YOUCAN
+  KEY_PUBLIC: z.string().min(1),
+  KEY_PRIVATE: z.string().min(1),
+
   /**
    * The root directory of the project
    * */

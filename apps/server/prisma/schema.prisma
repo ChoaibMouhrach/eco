@@ -44,6 +44,7 @@ model OrderState {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  Order     Order[]
 
   @@map("orderStates")
 }
@@ -61,12 +62,15 @@ model OrderProduct {
 }
 
 model Order {
-  id        Int            @id @default(autoincrement())
-  items     OrderProduct[]
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @default(now()) @updatedAt
+  id           Int            @id @default(autoincrement())
+  items        OrderProduct[]
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  orderState   OrderState     @relation(fields: [orderStateId], references: [id])
+  orderStateId Int            @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("orders")
 }
