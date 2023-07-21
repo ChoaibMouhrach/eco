@@ -44,6 +44,7 @@ model OrderState {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  Order     Order[]
 
   @@map("orderStates")
 }
@@ -61,29 +62,35 @@ model OrderProduct {
 }
 
 model Order {
-  id        Int            @id @default(autoincrement())
-  items     OrderProduct[]
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @default(now()) @updatedAt
+  id    Int            @id @default(autoincrement())
+  items OrderProduct[]
+
+  tokenId       String? @unique
+  transactionId String? @unique
+  ready         Boolean @default(false)
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  orderState   OrderState @relation(fields: [orderStateId], references: [id])
+  orderStateId Int        @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("orders")
 }
 
 model PurchaseProduct {
-  id       Int   @id @default(autoincrement())
-  quantity Int
-  price    Float
-
+  id         Int      @id @default(autoincrement())
+  quantity   Int
+  price      Float
   purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
   purchaseId Int
-
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Purchase {

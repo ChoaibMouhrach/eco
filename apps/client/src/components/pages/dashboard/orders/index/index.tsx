@@ -44,7 +44,8 @@ const columns: ColumnDef<IOrder>[] = [
       <span>
         {row.original.items
           .map((item) => item.quantity * item.price)
-          .reduce((acc, cur) => acc + cur)}
+          .reduce((acc, cur) => acc + cur)
+          .toFixed(2)}
       </span>
     ),
   },

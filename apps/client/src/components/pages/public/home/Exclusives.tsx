@@ -8,8 +8,6 @@ interface ExclusivesProps {
 }
 
 export function Exclusives({ products }: ExclusivesProps) {
-  console.log({ products });
-
   return (
     <div className="container mx-auto grid lg:grid-cols-2 gap-4 ">
       {products[0] && (

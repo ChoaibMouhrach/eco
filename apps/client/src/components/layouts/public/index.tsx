@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { useState } from "react";
 import Link from "next/link";
 import { MdOutlineShoppingCart } from "react-icons/md";
+import { Cart as CartComponent } from "./Cart";
 import { navigationData } from "@/constants";
 import { IUser } from "@/interfaces/User";
 import { Button } from "@/components/ui/button";
@@ -44,21 +45,31 @@ interface PublicLayoutProps {
 
 export function PublicLayout({ children, footer, user }: PublicLayoutProps) {
   const [open, setOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
   return (
-    <main className={inter.className}>
-      <Heading />
-      <NavigationBar user={user} open={open} setOpen={setOpen} />
-      <main className="flex flex-col gap-16 h-[calc(100vh_-_112px)] overflow-y-scroll">
-        {open ? (
-          <MobileNagiationBar />
-        ) : (
-          <>
-            {children}
-            {footer !== false && <Footer />}
-          </>
-        )}
+    <>
+      <main className={inter.className}>
+        <Heading />
+        <NavigationBar
+          cartOpen={cartOpen}
+          setCartOpen={setCartOpen}
+          user={user}
+          open={open}
+          setOpen={setOpen}
+        />
+        <main className="flex flex-col gap-16 h-[calc(100vh_-_112px)] overflow-y-scroll">
+          {open ? (
+            <MobileNagiationBar />
+          ) : (
+            <>
+              {children}
+              {footer !== false && <Footer />}
+            </>
+          )}
+        </main>
       </main>
-    </main>
+      <CartComponent cartOpen={cartOpen} setCartOpen={setCartOpen} />
+    </>
   );
 }

@@ -32,7 +32,9 @@ export const errorHandler = (
 
   return response.status(statusCode).json({
     statusCode,
-    content: error,
+    content: {
+      message: "something went wrong",
+    },
     error: "Internal Server Error",
   });
 };

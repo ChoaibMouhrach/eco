@@ -8,6 +8,19 @@ const db = new PrismaClient();
 
 const main = async () => {
   await Promise.all([
+    db.orderState.createMany({
+      data: [
+        {
+          name: "Not Started",
+        },
+        {
+          name: "In Progress",
+        },
+        {
+          name: "Done",
+        },
+      ],
+    }),
     db.role.createMany({
       data: [
         {
@@ -170,7 +183,7 @@ A MORE CAPABLE CASE – Keep track of AirPods Pro with Precision Finding and a b
 MAGICAL EXPERIENCE – Quick access to Siri by saying “Hey Siri”. Easy setup, in-ear detection, and automatic switching between devices. Audio Sharing lets you share a song or a show between two sets of AirPods on your iPhone, iPad, iPod touch, or Apple TV`,
         price: 400.0,
         quantity: 15,
-        isExclusive: true,
+        isExclusive: false,
         categoryId: 1,
         unitId: 1,
         tags: {
