@@ -1,6 +1,6 @@
 import db from "@src/config/db";
 import { getToken, pay } from "@src/lib/ycp.lib";
-import { CheckOutRequest } from "@src/requests";
+import { CheckOutRequest, CheckOutWebHookRequest } from "@src/requests";
 import { Response } from "express";
 
 const checkOut = async (request: CheckOutRequest, response: Response) => {
@@ -68,6 +68,35 @@ const checkOut = async (request: CheckOutRequest, response: Response) => {
   return response.sendStatus(201);
 };
 
+const webHook = async (request: CheckOutWebHookRequest, response: Response) => {
+  const {
+    event_name: eventName,
+    payload: {
+      token: { id: tokenId },
+    },
+  } = request.body;
+
+  if (eventName === "transaction.paid") {
+    await db.order.update({
+      where: {
+        tokenId,
+      },
+      data: {
+        ready: true,
+      },
+    });
+  } else {
+    await db.order.delete({
+      where: {
+        tokenId,
+      },
+    });
+  }
+
+  return response.sendStatus(200);
+};
+
 export const checkOutController = {
   checkOut,
+  webHook,
 };

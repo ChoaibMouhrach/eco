@@ -6,13 +6,13 @@ const ycpApi = axios.create({
   baseURL: config.URL_YOUCANPAY,
 });
 
-export interface TokenResponse {
+export interface TokenResponseBody {
   token: {
     id: string;
   };
 }
 
-export interface TokenBody {
+export interface TokenRequestBody {
   amount: number;
   currency: string;
   pri_key: string;
@@ -21,10 +21,10 @@ export interface TokenBody {
 
 // retrive token id from ycp servers
 export const getToken = async (
-  data: Omit<TokenBody, "pri_key">
-): Promise<AxiosResponse<TokenResponse, TokenBody>> => {
+  data: Omit<TokenRequestBody, "pri_key">
+): Promise<AxiosResponse<TokenResponseBody, TokenRequestBody>> => {
   try {
-    return await ycpApi<TokenResponse, AxiosResponse, TokenBody>({
+    return await ycpApi<TokenResponseBody, AxiosResponse, TokenRequestBody>({
       url: "/tokenize",
       method: "POST",
       data: {
@@ -38,7 +38,7 @@ export const getToken = async (
   }
 };
 
-export interface PayBody {
+export interface PayRequestBody {
   pub_key: string;
   token_id: string;
   credit_card: string;
@@ -75,10 +75,10 @@ interface Issue {
 
 // create payment
 export const pay = async (
-  data: Omit<PayBody, "pub_key">
-): Promise<AxiosResponse<PayResponse, PayBody>> => {
+  data: Omit<PayRequestBody, "pub_key">
+): Promise<AxiosResponse<PayResponse, PayRequestBody>> => {
   try {
-    return await ycpApi<PayResponse, AxiosResponse, PayBody>({
+    return await ycpApi<PayResponse, AxiosResponse, PayRequestBody>({
       url: "/pay",
       method: "POST",
       data: {

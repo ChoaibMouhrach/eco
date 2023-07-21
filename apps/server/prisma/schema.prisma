@@ -65,8 +65,8 @@ model Order {
   id    Int            @id @default(autoincrement())
   items OrderProduct[]
 
-  tokenId       String?
-  transactionId String?
+  tokenId       String? @unique
+  transactionId String? @unique
   ready         Boolean @default(false)
 
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
