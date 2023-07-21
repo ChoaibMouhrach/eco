@@ -2,7 +2,7 @@ import { Request } from "express";
 import z from "zod";
 import db from "@src/config/db";
 import isCreditCard from "validator/lib/isCreditCard";
-import { Validate } from "..";
+import { AuthRequest, Validate } from "..";
 
 const validate: Validate = (request: Request) => {
   const schema = z.object({
@@ -35,7 +35,7 @@ const validate: Validate = (request: Request) => {
   return schema.safeParseAsync(request.body);
 };
 
-export interface CheckOutRequest {
+export interface CheckOutRequest extends AuthRequest {
   body: {
     card: {
       holder: string;

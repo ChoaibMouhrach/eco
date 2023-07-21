@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IProduct } from "@/interfaces/Product";
 import { Quantity } from "./Quantity";
+import { useCart } from "@/hooks";
 
 interface ProductInfoProps {
   product: IProduct;
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
+  const { add } = useCart();
   const [item, setItem] = useState({
     product,
     quantity: 1,
@@ -40,7 +42,10 @@ export function ProductInfo({ product }: ProductInfoProps) {
             </div>
           </div>
           <Quantity item={item} setItem={setItem} />
-          <Button className="w-fit">
+          <Button
+            onClick={() => add({ quantity: item.quantity, product })}
+            className="w-fit"
+          >
             <div className="flex items-center gap-2">
               <MdOutlineShoppingCart />
               Add to cart

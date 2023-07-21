@@ -20,9 +20,7 @@ export function Quantity({ item, setItem }: QuantityProps) {
 
   const handleSetQuantity = (e: ChangeEvent<HTMLInputElement>) => {
     const quantity = Number(e.target.value);
-    if (quantity > 0) {
-      setItem({ ...item, quantity });
-    }
+    setItem({ ...item, quantity: quantity < 1 ? 1 : quantity });
   };
 
   return (

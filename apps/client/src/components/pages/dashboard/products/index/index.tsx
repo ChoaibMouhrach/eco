@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { PaginationState } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
 import { ProductsTable } from "./Table";
 import { Filter, Query } from "./Filter";
 import api from "@/api";
+import debounce from "@/lib/debounce";
 
 const clearQuery = (rawQuery: Record<string, any>) => {
   const query: Record<string, string> = {};
@@ -49,11 +50,15 @@ export default function DashboardProductsPage() {
     keepPreviousData: true,
   });
 
-  const handleSearch = (value: string) =>
-    setQuery({
-      ...query,
-      search: value,
-    });
+  const handleSearch = useCallback(
+    debounce((value: string) =>
+      setQuery({
+        ...query,
+        search: value,
+      })
+    ),
+    []
+  );
 
   const handlePagination = (pagination: PaginationState) =>
     setQuery({
@@ -65,10 +70,10 @@ export default function DashboardProductsPage() {
     <div className="flex flex-col gap-4">
       <Filter query={query} setQuery={setQuery} />
       <ProductsTable
+        products={products?.data.data ?? []}
         pageCount={
           products ? Math.ceil(products.data.count / products.data.limit) : 1
         }
-        products={products?.data.data ?? []}
         // handlers
         handlePagination={handlePagination}
         handleSearch={handleSearch}

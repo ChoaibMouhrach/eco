@@ -95,6 +95,9 @@ importers:
       '@radix-ui/react-select':
         specifier: ^1.2.2
         version: 1.2.2(@types/react-dom@18.2.6)(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-separator':
+        specifier: ^1.0.3
+        version: 1.0.3(@types/react-dom@18.2.6)(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-slider':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.2.6)(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0)
@@ -119,6 +122,9 @@ importers:
       '@types/react-dom':
         specifier: 18.2.6
         version: 18.2.6
+      '@types/validator':
+        specifier: ^13.7.17
+        version: 13.7.17
       autoprefixer:
         specifier: 10.4.14
         version: 10.4.14(postcss@8.4.24)
@@ -173,9 +179,15 @@ importers:
       typescript:
         specifier: 5.1.3
         version: 5.1.3
+      validator:
+        specifier: ^13.9.0
+        version: 13.9.0
       zod:
         specifier: ^3.21.4
         version: 3.21.4
+      zustand:
+        specifier: ^4.3.9
+        version: 4.3.9(react@18.2.0)
 
   apps/server:
     dependencies:
@@ -191,6 +203,9 @@ importers:
       '@types/jsonwebtoken':
         specifier: ^9.0.2
         version: 9.0.2
+      axios:
+        specifier: ^1.4.0
+        version: 1.4.0
       cookie-parser:
         specifier: ^1.4.6
         version: 1.4.6
@@ -227,6 +242,12 @@ importers:
       uuid:
         specifier: ^9.0.0
         version: 9.0.0
+      validator:
+        specifier: ^13.9.0
+        version: 13.9.0
+      ycp:
+        specifier: '*'
+        version: 0.0.2
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -273,6 +294,9 @@ importers:
       '@types/uuid':
         specifier: ^9.0.2
         version: 9.0.2
+      '@types/validator':
+        specifier: ^13.7.17
+        version: 13.7.17
       jest:
         specifier: ^29.6.1
         version: 29.6.1(@types/node@20.2.5)(ts-node@10.9.1)
@@ -296,6 +320,8 @@ importers:
         version: 5.1.3
 
   packages/eco-config: {}
+
+  packages/ycp: {}
 
 packages:
 
@@ -1968,6 +1994,27 @@ packages:
       react-remove-scroll: 2.5.5(@types/react@18.2.14)(react@18.2.0)
     dev: false
 
+  /@radix-ui/react-separator@1.0.3(@types/react-dom@18.2.6)(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-itYmTy/kokS21aiV5+Z56MZB54KrhPgn6eHDKkFeOLR34HMN2s8PaN47qZZAGnvupcjxHaFZnW4pQEh0BvvVuw==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.22.3
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.6)(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0)
+      '@types/react': 18.2.14
+      '@types/react-dom': 18.2.6
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@radix-ui/react-slider@1.1.2(@types/react-dom@18.2.6)(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-NKs15MJylfzVsCagVSWKhGGLNR1W9qWs+HtgbmjjVUB3B9+lb3PYoXxVju3kOrpf0VKyVCtZp+iTwVoqpa1Chw==}
     peerDependencies:
@@ -2758,6 +2805,9 @@ packages:
   /@types/uuid@9.0.2:
     resolution: {integrity: sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==}
     dev: true
+
+  /@types/validator@13.7.17:
+    resolution: {integrity: sha512-aqayTNmeWrZcvnG2MG9eGYI6b7S5fl+yKgPs6bAjOTwPS316R5SxBGKvtSExfyoJU7pIeHJfsHI0Ji41RVMkvQ==}
 
   /@types/yargs-parser@21.0.0:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
@@ -8026,6 +8076,11 @@ packages:
       builtins: 5.0.1
     dev: true
 
+  /validator@13.9.0:
+    resolution: {integrity: sha512-B+dGG8U3fdtM0/aNK4/X8CXq/EcxU2WPrPEkJGslb47qyHsxmbggTWK0yEA4qnYVNF+nxNlN88o14hIcPmSIEA==}
+    engines: {node: '>= 0.10'}
+    dev: false
+
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
@@ -8169,6 +8224,23 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
+  /yc-cmd@0.0.1:
+    resolution: {integrity: sha512-X7OepbhC01DLJPY8dZbczk8skoOHCieNDKemCPB0+CKcfiQ8sqhFkIM+sbvf97kTSEp4HloVy6++AA24SLAOfg==}
+    dev: false
+
+  /yc-core@0.0.1:
+    resolution: {integrity: sha512-sX+q57MhFX6jVjznREnKHxv/5XJiMHhSDfsMx/8vYTnpgBXgniAAJu1VaVke5dbz483zbA3GlKDWahL7skNODA==}
+    hasBin: true
+    dev: false
+
+  /ycp@0.0.2:
+    resolution: {integrity: sha512-h4MyZJ+LFJdRkBoWNmo0S6K1TXzYHt2UjDAIxNfgn0LsIeOW0+c4W04jpTHaNch76GwiZLjmf1h+uSdXCJV2+g==}
+    hasBin: true
+    dependencies:
+      yc-cmd: 0.0.1
+      yc-core: 0.0.1
+    dev: false
+
   /yn@3.1.1:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
@@ -8181,4 +8253,20 @@ packages:
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false
+
+  /zustand@4.3.9(react@18.2.0):
+    resolution: {integrity: sha512-Tat5r8jOMG1Vcsj8uldMyqYKC5IZvQif8zetmLHs9WoZlntTHmIoNM8TpLRY31ExncuUvUOXehd0kvahkuHjDw==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
