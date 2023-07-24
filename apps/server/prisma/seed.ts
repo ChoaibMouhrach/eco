@@ -11,13 +11,13 @@ const main = async () => {
     db.orderState.createMany({
       data: [
         {
-          name: "Not Started",
+          name: "Pending",
         },
         {
-          name: "In Progress",
+          name: "Progress",
         },
         {
-          name: "Done",
+          name: "Completed",
         },
       ],
     }),

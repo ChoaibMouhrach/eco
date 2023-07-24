@@ -11,6 +11,8 @@ import { Router } from "express";
 
 export const orderRouter = Router();
 
+orderRouter.get("/states", orderController.getOrderStates);
+
 orderRouter.get(
   "/",
   [authAccess, validator(indexOrderRequest)],

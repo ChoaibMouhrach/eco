@@ -1,7 +1,6 @@
 import {
   MdOutlineAdd,
   MdOutlineCategory,
-  MdOutlineCollectionsBookmark,
   MdOutlineDashboard,
   MdOutlineGasMeter,
   MdOutlineListAlt,
@@ -18,10 +17,12 @@ export const sideBarNavigation: SideBarNavigation[] = [
     name: "Dashboard",
     href: "/dashboard",
     icon: MdOutlineDashboard,
+    role: "admin",
   },
   {
     name: "Orders",
     icon: MdOutlineShoppingBasket,
+    role: "admin",
     children: [
       {
         name: "List",
@@ -36,24 +37,9 @@ export const sideBarNavigation: SideBarNavigation[] = [
     ],
   },
   {
-    name: "Purchases",
-    icon: MdOutlineCollectionsBookmark,
-    children: [
-      {
-        name: "List",
-        href: "/dashboard/purchases",
-        icon: MdOutlineListAlt,
-      },
-      {
-        name: "Create",
-        href: "/dashboard/purchases/create",
-        icon: MdOutlineAdd,
-      },
-    ],
-  },
-  {
     name: "Products",
     icon: MdOutlineShoppingCart,
+    role: "admin",
     children: [
       {
         name: "List",
@@ -70,6 +56,7 @@ export const sideBarNavigation: SideBarNavigation[] = [
   {
     name: "Categories",
     icon: MdOutlineCategory,
+    role: "admin",
     children: [
       {
         name: "List",
@@ -86,6 +73,7 @@ export const sideBarNavigation: SideBarNavigation[] = [
   {
     name: "Units",
     icon: MdOutlineGasMeter,
+    role: "admin",
     children: [
       {
         name: "List",
@@ -102,6 +90,7 @@ export const sideBarNavigation: SideBarNavigation[] = [
   {
     name: "Tags",
     icon: MdOutlineTag,
+    role: "admin",
     children: [
       {
         name: "List",
@@ -118,6 +107,7 @@ export const sideBarNavigation: SideBarNavigation[] = [
   {
     name: "Users",
     icon: MdOutlinePeopleOutline,
+    role: "admin",
     children: [
       {
         name: "List",

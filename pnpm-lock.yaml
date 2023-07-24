@@ -321,8 +321,6 @@ importers:
 
   packages/eco-config: {}
 
-  packages/ycp: {}
-
 packages:
 
   /@alloc/quick-lru@5.2.0:

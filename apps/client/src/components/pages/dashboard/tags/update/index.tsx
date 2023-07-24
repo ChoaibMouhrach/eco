@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,7 +58,7 @@ export default function DashboardUpdateTagPage({ tag }: UpdateTagPageProps) {
     form.reset();
   };
 
-  const onSubmit = (data: ITagUpdate) =>
+  const onSubmit = (data: ITagUpdate) => {
     updateTag(
       {
         id: tag.id,
@@ -72,6 +72,11 @@ export default function DashboardUpdateTagPage({ tag }: UpdateTagPageProps) {
         },
       }
     );
+  };
+
+  useEffect(() => {
+    setAlrtOpen(false);
+  }, [form.formState.errors]);
 
   return (
     <Form {...form}>

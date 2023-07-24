@@ -9,7 +9,7 @@ export interface IUser extends ITimeStamp {
   phone: string;
   address: string;
   roleId: number;
-  role?: IRole;
+  role: IRole;
 }
 
 export type SignInData = {

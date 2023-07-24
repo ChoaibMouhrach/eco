@@ -28,8 +28,9 @@ export default function Edit({ user, tag }: EditProps) {
   );
 }
 
-export const getServerSideProps = withAuth(
-  async (ctx: AuthGetServerSidePropsContext) => {
+export const getServerSideProps = withAuth({
+  role: "admin",
+  getServerSideProps: async (ctx: AuthGetServerSidePropsContext) => {
     try {
       const response = await api(
         {
@@ -52,5 +53,5 @@ export const getServerSideProps = withAuth(
         },
       };
     }
-  }
-);
+  },
+});

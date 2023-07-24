@@ -21,7 +21,6 @@ model User {
   role          Role           @relation(fields: [roleId], references: [id])
   roleId        Int
   Order         Order[]
-  Purchase      Purchase[]
   cart          Cart?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @default(now()) @updatedAt
@@ -81,29 +80,6 @@ model Order {
   @@map("orders")
 }
 
-model PurchaseProduct {
-  id         Int      @id @default(autoincrement())
-  quantity   Int
-  price      Float
-  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
-  purchaseId Int
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId  Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-}
-
-model Purchase {
-  id        Int               @id @default(autoincrement())
-  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  items     PurchaseProduct[]
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @default(now()) @updatedAt
-
-  @@map("purchases")
-}
-
 model RefreshToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
@@ -144,8 +120,7 @@ model Product {
   images Image[]
   tags   Tag[]
 
-  OrderProduct    OrderProduct[]
-  PurchaseProduct PurchaseProduct[]
+  OrderProduct OrderProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

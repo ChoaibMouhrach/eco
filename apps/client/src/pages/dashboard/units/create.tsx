@@ -23,4 +23,4 @@ export default function CreateUnit({ user }: CreateUnitProps) {
   );
 }
 
-export const getServerSideProps = withAuth();
+export const getServerSideProps = withAuth({ role: "admin" });

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -75,6 +75,10 @@ export default function DashboardUpdateCategoryPage({
         },
       }
     );
+
+  useEffect(() => {
+    setAlrtOpen(false);
+  }, [form.formState.errors]);
 
   return (
     <Form {...form}>

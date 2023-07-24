@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Command,
   CommandEmpty,
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import * as React from "react";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
 export interface ComboxUiItem {
@@ -24,9 +24,17 @@ interface ComboxUiProps {
   placeholder: string;
   items: ComboxUiItem[];
   onValueChange: (value: string) => any;
+  onSearchChange?: (value: string) => any;
+  defaultValue?: string;
 }
 
-export function ComboxUi({ placeholder, items, onValueChange }: ComboxUiProps) {
+export function ComboxUi({
+  placeholder,
+  onSearchChange,
+  items,
+  onValueChange,
+  defaultValue,
+}: ComboxUiProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
@@ -37,17 +45,21 @@ export function ComboxUi({ placeholder, items, onValueChange }: ComboxUiProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-[300px] justify-between"
         >
           {value
             ? items.find((item) => item.value === value)?.label
-            : placeholder}
+            : defaultValue ?? placeholder}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[300px] p-0">
         <Command>
-          <CommandInput placeholder={placeholder} className="h-9" />
+          <CommandInput
+            onValueChange={onSearchChange}
+            placeholder={placeholder}
+            className="h-9"
+          />
           <CommandEmpty>Not found.</CommandEmpty>
           <CommandGroup>
             {items.map((item) => (

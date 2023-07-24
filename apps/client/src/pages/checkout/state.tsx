@@ -17,8 +17,8 @@ export default function State({ auth }: StateProps) {
   );
 }
 
-export const getServerSideProps = withAuth(
-  async (ctx: AuthGetServerSidePropsContext) => {
+export const getServerSideProps = withAuth({
+  getServerSideProps: async (ctx: AuthGetServerSidePropsContext) => {
     if (!ctx.query.success) {
       return {
         redirect: {
@@ -33,5 +33,5 @@ export const getServerSideProps = withAuth(
         auth: ctx.auth,
       },
     };
-  }
-);
+  },
+});

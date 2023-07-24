@@ -30,8 +30,9 @@ export default function Create({ user, units, categories }: CreateProps) {
   );
 }
 
-export const getServerSideProps = withAuth(
-  async (ctx: AuthGetServerSidePropsContext) => {
+export const getServerSideProps = withAuth({
+  role: "admin",
+  getServerSideProps: async (ctx: AuthGetServerSidePropsContext) => {
     const categories = await api(
       {
         url: "/categories",
@@ -53,5 +54,5 @@ export const getServerSideProps = withAuth(
         user: ctx.auth,
       },
     };
-  }
-);
+  },
+});

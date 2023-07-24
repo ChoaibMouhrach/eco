@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { sideBarNavigation } from "@/constants";
 import { SideBarNavigation } from "@/interfaces/Common";
+import { IUser } from "@/interfaces/User";
 
 interface SideBarDropDownItemProps {
   link: SideBarNavigation;
@@ -53,12 +54,20 @@ function SideBarDropDownItem({ link }: SideBarDropDownItemProps) {
   );
 }
 
-export default function DashboardSideBar() {
+interface DashboardSideBarProps {
+  user: IUser;
+}
+
+export default function DashboardSideBar({ user }: DashboardSideBarProps) {
   const router = useRouter();
   return (
     <ul className="flex flex-col gap-2">
-      {sideBarNavigation.map((link) =>
-        link.href ? (
+      {sideBarNavigation.map((link) => {
+        if (link.role && link.role !== user.role.name) {
+          return null;
+        }
+
+        return link.href ? (
           <li
             className={`${
               router.pathname === link.href
@@ -77,8 +86,8 @@ export default function DashboardSideBar() {
           </li>
         ) : (
           <SideBarDropDownItem key={link.name} link={link} />
-        )
-      )}
+        );
+      })}
     </ul>
   );
 }

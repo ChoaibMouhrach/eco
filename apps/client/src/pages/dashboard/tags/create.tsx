@@ -26,4 +26,6 @@ export default function Tags({ user }: TagsProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = withAuth();
+export const getServerSideProps: GetServerSideProps = withAuth({
+  role: "admin",
+});

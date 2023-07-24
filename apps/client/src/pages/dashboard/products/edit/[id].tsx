@@ -42,8 +42,9 @@ export default function Update({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = withAuth(
-  async (ctx: AuthGetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = withAuth({
+  role: "admin",
+  getServerSideProps: async (ctx: AuthGetServerSidePropsContext) => {
     const id = ctx.params?.id;
 
     try {
@@ -88,5 +89,5 @@ export const getServerSideProps: GetServerSideProps = withAuth(
         },
       };
     }
-  }
-);
+  },
+});

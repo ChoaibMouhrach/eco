@@ -25,4 +25,4 @@ export default function Products({ user }: ProductsProps) {
   );
 }
 
-export const getServerSideProps = withAuth();
+export const getServerSideProps = withAuth({ role: "admin" });

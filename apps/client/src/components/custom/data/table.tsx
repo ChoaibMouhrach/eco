@@ -7,6 +7,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ChangeEvent, useEffect, useState } from "react";
+import { MdOutlineMoreVert } from "react-icons/md";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -17,28 +25,31 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Actions } from "./Actions";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
   pageCount: number;
 
+  // events
   onSearchChange?: (value: string) => any;
-
   onPaginationChange?: (pagination: PaginationState) => Promise<void> | void;
-  onEdit?: (id: number) => any;
-  onDelete?: (id: number) => any;
+
+  actions?: Record<string, (data: TData) => any>;
 }
 
 export default function DataTable<TData>({
-  onPaginationChange,
-  onEdit,
-  onDelete,
+  // data
   columns,
   data,
   pageCount,
+
+  // events
+  onPaginationChange,
   onSearchChange,
+
+  // actions
+  actions,
 }: DataTableProps<TData>) {
   const [paginationChanged, setPaginationChanged] = useState(false);
 
@@ -115,7 +126,7 @@ export default function DataTable<TData>({
                         )}
                   </TableHead>
                 ))}
-                {onDelete && onEdit && <TableHead>Actions</TableHead>}
+                {actions && <TableHead>Actions</TableHead>}
               </TableRow>
             ))}
           </TableHeader>
@@ -134,13 +145,26 @@ export default function DataTable<TData>({
                       )}
                     </TableCell>
                   ))}
-                  {(onEdit || onDelete) && (
+                  {actions && (
                     <TableCell>
-                      <Actions
-                        onEdit={onEdit}
-                        onDelete={onDelete}
-                        id={Number(row.getValue("id"))}
-                      />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MdOutlineMoreVert className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          {Object.entries(actions).map(([name, func]) => (
+                            <DropdownMenuItem
+                              onClick={() => func(row.original)}
+                            >
+                              {name}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   )}
                 </TableRow>
@@ -148,7 +172,7 @@ export default function DataTable<TData>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length + 1}
+                  colSpan={columns.length + (actions ? 1 : 0)}
                   className="h-24 text-center"
                 >
                   No results.

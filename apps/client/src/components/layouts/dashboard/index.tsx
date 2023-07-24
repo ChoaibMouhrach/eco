@@ -31,12 +31,12 @@ export function DashboardLayout({
         <section className="container h-[calc(100vh_-_176px)] lg:h-[calc(100vh_-_112px)] grid lg:grid-cols-5 py-4 gap-2">
           {open ? (
             <div className="overflow-y-scroll lg:pr-4">
-              <DashboardSideBar />
+              <DashboardSideBar user={user} />
             </div>
           ) : (
             <>
               <div className="overflow-y-scroll pr-4 hidden lg:block">
-                <DashboardSideBar />
+                <DashboardSideBar user={user} />
               </div>
               <div className="lg:col-start-2 lg:col-end-6 overflow-y-scroll px-4">
                 <div className="flex flex-col gap-8">

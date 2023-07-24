@@ -25,7 +25,8 @@ export interface SideBarNavigation {
   name: string;
   href?: string;
   icon: IconType;
-  children?: Omit<SideBarNavigation, "children">[];
+  role?: "admin" | "member";
+  children?: Omit<SideBarNavigation, "children" | "role">[];
 }
 
 export interface IPaginate<TData> {

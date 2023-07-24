@@ -26,4 +26,6 @@ export default function Create({ user }: CreateProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = withAuth();
+export const getServerSideProps: GetServerSideProps = withAuth({
+  role: "admin",
+});

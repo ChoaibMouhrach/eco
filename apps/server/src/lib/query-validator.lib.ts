@@ -23,7 +23,11 @@ const formatSorting = (value: string): Record<string, "asc" | "desc"> => {
 };
 
 const schema = z.object({
-  search: z.string().max(255).optional(),
+  search: z
+    .string()
+    .max(255)
+    .optional()
+    .transform((v) => v?.trim()),
   sort: z
     .string()
     .regex(/^(\w+-(asc|desc),?)+$/gi)

@@ -29,8 +29,8 @@ export default function Edit({ user, category }: EditProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = withAuth(
-  async (ctx: AuthGetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = withAuth({
+  getServerSideProps: async (ctx: AuthGetServerSidePropsContext) => {
     const id = ctx.params?.id;
 
     try {
@@ -55,5 +55,5 @@ export const getServerSideProps: GetServerSideProps = withAuth(
         },
       };
     }
-  }
-);
+  },
+});

@@ -13,7 +13,7 @@ const validate: Validate = (request: Request) => {
       .refine(async (id) => await db.user.findUnique({ where: { id } }), {
         message: "User not found",
       }),
-    products: z
+    items: z
       .array(
         z.object({
           id: z
@@ -42,7 +42,7 @@ const authorize: Authorize = (request: AuthRequest) => {
 
 export interface StoreOrderRequest {
   body: {
-    products: {
+    items: {
       id: number;
       quantity: number;
     }[];

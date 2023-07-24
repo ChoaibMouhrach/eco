@@ -1,10 +1,13 @@
 import { GetServerSideProps } from "next";
 import api from "@/api";
-import { AuthGetServerSidePropsContext } from "@/interfaces/User";
+import { AuthGetServerSidePropsContext, IUser } from "@/interfaces/User";
 
-export const withAuth = (
-  getServerSideProps?: GetServerSideProps
-): GetServerSideProps => {
+interface WithAuthProps {
+  getServerSideProps?: GetServerSideProps;
+  role?: "admin" | "member";
+}
+
+export const withAuth = (params?: WithAuthProps): GetServerSideProps => {
   return async (ctx: AuthGetServerSidePropsContext) => {
     try {
       const response = await api(
@@ -14,10 +17,21 @@ export const withAuth = (
         ctx
       );
 
+      const user = response.data as IUser;
+
+      if (params?.role && user.role.name !== params.role) {
+        return {
+          redirect: {
+            destination: "/403",
+            permanent: false,
+          },
+        };
+      }
+
       ctx.auth = response.data;
 
-      if (getServerSideProps) {
-        return await getServerSideProps(ctx);
+      if (params?.getServerSideProps) {
+        return await params.getServerSideProps(ctx);
       }
 
       return {

@@ -28,8 +28,9 @@ export default function Edit({ user, unit }: EditProps) {
   );
 }
 
-export const getServerSideProps = withAuth(
-  async (ctx: AuthGetServerSidePropsContext) => {
+export const getServerSideProps = withAuth({
+  role: "admin",
+  getServerSideProps: async (ctx: AuthGetServerSidePropsContext) => {
     try {
       const { id } = ctx.query;
 
@@ -54,5 +55,5 @@ export const getServerSideProps = withAuth(
         },
       };
     }
-  }
-);
+  },
+});

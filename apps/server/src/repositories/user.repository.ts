@@ -13,6 +13,9 @@ export const findUser = (id: number) => {
 export const findUserOrThrow = async (where: Prisma.UserWhereUniqueInput) => {
   const user = await db.user.findUnique({
     where,
+    include: {
+      role: true,
+    },
   });
 
   if (!user) {

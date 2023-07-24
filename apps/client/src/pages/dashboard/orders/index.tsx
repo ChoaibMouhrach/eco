@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { DashboardLayout } from "@/components/layouts";
 import { withAuth } from "@/middlewares";
@@ -26,4 +25,4 @@ export default function Orders({ user }: OrdersProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = withAuth();
+export const getServerSideProps = withAuth({ role: "admin" });

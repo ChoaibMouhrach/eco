@@ -53,11 +53,11 @@ export function NavigationBar({
           <Button variant="outline" className="w-12 hidden lg:flex">
             <AiOutlineHeart />
           </Button>
-          <div className="relative">
+          <div className="relative hidden lg:block">
             <Button
               onClick={() => setCartOpen(!cartOpen)}
               variant="outline"
-              className="w-12 hidden lg:flex"
+              className="w-12 flex"
             >
               <MdOutlineShoppingCart />
             </Button>

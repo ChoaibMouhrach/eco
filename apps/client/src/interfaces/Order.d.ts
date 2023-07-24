@@ -9,19 +9,30 @@ export interface IItem {
   product: IProduct;
 }
 
+export interface IOrderState extends ITimeStamp {
+  name: "Pending" | "Progress" | "Completed";
+}
+
 export interface IOrder extends ITimeStamp {
   user: IUser;
   items: IItem[];
+  tokenId?: string;
+  transactionId?: string;
+  ready: boolean;
+
+  orderState: IOrderState;
 }
 
 // create
 export interface IOrderCreate {
   userId: number;
-  products: (IProduct & { orderQuantity: number })[];
+  items: {
+    id: number;
+    quantity: number;
+  }[];
 }
 
 export type IOrderCreateError = HttpError<keyof IOrderCreate>;
-
 // update
 export interface IOrderUpdate {
   userId?: number;

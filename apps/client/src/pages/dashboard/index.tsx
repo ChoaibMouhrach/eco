@@ -25,4 +25,6 @@ export default function Dashboard({ user }: DashboardProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = withAuth();
+export const getServerSideProps: GetServerSideProps = withAuth({
+  role: "admin",
+});

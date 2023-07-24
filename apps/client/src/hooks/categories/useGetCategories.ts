@@ -10,7 +10,7 @@ type Response = AxiosResponse<IPaginate<ICategory>>;
 export const useGetCategories = indexRequestHelper<Response>(
   (query, options) => {
     return useQuery<Response>({
-      queryKey: ["categories"],
+      queryKey: ["categories", query],
       queryFn: () => {
         return api({
           url: `/categories?${new URLSearchParams(query).toString()}`,

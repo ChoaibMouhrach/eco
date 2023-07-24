@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { PaginationState } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-import { ProductsTable } from "./Table";
+import { ProductsTable } from "./ProductsTable/index";
 import { Filter, Query } from "./Filter";
 import api from "@/api";
 import debounce from "@/lib/debounce";

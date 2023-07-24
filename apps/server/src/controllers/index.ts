@@ -5,5 +5,4 @@ export * from "./unit.controller";
 export * from "./product.controller";
 export * from "./user.controller";
 export * from "./order.controller";
-export * from "./purchase.controller";
 export * from "./checkout.controller";

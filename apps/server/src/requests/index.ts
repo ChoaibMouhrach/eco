@@ -35,11 +35,5 @@ export * from "./store-order.request";
 export * from "./update-order.request";
 export * from "./delete-order.request";
 
-export * from "./index-purchase.request";
-export * from "./show-purchase.request";
-export * from "./store-purchase.request";
-export * from "./update-purchase.request";
-export * from "./delete-purchase.request";
-
 export * from "./checkout.request";
 export * from "./checkout-webhook.request";

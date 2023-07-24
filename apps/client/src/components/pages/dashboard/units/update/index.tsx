@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -75,6 +75,11 @@ export default function DashboardUpdateUnitPage({ unit }: UpdateUnitPageProps) {
       }
     );
   };
+
+  useEffect(() => {
+    setAlrtOpen(false);
+  }, [form.formState.errors]);
+
   return (
     <Form {...form}>
       <form

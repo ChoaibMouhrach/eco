@@ -9,7 +9,7 @@ type Response = AxiosResponse<IPaginate<ITag>>;
 
 export const useGetTags = indexRequestHelper<Response>((query, options) => {
   return useQuery<Response>({
-    queryKey: ["tags"],
+    queryKey: ["tags", query],
     queryFn: () => {
       return api({
         url: `/tags?${new URLSearchParams(query).toString()}`,

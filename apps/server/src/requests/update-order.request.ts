@@ -47,6 +47,15 @@ const validate: Validate = (request: Request) => {
           message: "At least one product is required",
         })
         .optional(),
+      stateId: z
+        .number()
+        .positive()
+        .int()
+        .gt(0)
+        .refine(
+          async (id) => await db.orderState.findUnique({ where: { id } }),
+          { message: "State does not exists" }
+        ),
     })
     .refine((data) => Object.keys(data).length > 1, {
       message: "Change something first",
@@ -68,6 +77,7 @@ export interface UpdateOrderRequest {
   body: {
     xId: number;
     userId?: number;
+    stateId?: number;
     products?: {
       id: number;
       quantity: number;

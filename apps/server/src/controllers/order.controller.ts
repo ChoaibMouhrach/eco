@@ -9,57 +9,72 @@ import {
 } from "@src/requests";
 import { Prisma } from "@prisma/client";
 
+const getOrderStates = async (_request: Request, response: Response) => {
+  const orderStates = await db.orderState.findMany();
+  return response.json(orderStates);
+};
+
 const index = async (request: Request, response: Response) => {
   const { search, sort, page } = validateQuery(request.query);
 
   const where: Prisma.OrderWhereInput = {
-    OR: [
-      {
-        user: {
-          OR: [
-            {
-              firstName: {
-                contains: search,
-              },
+    OR: search
+      ? [
+          {
+            id: Number.isNaN(parseInt(search, 10))
+              ? undefined
+              : parseInt(search, 10),
+          },
+          {
+            user: {
+              OR: [
+                {
+                  firstName: {
+                    contains: search,
+                  },
+                },
+                {
+                  lastName: {
+                    contains: search,
+                  },
+                },
+                {
+                  email: {
+                    contains: search,
+                  },
+                },
+                {
+                  phone: {
+                    contains: search,
+                  },
+                },
+              ],
             },
-            {
-              lastName: {
-                contains: search,
-              },
-            },
-            {
-              email: {
-                contains: search,
-              },
-            },
-            {
-              address: {
-                contains: search,
-              },
-            },
-          ],
-        },
-      },
-      {
-        items: {
-          some: {
-            product: {
-              name: {
-                contains: search,
-              },
-              description: {
-                contains: search,
+          },
+          {
+            items: {
+              some: {
+                product: {
+                  name: {
+                    contains: search,
+                  },
+                },
               },
             },
           },
-        },
-      },
-    ],
+          {
+            transactionId: {
+              contains: search,
+            },
+          },
+        ]
+      : undefined,
   };
 
   const orders = await db.order.findMany({
     where,
     include: {
+      orderState: true,
       user: true,
       items: {
         include: {
@@ -93,6 +108,7 @@ const show = async (request: ShowOrderRequest, response: Response) => {
     },
     include: {
       user: true,
+      orderState: true,
       items: {
         include: {
           product: true,
@@ -105,11 +121,11 @@ const show = async (request: ShowOrderRequest, response: Response) => {
 };
 
 const store = async (request: StoreOrderRequest, response: Response) => {
-  const { products, userId } = request.body;
+  const { items, userId } = request.body;
 
   const productsPrices = await db.product.findMany({
     where: {
-      OR: products.map(({ id }) => ({
+      OR: items.map(({ id }) => ({
         id,
       })),
     },
@@ -122,9 +138,10 @@ const store = async (request: StoreOrderRequest, response: Response) => {
   const order = await db.order.create({
     data: {
       userId,
+      ready: true,
       items: {
         createMany: {
-          data: products.map(({ id, quantity }) => ({
+          data: items.map(({ id, quantity }) => ({
             productId: id,
             price: productsPrices.find((product) => product.id === id)!.price,
             quantity,
@@ -146,7 +163,7 @@ const store = async (request: StoreOrderRequest, response: Response) => {
 };
 
 const update = async (request: UpdateOrderRequest, response: Response) => {
-  const { xId: id, userId, products } = request.body;
+  const { xId: id, userId, products, stateId } = request.body;
 
   await db.order.update({
     where: {
@@ -154,6 +171,7 @@ const update = async (request: UpdateOrderRequest, response: Response) => {
     },
     data: {
       userId,
+      orderStateId: stateId,
       items: products
         ? {
             deleteMany: {},
@@ -196,4 +214,5 @@ export const orderController = {
   store,
   update,
   destroy,
+  getOrderStates,
 };

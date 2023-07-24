@@ -51,11 +51,17 @@ export default function NavigationAvatar({ user }: NavigationAvatarProps) {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {avatarNavigation.map((navigation) => (
-            <DropdownMenuItem key={navigation.name} asChild>
-              <Link href={navigation.href}>{navigation.name}</Link>
-            </DropdownMenuItem>
-          ))}
+          {avatarNavigation.map((navigation) => {
+            if (navigation.role && navigation.role !== user.role.name) {
+              return null;
+            }
+
+            return (
+              <DropdownMenuItem key={navigation.name} asChild>
+                <Link href={navigation.href}>{navigation.name}</Link>
+              </DropdownMenuItem>
+            );
+          })}
           <DropdownMenuItem onClick={() => setAlrtOpen(true)}>
             Sign Out
           </DropdownMenuItem>

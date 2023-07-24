@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
-import api from "@/api";
 import { IOrderCreate, IOrderCreateError } from "@/interfaces/Order";
 import { useToast } from "@/components/ui/use-toast";
+import api from "@/api";
 import { handleError, handleSuccess } from "@/lib/httpMutationHelper";
 
 export const useStoreOrder = () => {
@@ -12,23 +12,17 @@ export const useStoreOrder = () => {
     return api({
       url: "/orders",
       method: "POST",
-      data: {
-        userId: data.userId,
-        products: data.products.map((product) => ({
-          id: product.id,
-          quantity: product.orderQuantity,
-        })),
-      },
+      data,
     });
   };
 
   return useMutation<AxiosResponse, IOrderCreateError, IOrderCreate>({
     mutationFn,
     onSuccess: () => {
-      toast(handleSuccess("Order created successfully"));
+      toast(handleSuccess("Order placed successfully"));
     },
-    onError: (error) => {
-      toast(handleError(error));
+    onError: (err) => {
+      toast(handleError(err));
     },
   });
 };

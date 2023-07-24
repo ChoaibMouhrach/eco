@@ -8,7 +8,7 @@ import indexRequestHelper from "@/lib/hookHelper";
 type Response = AxiosResponse<IPaginate<IOrder>>;
 
 export const useGetOrders = indexRequestHelper<Response>((query) => {
-  return useQuery<Response>(["orders"], () => {
+  return useQuery<Response>(["orders", query], () => {
     return api({
       url: `/orders?${new URLSearchParams(query).toString()}`,
     });

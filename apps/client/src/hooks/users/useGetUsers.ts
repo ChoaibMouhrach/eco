@@ -9,7 +9,7 @@ type Response = AxiosResponse<IPaginate<IUser>>;
 
 export const useGetUsers = indexRequestHelper<Response>((query, options) => {
   return useQuery<Response>({
-    queryKey: ["users"],
+    queryKey: ["users", query],
     queryFn: () => {
       return api({
         url: `/users?${new URLSearchParams(query).toString()}`,
